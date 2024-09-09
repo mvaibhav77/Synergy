@@ -5,14 +5,19 @@ const userSchema = new mongoose.Schema(
   {
     name: { type: String, required: true },
     email: { type: String, required: true, unique: true, index: true },
-    password: { type: String, required: true },
+    password: {
+      type: String,
+      required: function () {
+        return !this.socialMedia || this.socialMedia.length === 0;
+      }, // Password is required only if the user doesn't have a social media login
+    },
     bio: { type: String },
     location: { type: String },
     skills: { type: [String] },
     profession: { type: String },
     interests: { type: [String] },
     avatar: { type: String }, // Profile image URL
-    profileSlug: { type: String, unique: true }, // Public profile slug
+    username: { type: String, unique: true }, // Public profile slug
     connections: {
       type: [
         {
@@ -35,8 +40,7 @@ const userSchema = new mongoose.Schema(
           platform: { type: String, enum: ["github", "linkedin", "twitter"] },
           username: { type: String },
           userId: { type: String },
-          accessToken: { type: String }, // OAuth access token
-          refreshToken: { type: String }, // OAuth refresh token
+          accessToken: { type: String }, // Store OAuth tokens for API access
         },
       ],
     },
