@@ -2,6 +2,11 @@ import asyncHandler from "express-async-handler";
 import User from "../models/userModel.js";
 import generateToken from "../utils/generateToken.js";
 
+// Helper function to parse array fields
+const parseArrayField = (field) => {
+  return Array.isArray(field) ? field : JSON.parse(field || "[]");
+};
+
 // @desc   Auth user/set token
 // route   POST /api/users/auth
 // @access Public
@@ -222,11 +227,6 @@ const updateUserProfile = asyncHandler(async (req, res) => {
   }
 });
 
-// Helper function to parse array fields
-const parseArrayField = (field) => {
-  return Array.isArray(field) ? field : JSON.parse(field || "[]");
-};
-
 // @desc   Get user by ID
 // route   GET /api/users/:id
 // @access Private
@@ -298,6 +298,14 @@ const sendConnectionRequest = asyncHandler(async (req, res) => {
   await currentUser.save();
   await targetUser.save();
 
+  // sending notifications
+  const notification = await Notification.create({
+    user: targetUser._id,
+    sender: currentUser._id,
+    type: "connection_request",
+    message: `${currentUser.name} has sent you a connection request.`,
+  });
+
   res.status(200).json({ message: "Connection request sent" });
 });
 
@@ -343,6 +351,14 @@ const approveConnectionRequest = asyncHandler(async (req, res) => {
   await currentUser.save();
   await targetUser.save();
 
+  // sending notifications
+  const notification = await Notification.create({
+    user: targetUser._id,
+    sender: currentUser._id,
+    type: "connection_request",
+    message: `${currentUser.name} has approved your connection request.`,
+  });
+
   res.status(200).json({ message: "Connection request approved" });
 });
 
@@ -387,6 +403,14 @@ const rejectConnectionRequest = asyncHandler(async (req, res) => {
 
   await currentUser.save();
   await targetUser.save();
+
+  // sending notifications
+  const notification = await Notification.create({
+    user: targetUser._id,
+    sender: currentUser._id,
+    type: "connection_request",
+    message: `${currentUser.name} has rejected your connection request.`,
+  });
 
   res.status(200).json({ message: "Connection request rejected" });
 });

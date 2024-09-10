@@ -7,11 +7,13 @@ import session from "express-session";
 import userRoutes from "./routes/userRoutes.js";
 import AIRoutes from "./routes/AIRoutes.js";
 import socialAuthRoutes from "./routes/socialAuthRoutes.js";
+import notificationRoutes from "./routes/notificationRoutes.js";
 import { errorHandler, notFound } from "./middleware/errorMiddleware.js";
 import cookieParser from "cookie-parser";
 import path from "path";
 dotenv.config();
 
+import "./config/cronjobs.js"
 import "./config/passport.js";
 
 const port = process.env.PORT || 5000;
@@ -40,6 +42,7 @@ app.use(passport.session());
 // All routes
 app.use("/api/users", userRoutes);
 app.use("/api/auth", socialAuthRoutes);
+app.use("/api/notifications", notificationRoutes);
 app.use("/api", AIRoutes);
 
 // Serve static files and handle frontend routing for production

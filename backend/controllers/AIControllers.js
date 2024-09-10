@@ -1,6 +1,7 @@
 import asyncHandler from "express-async-handler";
-import computeCosineSimilarity from "../utils/computerSimilarity.js";
+import computeCosineSimilarity from "../utils/computeSimilarity.js";
 import User from "../models/userModel.js";
+import { RECOMMEND_USERS_LIMIT } from "../utils/constants.js";
 
 // @desc   Auth user/set token
 // route   POST /api/users/auth
@@ -38,7 +39,7 @@ const recommendUsers = asyncHandler(async (req, res) => {
 
   // Return top 10 recommendations (or fewer if less than 10 users are available)
   res.json(
-    recommendations.slice(0, 10).map(({ user, similarity }) => ({
+    recommendations.slice(0, RECOMMEND_USERS_LIMIT).map(({ user, similarity }) => ({
       _id: user._id,
       name: user.name,
       email: user.email,

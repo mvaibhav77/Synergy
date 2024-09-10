@@ -2,6 +2,7 @@ import passport from "passport";
 import { Strategy as GitHubStrategy } from "passport-github2";
 import User from "../models/userModel.js"; // Adjust the path as needed
 import dotenv from "dotenv";
+import { GITHUB_REDIRECT_URI } from "../utils/constants.js";
 
 dotenv.config();
 
@@ -10,7 +11,7 @@ passport.use(
     {
       clientID: process.env.GITHUB_CLIENT_ID,
       clientSecret: process.env.GITHUB_CLIENT_SECRET,
-      callbackURL: "http://localhost:3000/api/auth/github/callback",
+      callbackURL: GITHUB_REDIRECT_URI,
       scope: ["user:email"], // Request email permission
     },
     async (accessToken, refreshToken, profile, done) => {
