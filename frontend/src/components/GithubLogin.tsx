@@ -3,19 +3,37 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { setCredentials } from "../slices/authSlice";
 import queryString from "query-string";
+import { UserInfo } from "@/utils/types";
 
 const GitHubCallback = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  type Params = {
+    id?: string;
+    name?: string;
+    email?: string;
+    username?: string;
+    bio?: string;
+    skills?: string;
+    location?: string;
+    interests?: string;
+    profession?: string;
+    avatar?: string;
+    socialMedia?: string;
+    connections?: string;
+    connectionPreferences?: string;
+    lastActive?: string;
+  };
+
   useEffect(() => {
     // Extract all user info from query params
-    const params = queryString.parse(window.location.search);
+    const params: Params = queryString.parse(window.location.search);
 
-    const userData = {
-      _id: params.id,
-      name: params.name,
-      email: params.email,
+    const userData: UserInfo = {
+      _id: params.id || "",
+      name: params.name || "",
+      email: params.email || "",
       username: params.username,
       bio: params.bio,
       skills: params.skills ? JSON.parse(params.skills) : [],
@@ -28,7 +46,7 @@ const GitHubCallback = () => {
       connectionPreferences: params.connectionPreferences
         ? JSON.parse(params.connectionPreferences)
         : {},
-      lastActive: params.lastActive,
+      lastActive: params.lastActive ? new Date(params.lastActive) : new Date(),
     };
 
     // Dispatch the setCredentials action to save user info in Redux
@@ -36,7 +54,7 @@ const GitHubCallback = () => {
 
     // Redirect user to the desired page after login
     navigate("/profile");
-  }, []);
+  }, [dispatch, navigate]);
 
   return <div>Logging in with GitHub...</div>;
 };
