@@ -49,9 +49,22 @@ const registerUser = asyncHandler(async (req, res) => {
     interests,
     profession, // Include profession in registration
     avatar,
-    // socialMedia,
     connectionPreferences,
   } = req.body;
+
+  // Parse array fields if they are provided as strings
+  const parsedSkills = Array.isArray(skills)
+    ? skills
+    : JSON.parse(skills || "[]");
+  const parsedInterests = Array.isArray(interests)
+    ? interests
+    : JSON.parse(interests || "[]");
+  const parsedConnectionPreferences = {
+    interests: Array.isArray(connectionPreferences?.interests)
+      ? connectionPreferences.interests
+      : JSON.parse(connectionPreferences?.interests || "[]"),
+    proximity: connectionPreferences?.proximity || null,
+  };
 
   const userExists = await User.findOne({ email });
 
@@ -66,13 +79,12 @@ const registerUser = asyncHandler(async (req, res) => {
     password,
     username,
     bio,
-    skills,
+    skills: parsedSkills,
     location,
-    interests,
+    interests: parsedInterests,
     profession, // Save profession in user profile
     avatar,
-    // socialMedia,
-    connectionPreferences,
+    connectionPreferences: parsedConnectionPreferences,
     connections: [], // Initialize empty connections
     lastActive: Date.now(), // Set last active date
   });
@@ -88,8 +100,8 @@ const registerUser = asyncHandler(async (req, res) => {
       skills: user.skills,
       location: user.location,
       interests: user.interests,
-      profession: user.profession, // Return profession in response
-      avatar: user.avatar,
+      profession, // Return profession in response
+      avatar,
       socialMedia: user.socialMedia,
       connections: user.connections,
       connectionPreferences: user.connectionPreferences,
@@ -143,20 +155,45 @@ const getUserProfile = asyncHandler(async (req, res) => {
 const updateUserProfile = asyncHandler(async (req, res) => {
   const user = await User.findById(req.user._id);
 
+  if (!user) {
+    res.status(404);
+    throw new Error("User not found");
+  }
+
+  console.log(parseArrayField(req.body.skills));
+
   if (user) {
     user.name = req.body.name || user.name;
     user.email = req.body.email || user.email;
     user.username = req.body.username || user.username;
     user.bio = req.body.bio || user.bio;
-    user.skills = req.body.skills || user.skills;
+
+    // Check if fields are provided in request body before parsing
+    user.skills = req.body.skills
+      ? parseArrayField(req.body.skills)
+      : user.skills;
+    user.interests = req.body.interests
+      ? parseArrayField(req.body.interests)
+      : user.interests;
     user.location = req.body.location || user.location;
-    user.interests = req.body.interests || user.interests;
+
     user.profession = req.body.profession || user.profession; // Update profession
     user.avatar = req.body.avatar || user.avatar;
     user.socialMedia = req.body.socialMedia || user.socialMedia;
-    user.connectionPreferences =
-      req.body.connectionPreferences || user.connectionPreferences;
 
+    // Parse and update nested objects if provided
+    user.connectionPreferences = req.body.connectionPreferences
+      ? {
+          interests: req.body.connectionPreferences.interests
+            ? parseArrayField(req.body.connectionPreferences.interests)
+            : user.connectionPreferences.interests,
+          proximity: req.body.connectionPreferences.proximity
+            ? req.body.connectionPreferences.proximity
+            : user.connectionPreferences.proximity,
+        }
+      : user.connectionPreferences;
+
+    // Update password if provided
     if (req.body.password) {
       user.password = req.body.password;
     }
@@ -184,6 +221,11 @@ const updateUserProfile = asyncHandler(async (req, res) => {
     throw new Error("User not found");
   }
 });
+
+// Helper function to parse array fields
+const parseArrayField = (field) => {
+  return Array.isArray(field) ? field : JSON.parse(field || "[]");
+};
 
 // @desc   Get user by ID
 // route   GET /api/users/:id

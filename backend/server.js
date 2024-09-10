@@ -5,6 +5,7 @@ import dotenv from "dotenv";
 import passport from "passport";
 import session from "express-session";
 import userRoutes from "./routes/userRoutes.js";
+import AIRoutes from "./routes/AIRoutes.js";
 import socialAuthRoutes from "./routes/socialAuthRoutes.js";
 import { errorHandler, notFound } from "./middleware/errorMiddleware.js";
 import cookieParser from "cookie-parser";
@@ -36,9 +37,10 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
-// Use user routes
+// All routes
 app.use("/api/users", userRoutes);
 app.use("/api/auth", socialAuthRoutes);
+app.use("/api", AIRoutes);
 
 // Serve static files and handle frontend routing for production
 if (process.env.NODE_ENV === "production") {
