@@ -40,10 +40,11 @@ const Recommendations = () => {
       {isLoading ? (
         <>Please wait while we fetch some things</>
       ) : (
-        <div className="grid grid-cols-3 gap-6 px-6">
+        <div className="grid grid-cols-3 gap-6 px-6 mt-6">
           {recommendations.map((user) => (
             <ProfileCards
               name={user.name}
+              username={user.username}
               similarity={user.similarityScore}
               bio={user.bio}
               avatar={user.avatar}

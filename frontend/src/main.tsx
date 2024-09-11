@@ -1,4 +1,3 @@
-import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App.jsx";
 import {
@@ -18,6 +17,8 @@ import GitHubCallback from "./components/GithubLogin.js";
 import PrivateRoute from "./components/PrivateRoute.js";
 import ProfileScreen from "./screens/ProfileScreen.js";
 import Recommendations from "./screens/RecommendationScreen.js";
+import ChatScreen from "./screens/ChatScreen.js";
+import ConnectionsScreen from "./screens/ConnectionsScreen.js";
 // import ProfileScreen from '@/screens/ProfileScreen.tsx';
 // import PrivateRoute from '@/components/PrivateRoute.tsx';
 
@@ -29,8 +30,10 @@ const router = createBrowserRouter(
       <Route path="/register" element={<RegisterScreen />} />
       <Route path="/login-success" element={<GitHubCallback />} />
       <Route path="" element={<PrivateRoute />}>
-        <Route path="/profile" element={<ProfileScreen />} />
+        <Route path="/:username" element={<ProfileScreen />} />
         <Route path="/recommendations" element={<Recommendations />} />
+        <Route path="/messages" element={<ChatScreen />} />
+        <Route path="/connections" element={<ConnectionsScreen />} />
       </Route>
     </Route>
   )

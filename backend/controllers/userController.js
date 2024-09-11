@@ -1,6 +1,7 @@
 import asyncHandler from "express-async-handler";
 import User from "../models/userModel.js";
 import generateToken from "../utils/generateToken.js";
+import Notification from "../models/notificationModel.js";
 
 // Helper function to parse array fields
 const parseArrayField = (field) => {
@@ -227,11 +228,17 @@ const updateUserProfile = asyncHandler(async (req, res) => {
   }
 });
 
-// @desc   Get user by ID
+// @desc   Get user by Id
 // route   GET /api/users/:id
 // @access Private
-const getUser = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.params.id).select("-password");
+const getUserById = asyncHandler(async (req, res) => {
+  let user = await User.findOne({ username: req.params.id }).select(
+    "-password"
+  );
+
+  if (!user) {
+    user = await User.findById(req.params.id).select("-password");
+  }
 
   if (user) {
     res.status(200).json({
@@ -421,7 +428,7 @@ export {
   logoutUser,
   getUserProfile,
   updateUserProfile,
-  getUser,
+  getUserById,
   sendConnectionRequest,
   rejectConnectionRequest,
   approveConnectionRequest,

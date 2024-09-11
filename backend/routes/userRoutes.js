@@ -7,10 +7,10 @@ import {
   getUserProfile,
   logoutUser,
   updateUserProfile,
-  getUser,
   sendConnectionRequest,
   rejectConnectionRequest,
   approveConnectionRequest,
+  getUserById,
 } from "../controllers/userController.js";
 
 const router = express.Router();
@@ -26,7 +26,7 @@ router
   .get(protect, getUserProfile)
   .put(protect, updateUserProfile);
 
-router.route("/:id").get(protect, getUser);
+router.route("/:id").get(protect, getUserById);
 router.route("/:id/connect").post(protect, sendConnectionRequest);
 router.route("/:id/approve").post(protect, approveConnectionRequest);
 router.route("/:id/reject").post(protect, rejectConnectionRequest);

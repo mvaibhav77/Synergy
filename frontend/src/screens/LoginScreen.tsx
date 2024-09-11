@@ -61,7 +61,6 @@ const LoginScreen = () => {
     try {
       const res = await login(data).unwrap();
       dispatch(setCredentials({ ...res }));
-      console.log("navigate man");
       navigate("/");
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {

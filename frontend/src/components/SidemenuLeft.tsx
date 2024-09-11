@@ -5,6 +5,9 @@ import { MdRecommend } from "react-icons/md";
 import { IoSettingsOutline } from "react-icons/io5";
 import { MIN_SECTION_HEIGHT } from "@/utils/constants";
 import { FaFacebookMessenger } from "react-icons/fa";
+import { UserInfo } from "@/utils/types";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store";
 
 type NavLink = {
   title: string;
@@ -12,31 +15,43 @@ type NavLink = {
   icon: JSX.Element;
 };
 
-const navList: NavLink[] = [
-  { title: "Home", link: "", icon: <HomeIcon className="h-[25px] w-[25px]" /> },
-  {
-    title: "Profile",
-    link: "profile",
-    icon: <CgProfile className="h-[25px] w-[25px]" />,
-  },
-  {
-    title: "Recommendations",
-    link: "recommendations",
-    icon: <MdRecommend className="h-[25px] w-[25px]" />,
-  },
-  {
-    title: "Messages",
-    link: "chat",
-    icon: <FaFacebookMessenger className="h-[25px] w-[25px]" />,
-  },
-  {
-    title: "Settings",
-    link: "settings",
-    icon: <IoSettingsOutline className="h-[25px] w-[25px]" />,
-  },
-];
-
 const Sidemenu = () => {
+  const { userInfo } = useSelector((state: RootState) => state.auth) as {
+    userInfo: UserInfo;
+  };
+
+  const navList: NavLink[] = [
+    {
+      title: "Home",
+      link: "",
+      icon: <HomeIcon className="h-[25px] w-[25px]" />,
+    },
+    {
+      title: "Profile",
+      link: userInfo?.username || "profile",
+      icon: <CgProfile className="h-[25px] w-[25px]" />,
+    },
+    {
+      title: "Recommendations",
+      link: "recommendations",
+      icon: <MdRecommend className="h-[25px] w-[25px]" />,
+    },
+    {
+      title: "Connections",
+      link: "connections",
+      icon: <CgProfile className="h-[25px] w-[25px]" />,
+    },
+    {
+      title: "Messages",
+      link: "messages",
+      icon: <FaFacebookMessenger className="h-[25px] w-[25px]" />,
+    },
+    {
+      title: "Settings",
+      link: "settings",
+      icon: <IoSettingsOutline className="h-[25px] w-[25px]" />,
+    },
+  ];
   return (
     <div
       className={`${MIN_SECTION_HEIGHT} h-full w- border-l-[1px]  border-gray-500 pt-4 px-2`}
