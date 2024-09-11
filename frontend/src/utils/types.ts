@@ -30,5 +30,6 @@ export interface UserInfo {
   connections?: Connection[];
   connectionPreferences?: ConnectionPreferences;
   socialMedia?: SocialMedia[];
+  similarityScore?: number;
   lastActive?: Date;
 }

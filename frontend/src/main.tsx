@@ -17,6 +17,7 @@ import RegisterScreen from "@/screens/RegisterScreen.tsx";
 import GitHubCallback from "./components/GithubLogin.js";
 import PrivateRoute from "./components/PrivateRoute.js";
 import ProfileScreen from "./screens/ProfileScreen.js";
+import Recommendations from "./screens/RecommendationScreen.js";
 // import ProfileScreen from '@/screens/ProfileScreen.tsx';
 // import PrivateRoute from '@/components/PrivateRoute.tsx';
 
@@ -29,6 +30,7 @@ const router = createBrowserRouter(
       <Route path="/login-success" element={<GitHubCallback />} />
       <Route path="" element={<PrivateRoute />}>
         <Route path="/profile" element={<ProfileScreen />} />
+        <Route path="/recommendations" element={<Recommendations />} />
       </Route>
     </Route>
   )

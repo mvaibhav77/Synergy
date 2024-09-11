@@ -1,5 +1,5 @@
 import Hero from "@/components/Hero";
-import Dashboard from "@/components/Dashboard";
+import Dashboard from "@/components/Dashboard/Dashboard";
 import { RootState } from "@/store";
 import { useSelector } from "react-redux";
 

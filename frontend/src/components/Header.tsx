@@ -17,6 +17,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useLogoutMutation } from "../slices/usersApiSlice"; // Your API slice for logout
 import { logout } from "../slices/authSlice"; // Your auth slice
+import { rlogout } from "../slices/recommendSlice";
 import { RootState } from "@/store";
 
 const Header = () => {
@@ -30,6 +31,7 @@ const Header = () => {
     try {
       await logoutApiCall({}).unwrap();
       dispatch(logout());
+      dispatch(rlogout());
       navigate("/login");
     } catch (err) {
       console.error(err);
@@ -37,7 +39,7 @@ const Header = () => {
   };
 
   return (
-    <header className="max-w-[1200px] mx-auto bg-dark p-4 border-b-[1px] border-gray-700">
+    <header className="max-w-[1200px] mx-auto bg-dark p-4 border-b-[1px] border-x-[1px] border-gray-500">
       <div className="container mx-auto flex justify-between items-center">
         {/* Brand */}
         <Link to="/" className="text-white text-xl font-bold">

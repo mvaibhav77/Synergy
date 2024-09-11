@@ -1,33 +1,6 @@
-import { HomeIcon } from "@radix-ui/react-icons";
-import { NavLink } from "react-router-dom";
 import { useState } from "react";
 import { Command, CommandInput, CommandItem, CommandList } from "./ui/command";
-import { Separator } from "./ui/separator";
-
-type NavLink = {
-  title: string;
-  link: string;
-  icon: JSX.Element;
-};
-
-const navList: NavLink[] = [
-  { title: "Home", link: "", icon: <HomeIcon className="h-[25px] w-[25px]" /> },
-  {
-    title: "Profile",
-    link: "profile",
-    icon: <HomeIcon className="h-[25px] w-[25px]" />,
-  },
-  {
-    title: "Recommendations",
-    link: "recommendations",
-    icon: <HomeIcon className="h-[25px] w-[25px]" />,
-  },
-  {
-    title: "Settings",
-    link: "settings",
-    icon: <HomeIcon className="h-[25px] w-[25px]" />,
-  },
-];
+import { MIN_SECTION_HEIGHT } from "@/utils/constants";
 
 interface ICommandProps {
   value: string;
@@ -52,7 +25,9 @@ const Sidemenu = () => {
     : [];
   console.log("filteredCommands", filteredCommands);
   return (
-    <div className="h-full w-full border-r-[1px] border-gray-700 pt-4">
+    <div
+      className={`${MIN_SECTION_HEIGHT} h-full w- border-l-[1px]  border-gray-500 pt-4 px-2`}
+    >
       <div className="flex flex-col gap-4">
         {/* search bar */}
         <div className="search px-4">
@@ -74,19 +49,6 @@ const Sidemenu = () => {
             }
           </Command>
         </div>
-
-        {navList.map((navItem, index) => (
-          <NavLink
-            to={navItem.link}
-            key={index}
-            className="py-3 w-fit px-4 text-xl rounded-3xl hover:bg-gray-800"
-          >
-            <div className="flex flex-row gap-4 items-center">
-              {navItem.icon}
-              <div className="text">{navItem.title}</div>
-            </div>
-          </NavLink>
-        ))}
       </div>
     </div>
   );

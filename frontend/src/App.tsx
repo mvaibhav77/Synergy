@@ -1,6 +1,6 @@
 import { Outlet } from "react-router-dom";
 import Header from "@/components/Header";
-import Sidemenu from "./components/Sidemenu";
+import Sidemenu from "./components/SidemenuLeft";
 import { useSelector } from "react-redux";
 import { RootState } from "./store";
 
