@@ -15,6 +15,8 @@ import { ThemeProvider } from "@/components/theme-provider.tsx";
 import LoginScreen from "@/screens/LoginScreen";
 import RegisterScreen from "@/screens/RegisterScreen.tsx";
 import GitHubCallback from "./components/GithubLogin.js";
+import PrivateRoute from "./components/PrivateRoute.js";
+import ProfileScreen from "./screens/ProfileScreen.js";
 // import ProfileScreen from '@/screens/ProfileScreen.tsx';
 // import PrivateRoute from '@/components/PrivateRoute.tsx';
 
@@ -25,9 +27,9 @@ const router = createBrowserRouter(
       <Route path="/login" element={<LoginScreen />} />
       <Route path="/register" element={<RegisterScreen />} />
       <Route path="/login-success" element={<GitHubCallback />} />
-      {/* <Route path='' element={<PrivateRoute />}>
-        <Route path='/profile' element={<ProfileScreen />} />
-      </Route> */}
+      <Route path="" element={<PrivateRoute />}>
+        <Route path="/profile" element={<ProfileScreen />} />
+      </Route>
     </Route>
   )
 );

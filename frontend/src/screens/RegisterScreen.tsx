@@ -21,7 +21,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { MultiSelect } from "@/components/MultiSelect";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store";
 import { useNavigate } from "react-router-dom";
@@ -29,15 +28,8 @@ import { useRegisterMutation } from "@/slices/usersApiSlice";
 import { setCredentials } from "@/slices/authSlice";
 import { useToast } from "@/hooks/use-toast";
 import { ToastAction } from "@/components/ui/toast";
-
-const skillOptions = [
-  { label: "Mern", value: "Mern" },
-  { label: "React.js", value: "React.js" },
-  { label: "Node.js", value: "Node.js" },
-  { label: "Tailwind", value: "Tailwind" },
-  { label: "Shadcn", value: "Shadcn" },
-  { label: "Full Stack Development", value: "Full Stack Development" },
-];
+import MultipleSelector from "@/components/ui/MultiSelect";
+import { skillOptions } from "@/utils/constants";
 
 const formSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -209,11 +201,15 @@ export default function RegisterPage() {
                       <FormItem>
                         <FormLabel>Skills</FormLabel>
                         <FormControl>
-                          <MultiSelect
-                            options={skillOptions}
-                            selected={field.value}
-                            onChange={field.onChange}
-                            placeholder="Select skills"
+                          <MultipleSelector
+                            defaultOptions={skillOptions}
+                            placeholder="Type something..."
+                            creatable
+                            emptyIndicator={
+                              <p className="text-center text-lg leading-10 text-gray-600 dark:text-gray-400">
+                                no results found.
+                              </p>
+                            }
                           />
                         </FormControl>
                         <FormMessage />
