@@ -47,6 +47,7 @@ const Recommendations = () => {
               ? "No Recommendations for now..."
               : recommendations.map((user) => (
                   <ProfileCards
+                    type={"recommend"}
                     name={user.name}
                     username={user.username}
                     similarity={user.similarityScore}

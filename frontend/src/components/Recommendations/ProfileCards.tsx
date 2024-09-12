@@ -2,6 +2,7 @@ import { NavLink } from "react-router-dom";
 import { Card, CardContent } from "../ui/card";
 
 type Props = {
+  type: string;
   name: string;
   username: string | undefined;
   similarity: number | undefined;
@@ -24,7 +25,9 @@ const ProfileCards = (props: Props) => {
             <p className="text-gray-500 italic text-center">{props.bio}</p>
             {/* showing similarity metric in percentage */}
             <p className="text-gray-300 italic text-center">
-              Matching:- {((props.similarity || 0) * 100).toFixed(2)}%
+              {props.type == "recommend" && (
+                <>Matching:- {((props.similarity || 0) * 100).toFixed(2)}%</>
+              )}
             </p>
           </div>
         </CardContent>

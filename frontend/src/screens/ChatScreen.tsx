@@ -14,7 +14,7 @@ import { useGetConversationsMutation } from "@/slices/chatApiSlice";
 import { RootState, useAppDispatch } from "@/store";
 import { setConversations } from "@/slices/authSlice";
 import { useSelector } from "react-redux";
-import { Message, Participant, UserInfo } from "@/utils/types";
+import { Conversation, Message, Participant, UserInfo } from "@/utils/types";
 import { useGetUserByIdMutation } from "@/slices/usersApiSlice";
 import { Separator } from "@/components/ui/separator";
 
@@ -37,9 +37,7 @@ const ChatScreen = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
 
   // State to store conversations and messages
-  const { conversations, userInfo } = useSelector(
-    (state: RootState) => state.auth
-  );
+  const { userInfo } = useSelector((state: RootState) => state.auth);
   const currentUser = userInfo as Participant;
   const [chatUser, setChatUser] = useState<UserInfo | null>(null);
   const [connectedSince, setConnectedSince] = useState<string>("");
@@ -67,17 +65,15 @@ const ChatScreen = () => {
   // Fetch conversations from backend
   useEffect(() => {
     const fetchConversations = async () => {
-      let list = conversations;
+      let list: Conversation[] = [];
 
-      if (!conversations || conversations.length === 0) {
-        try {
-          const response = await getConversations({}).unwrap();
-          dispatch(setConversations(response));
-          list = response;
-        } catch (error) {
-          console.error("Error fetching conversations:", error);
-          return; // Prevent further execution if there was an error
-        }
+      try {
+        const response = await getConversations({}).unwrap();
+        dispatch(setConversations(response));
+        list = response;
+      } catch (error) {
+        console.error("Error fetching conversations:", error);
+        return; // Prevent further execution if there was an error
       }
 
       // Handle async operations in parallel with Promise.all
@@ -102,12 +98,11 @@ const ChatScreen = () => {
                     .then((res: UserInfo) => {
                       setChatUser(res);
                       // so user info has connections object which has an array of object which has the connectedDate
-                      const connection = userInfo.connections.find(
+                      const connection = userInfo?.connections?.find(
                         (conn) =>
                           conn.userId.toString() === res?._id.toString() &&
                           conn.status === "connected"
                       );
-                      console.log(connection);
                       const connSince: string = formatDate(
                         connection ? connection?.connectedDate : ""
                       );

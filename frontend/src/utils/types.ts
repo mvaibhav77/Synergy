@@ -1,6 +1,7 @@
 export interface Connection {
   userId: string;
   status: "pending" | "connected" | "rejected";
+  connectedDate: string;
 }
 
 export interface SocialMedia {

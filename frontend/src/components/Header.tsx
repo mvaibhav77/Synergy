@@ -59,7 +59,7 @@ const Header = () => {
                     </DropdownMenuTrigger>
                     <DropdownMenuContent>
                       <DropdownMenuItem asChild>
-                        <Link to="/profile">Profile</Link>
+                        <Link to={`/${userInfo.username}`}>Profile</Link>
                       </DropdownMenuItem>
                       <DropdownMenuItem onClick={logoutHandler}>
                         Logout

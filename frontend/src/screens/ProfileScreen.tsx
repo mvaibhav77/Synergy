@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { RootState, useAppDispatch } from "@/store";
-import { UserInfo } from "@/utils/types";
+import { Conversation, UserInfo } from "@/utils/types";
 import Page from "@/components/Page";
 import PageHeader from "@/components/PageHeader";
 import { Card, CardContent } from "@/components/ui/card";
@@ -10,15 +10,20 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import ProfileField from "@/components/Profile/ProfileField";
 import ProfileListField from "@/components/Profile/ProfileListField";
 import ConnectSocials from "@/components/Profile/ConnectSocials";
-import { FaGithub, FaLinkedin, FaTwitter } from "react-icons/fa";
+import { FaGithub, FaLinkedin, FaTwitter, FaEnvelope } from "react-icons/fa";
 import {
+  useDisconnectUserMutation,
   useGetCurrentUserMutation,
   useGetUserQuery,
+  useSendRequestMutation,
 } from "@/slices/usersApiSlice";
 import { Button } from "@/components/ui/button"; // Import Button for Connect
 import { MIN_SECTION_HEIGHT } from "@/utils/constants";
-import { useSendRequestMutation } from "@/slices/usersApiSlice";
 import { setCredentials } from "@/slices/authSlice";
+import {
+  useCreateConversationMutation,
+  useGetConversationsMutation,
+} from "@/slices/chatApiSlice";
 
 const ProfileScreen = () => {
   const { username } = useParams<{ username: string }>();
@@ -28,22 +33,19 @@ const ProfileScreen = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
-  const { data, error, isLoading } = useGetUserQuery(username);
-
-  if (error) {
-    navigate("/");
-  }
-
+  const { data, isLoading } = useGetUserQuery(username);
   const [profileData, setProfileData] = useState<UserInfo | null>(null);
   const isCurrentUser = userInfo?.username === username;
-  const [connectionStatus, setConnectionStatus] = useState<string | null>(null); // State to manage connection status
+  const [connectionStatus, setConnectionStatus] = useState<string | null>(null);
 
   const [sendRequest, { isLoading: sendingReqLoading }] =
     useSendRequestMutation();
   const [getMe, { isLoading: loadingMe }] = useGetCurrentUserMutation();
+  const [getConversations] = useGetConversationsMutation();
+  const [createConversation] = useCreateConversationMutation();
+  const [disconnectUser] = useDisconnectUserMutation();
 
   useEffect(() => {
-    // Fetch profile data based on username
     if (!isCurrentUser) {
       setProfileData(data);
     } else {
@@ -52,25 +54,64 @@ const ProfileScreen = () => {
   }, [data, isCurrentUser, userInfo]);
 
   const handleConnect = async () => {
-    // Add connection logic here (e.g., API call to send connection request)
     console.log("Connect button clicked");
-    await sendRequest(profileData?._id);
+    if (connectionStatus === "connected") {
+      await disconnectUser(profileData?._id);
+    } else {
+      await sendRequest(profileData?._id);
+    }
     const res = await getMe({}).unwrap();
     dispatch(setCredentials({ ...res }));
   };
 
+  const handleMessage = async () => {
+    try {
+      const data = {
+        senderId: userInfo?._id,
+        receiverId: profileData?._id,
+      };
+      // Create a new conversation or find an existing one
+      const result = await createConversation(data);
+
+      let conversation = await result.data;
+
+      console.log(conversation);
+
+      if (!conversation) {
+        // Fetch all conversations for the current user
+        const conversations = await getConversations({}).unwrap();
+
+        // Find the conversation where either participant matches the profile user
+        conversation = await conversations.find((conv: Conversation) =>
+          conv.participants.some(
+            (participant) => participant._id === profileData?._id
+          )
+        );
+
+        if (conversation) {
+          console.log(conversation);
+          navigate(`/messages/${conversation._id}`);
+        } else {
+          navigate("/messages");
+        }
+      } else {
+        navigate(`/messages`);
+      }
+    } catch (error) {
+      console.error(error);
+      // Handle error
+    }
+  };
+
   useEffect(() => {
     if (profileData && !isCurrentUser) {
-      // Check the connection status between the logged-in user and the profile being viewed
       const connection = userInfo.connections?.find(
-        (conn) => conn.userId === profileData._id // Assuming profileData._id contains the userId
+        (conn) => conn.userId === profileData._id
       );
-      console.log(userInfo.connections);
       if (connection) {
-        console.log(connection.status);
-        setConnectionStatus(connection.status); // Set the status (pending, connected, rejected)
+        setConnectionStatus(connection.status);
       } else {
-        setConnectionStatus(null); // No connection exists
+        setConnectionStatus(null);
       }
     }
   }, [isCurrentUser, profileData, userInfo, sendingReqLoading]);
@@ -143,23 +184,36 @@ const ProfileScreen = () => {
 
                         {/* Connect Button for non-current user's profile */}
                         {!isCurrentUser && (
-                          <Button
-                            variant="default"
-                            className="mt-4 w-full"
-                            onClick={handleConnect}
-                          >
-                            {sendingReqLoading || loadingMe
-                              ? "Sending..."
-                              : connectionStatus === "pending"
-                              ? "Pending"
-                              : connectionStatus === "connected"
-                              ? "Connected"
-                              : "Connect"}
-                          </Button>
-                        )}
+                          <>
+                            <Button
+                              variant={
+                                connectionStatus === "connected"
+                                  ? "destructive"
+                                  : "default"
+                              }
+                              disabled={connectionStatus === "pending"}
+                              className="mt-4 w-full"
+                              onClick={handleConnect}
+                            >
+                              {sendingReqLoading || loadingMe
+                                ? "Sending..."
+                                : connectionStatus === "pending"
+                                ? "Pending"
+                                : connectionStatus === "connected"
+                                ? "Disconnect"
+                                : "Connect"}
+                            </Button>
 
-                        {/* Make a message button is not current user which will redirect to the conversation between the current user and the user whone profile is opened */}
-                        
+                            <Button
+                              variant="default"
+                              className="mt-2 w-full"
+                              onClick={handleMessage}
+                            >
+                              <FaEnvelope className="mr-2" />
+                              Message
+                            </Button>
+                          </>
+                        )}
                       </div>
                     </CardContent>
                   </Card>
@@ -234,20 +288,11 @@ const ProfileScreen = () => {
                         value={profileData.connectionPreferences?.interests}
                         editable={isCurrentUser}
                       />
-                      <ProfileField
-                        title="Search Proximity"
-                        value={profileData.connectionPreferences?.proximity}
+                      {/* <ProfileListField
+                        title="Connection Skills"
+                        value={profileData.connectionPreferences?.skills}
                         editable={isCurrentUser}
-                      />
-                    </div>
-                  </CardContent>
-                </Card>
-
-                {/* Static placeholder for more options */}
-                <Card>
-                  <CardContent>
-                    <div className="addButton text-center font-bold pt-6">
-                      MORE OPTIONS COMING SOON
+                      /> */}
                     </div>
                   </CardContent>
                 </Card>

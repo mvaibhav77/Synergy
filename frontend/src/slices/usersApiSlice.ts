@@ -68,6 +68,13 @@ export const userApiSlice = apiSlice.injectEndpoints({
         body: JSON.stringify({}),
       }),
     }),
+    disconnectUser: builder.mutation({
+      query: (userId) => ({
+        url: `${USERS_URL}/${userId}/disconnect`,
+        method: "POST",
+        body: JSON.stringify({}),
+      }),
+    }),
   }),
 });
 
@@ -82,4 +89,5 @@ export const {
   useSendRequestMutation,
   useApproveRequestMutation,
   useRejectRequestMutation,
+  useDisconnectUserMutation,
 } = userApiSlice;
