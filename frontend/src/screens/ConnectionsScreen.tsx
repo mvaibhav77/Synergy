@@ -3,19 +3,19 @@ import PageHeader from "@/components/PageHeader";
 import ProfileCards from "@/components/Recommendations/ProfileCards";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { RootState } from "@/store";
+import { RootState, useAppDispatch } from "@/store";
 import { MIN_SECTION_HEIGHT } from "@/utils/constants";
 import { UserInfo } from "@/utils/types";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import {
   useApproveRequestMutation,
+  useGetCurrentUserMutation,
   useGetUserByIdMutation,
   useRejectRequestMutation,
 } from "@/slices/usersApiSlice";
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Loader } from "lucide-react";
+import { setCredentials } from "@/slices/authSlice";
+import InvitationsCard from "@/components/Connections/InvitationCard";
 
 // const dummyInvitations = [
 //   {
@@ -37,8 +37,10 @@ const ConnectionsScreen = () => {
   const [connections, setConnections] = useState<UserInfo[]>([]);
   const [requests, setRequests] = useState<UserInfo[]>([]);
   const [loadingConnections, setLoadingConnections] = useState(true);
+  const dispatch = useAppDispatch();
 
   const [getUser] = useGetUserByIdMutation();
+  const [getMe, { isLoading: loadingMe }] = useGetCurrentUserMutation();
 
   const [approve, { isLoading: approveLoading }] = useApproveRequestMutation();
   const [reject, { isLoading: rejectLoading }] = useRejectRequestMutation();
@@ -86,12 +88,16 @@ const ConnectionsScreen = () => {
   const handleApprove = async (id: string) => {
     console.log(`Approved user with ID: ${id}`);
     await approve(id);
+    const res = await getMe({}).unwrap();
+    dispatch(setCredentials({ ...res }));
     // Logic to approve the connection
   };
 
   const handleReject = async (id: string) => {
     console.log(`Rejected user with ID: ${id}`);
     await reject(id);
+    const res = await getMe({}).unwrap();
+    dispatch(setCredentials({ ...res }));
     // Logic to reject the connection
   };
 
@@ -119,41 +125,50 @@ const ConnectionsScreen = () => {
             ) : (
               <div className="space-y-4">
                 {requests.map((invitation) => (
-                  <Card key={invitation._id}>
-                    <CardContent className="flex items-center justify-between  p-4 rounded-lg">
-                      {/* Avatar */}
-                      <div className="flex items-center">
-                        <img
-                          src={
-                            invitation.avatar || "https://github.com/shadcn.png"
-                          }
-                          alt={`${invitation.name}'s avatar`}
-                          className="w-12 h-12 rounded-full object-cover mr-4"
-                        />
-                        <div>
-                          <h4 className="text-lg font-semibold">
-                            {invitation.name}
-                          </h4>
-                          <p className="text-sm text-gray-600">
-                            {invitation.bio}
-                          </p>
-                        </div>
-                      </div>
+                  // <Card key={invitation._id}>
+                  //   <CardContent className="flex items-center justify-between  p-4 rounded-lg">
+                  //     {/* Avatar */}
+                  //     <div className="flex items-center">
+                  //       <img
+                  //         src={
+                  //           invitation.avatar || "https://github.com/shadcn.png"
+                  //         }
+                  //         alt={`${invitation.name}'s avatar`}
+                  //         className="w-12 h-12 rounded-full object-cover mr-4"
+                  //       />
+                  //       <div>
+                  //         <h4 className="text-lg font-semibold">
+                  //           {invitation.name}
+                  //         </h4>
+                  //         <p className="text-sm text-gray-600">
+                  //           {invitation.bio}
+                  //         </p>
+                  //       </div>
+                  //     </div>
 
-                      {/* Approve/Reject buttons */}
-                      <div className="flex space-x-2">
-                        <Button onClick={() => handleApprove(invitation._id)}>
-                          {approveLoading ? <Loader /> : "Approve"}
-                        </Button>
-                        <Button
-                          variant="destructive"
-                          onClick={() => handleReject(invitation._id)}
-                        >
-                          {rejectLoading ? <Loader /> : "Reject"}
-                        </Button>
-                      </div>
-                    </CardContent>
-                  </Card>
+                  //     {/* Approve/Reject buttons */}
+                  //     <div className="flex space-x-2">
+                  //       <Button onClick={() => handleApprove(invitation._id)}>
+                  //         {approveLoading || loadingMe ? <Loader /> : "Approve"}
+                  //       </Button>
+                  //       <Button
+                  //         variant="destructive"
+                  //         onClick={() => handleReject(invitation._id)}
+                  //       >
+                  //         {rejectLoading || loadingMe ? <Loader /> : "Reject"}
+                  //       </Button>
+                  //     </div>
+                  //   </CardContent>
+                  // </Card>
+                  <InvitationsCard
+                    key={invitation._id}
+                    user={invitation}
+                    handleApprove={handleApprove}
+                    handleReject={handleReject}
+                    rejectLoading={rejectLoading}
+                    loadingMe={loadingMe}
+                    approveLoading={approveLoading}
+                  />
                 ))}
               </div>
             )}

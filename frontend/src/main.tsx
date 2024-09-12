@@ -19,6 +19,7 @@ import ProfileScreen from "./screens/ProfileScreen.js";
 import Recommendations from "./screens/RecommendationScreen.js";
 import ChatScreen from "./screens/ChatScreen.js";
 import ConnectionsScreen from "./screens/ConnectionsScreen.js";
+import Notifications from "./screens/Notifications.js";
 // import ProfileScreen from '@/screens/ProfileScreen.tsx';
 // import PrivateRoute from '@/components/PrivateRoute.tsx';
 
@@ -34,6 +35,7 @@ const router = createBrowserRouter(
         <Route path="/recommendations" element={<Recommendations />} />
         <Route path="/messages" element={<ChatScreen />} />
         <Route path="/connections" element={<ConnectionsScreen />} />
+        <Route path="/notifications" element={<Notifications />} />
       </Route>
     </Route>
   )

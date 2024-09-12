@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { RootState } from "@/store";
+import { RootState, useAppDispatch } from "@/store";
 import { UserInfo } from "@/utils/types";
 import Page from "@/components/Page";
 import PageHeader from "@/components/PageHeader";
@@ -11,10 +11,14 @@ import ProfileField from "@/components/Profile/ProfileField";
 import ProfileListField from "@/components/Profile/ProfileListField";
 import ConnectSocials from "@/components/Profile/ConnectSocials";
 import { FaGithub, FaLinkedin, FaTwitter } from "react-icons/fa";
-import { useGetUserQuery } from "@/slices/usersApiSlice";
+import {
+  useGetCurrentUserMutation,
+  useGetUserQuery,
+} from "@/slices/usersApiSlice";
 import { Button } from "@/components/ui/button"; // Import Button for Connect
 import { MIN_SECTION_HEIGHT } from "@/utils/constants";
 import { useSendRequestMutation } from "@/slices/usersApiSlice";
+import { setCredentials } from "@/slices/authSlice";
 
 const ProfileScreen = () => {
   const { username } = useParams<{ username: string }>();
@@ -22,6 +26,8 @@ const ProfileScreen = () => {
     userInfo: UserInfo;
   };
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+
   const { data, error, isLoading } = useGetUserQuery(username);
 
   if (error) {
@@ -34,6 +40,7 @@ const ProfileScreen = () => {
 
   const [sendRequest, { isLoading: sendingReqLoading }] =
     useSendRequestMutation();
+  const [getMe, { isLoading: loadingMe }] = useGetCurrentUserMutation();
 
   useEffect(() => {
     // Fetch profile data based on username
@@ -44,10 +51,12 @@ const ProfileScreen = () => {
     }
   }, [data, isCurrentUser, userInfo]);
 
-  const handleConnect = () => {
+  const handleConnect = async () => {
     // Add connection logic here (e.g., API call to send connection request)
     console.log("Connect button clicked");
-    sendRequest(profileData?._id);
+    await sendRequest(profileData?._id);
+    const res = await getMe({}).unwrap();
+    dispatch(setCredentials({ ...res }));
   };
 
   useEffect(() => {
@@ -139,7 +148,7 @@ const ProfileScreen = () => {
                             className="mt-4 w-full"
                             onClick={handleConnect}
                           >
-                            {sendingReqLoading
+                            {sendingReqLoading || loadingMe
                               ? "Sending..."
                               : connectionStatus === "pending"
                               ? "Pending"

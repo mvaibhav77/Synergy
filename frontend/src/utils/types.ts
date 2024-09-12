@@ -33,3 +33,14 @@ export interface UserInfo {
   similarityScore?: number;
   lastActive?: Date;
 }
+
+export interface Notification {
+  _id: string;
+  user: string;
+  sender: UserInfo | null;
+  type: "connection_request" | "request_approved" | "request_rejected";
+  message: string;
+  isRead: boolean;
+  createdAt: string;
+  updatedAt?: string;
+}

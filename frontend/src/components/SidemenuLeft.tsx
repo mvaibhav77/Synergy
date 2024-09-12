@@ -4,7 +4,7 @@ import { CgProfile } from "react-icons/cg";
 import { MdRecommend } from "react-icons/md";
 import { IoSettingsOutline } from "react-icons/io5";
 import { MIN_SECTION_HEIGHT } from "@/utils/constants";
-import { FaFacebookMessenger } from "react-icons/fa";
+import { FaBell, FaFacebookMessenger } from "react-icons/fa";
 import { UserInfo } from "@/utils/types";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store";
@@ -45,6 +45,11 @@ const Sidemenu = () => {
       title: "Messages",
       link: "messages",
       icon: <FaFacebookMessenger className="h-[25px] w-[25px]" />,
+    },
+    {
+      title: "Notifications",
+      link: "notifications",
+      icon: <FaBell className="h-[25px] w-[25px]" />,
     },
     {
       title: "Settings",
