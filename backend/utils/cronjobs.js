@@ -4,7 +4,7 @@ import {
   sendConnectionRequest,
   recommendUsers,
 } from "../actions/cronjobActions.js";
-import { AUTOMATED_REQUEST_NUM } from "../utils/constants.js";
+import { AUTOMATED_REQUEST_NUM } from "./constants.js";
 
 // Function to fetch recommendations for a specific user
 const getRecommendations = async (userId) => {

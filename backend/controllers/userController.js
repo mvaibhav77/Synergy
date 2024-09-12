@@ -2,6 +2,9 @@ import asyncHandler from "express-async-handler";
 import User from "../models/userModel.js";
 import generateToken from "../utils/generateToken.js";
 import Notification from "../models/notificationModel.js";
+import { generateWelcomeMessage } from "../utils/generation.js";
+import Conversation from "../models/conversationModel.js";
+import Message from "../models/messageModel.js";
 
 // Helper function to parse array fields
 const parseArrayField = (field) => {
@@ -314,13 +317,16 @@ const sendConnectionRequest = asyncHandler(async (req, res) => {
   res.status(200).json({ message: "Connection request sent" });
 });
 
-// @desc   Approve connection request
+// @desc   Approve connection request and send a welcome message
 // route   POST /api/users/:id/approve
 // @access Private
 const approveConnectionRequest = asyncHandler(async (req, res) => {
   const targetUserId = req.params.id;
   const currentUser = req.user;
 
+  console.log("______________________________________");
+
+  // Fetch the target user
   const targetUser = await User.findById(targetUserId);
 
   if (!targetUser) {
@@ -328,7 +334,7 @@ const approveConnectionRequest = asyncHandler(async (req, res) => {
     throw new Error("User not found");
   }
 
-  // Find pending request from the target user
+  // Find the pending connection request from the target user
   const currentConnection = currentUser.connections.find(
     (conn) =>
       conn.userId.toString() === targetUserId && conn.status === "pending"
@@ -339,11 +345,11 @@ const approveConnectionRequest = asyncHandler(async (req, res) => {
     throw new Error("No pending connection request found");
   }
 
-  // Update the status to "connected"
+  // Update the status to "connected" for the current user
   currentConnection.status = "connected";
-  currentConnection.connectedDate = new Date(); // Set the current date as connected date
+  currentConnection.connectedDate = new Date();
 
-  // Update the connection on the target user's side
+  // Update the connection status on the target user's side
   const targetConnection = targetUser.connections.find(
     (conn) =>
       conn.userId.toString() === currentUser._id.toString() &&
@@ -357,15 +363,47 @@ const approveConnectionRequest = asyncHandler(async (req, res) => {
   await currentUser.save();
   await targetUser.save();
 
-  // sending notifications
-  const notification = await Notification.create({
+  // Generate a welcome message
+  const messageContent = await generateWelcomeMessage(targetUser);
+
+  // Check if a conversation already exists
+  let conversation = await Conversation.findOne({
+    participants: { $all: [currentUser._id, targetUser._id] },
+  });
+
+  if (!conversation) {
+    // Create a new conversation if none exists
+    conversation = new Conversation({
+      participants: [targetUser._id, currentUser._id],
+      lastMessage: messageContent,
+    });
+    await conversation.save();
+  } else {
+    // Update the last message for an existing conversation
+    conversation.lastMessage = messageContent;
+    await conversation.save();
+  }
+
+  // Send the welcome message
+  const message = new Message({
+    conversation: conversation._id,
+    sender: targetUser._id,
+    content: messageContent,
+  });
+
+  await message.save();
+
+  // Send a notification
+  await Notification.create({
     user: targetUser._id,
     sender: currentUser._id,
     type: "connection_request",
     message: `${currentUser.name} has approved your connection request.`,
   });
 
-  res.status(200).json({ message: "Connection request approved" });
+  res
+    .status(200)
+    .json({ message: "Connection request approved and message sent." });
 });
 
 // @desc   Reject connection request
@@ -421,6 +459,58 @@ const rejectConnectionRequest = asyncHandler(async (req, res) => {
   res.status(200).json({ message: "Connection request rejected" });
 });
 
+// @desc   Disconnect from a user
+// route   POST /api/users/:id/disconnect
+// @access Private
+const disconnectUser = asyncHandler(async (req, res) => {
+  const targetUserId = req.params.id;
+  const currentUser = req.user;
+
+  // Fetch the target user
+  const targetUser = await User.findById(targetUserId);
+
+  if (!targetUser) {
+    res.status(404);
+    throw new Error("User not found");
+  }
+
+  // Check if a connection exists between the current user and the target user
+  const currentConnectionIndex = currentUser.connections.findIndex(
+    (conn) => conn.userId.toString() === targetUserId
+  );
+
+  const targetConnectionIndex = targetUser.connections.findIndex(
+    (conn) => conn.userId.toString() === currentUser._id.toString()
+  );
+
+  if (currentConnectionIndex === -1 || targetConnectionIndex === -1) {
+    res.status(400);
+    throw new Error("No active connection found between users");
+  }
+
+  // Remove the connection from both users' connection lists
+  currentUser.connections.splice(currentConnectionIndex, 1);
+  targetUser.connections.splice(targetConnectionIndex, 1);
+
+  await currentUser.save();
+  await targetUser.save();
+
+  // Optionally, delete the conversation history
+  await Conversation.findOneAndDelete({
+    participants: { $all: [currentUser._id, targetUser._id] },
+  });
+
+  // Send a notification (optional)
+  await Notification.create({
+    user: targetUser._id,
+    sender: currentUser._id,
+    type: "disconnection",
+    message: `${currentUser.name} has disconnected from you.`,
+  });
+
+  res.status(200).json({ message: "Successfully disconnected from the user." });
+});
+
 export {
   authUser,
   registerUser,
@@ -431,4 +521,5 @@ export {
   sendConnectionRequest,
   rejectConnectionRequest,
   approveConnectionRequest,
+  disconnectUser,
 };

@@ -18,7 +18,7 @@ import { handleChat } from "./socket/chatHandler.js";
 
 dotenv.config();
 
-import "./config/cronjobs.js";
+import "./utils/cronjobs.js";
 import "./config/passport.js";
 
 const port = process.env.PORT || 5000;

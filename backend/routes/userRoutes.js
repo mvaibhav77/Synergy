@@ -11,6 +11,7 @@ import {
   rejectConnectionRequest,
   approveConnectionRequest,
   getUserById,
+  disconnectUser,
 } from "../controllers/userController.js";
 
 const router = express.Router();
@@ -30,6 +31,7 @@ router.route("/:id").get(protect, getUserById);
 router.route("/:id/connect").post(protect, sendConnectionRequest);
 router.route("/:id/approve").post(protect, approveConnectionRequest);
 router.route("/:id/reject").post(protect, rejectConnectionRequest);
+router.route("/:id/disconnect").post(protect, disconnectUser);
 
 // GitHub OAuth routes (no `protect` middleware)
 router.get(
