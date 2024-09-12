@@ -157,6 +157,9 @@ const ProfileScreen = () => {
                               : "Connect"}
                           </Button>
                         )}
+
+                        {/* Make a message button is not current user which will redirect to the conversation between the current user and the user whone profile is opened */}
+                        
                       </div>
                     </CardContent>
                   </Card>

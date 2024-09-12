@@ -15,9 +15,13 @@ import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { ToastAction } from "@/components/ui/toast";
 import { useToast } from "@/hooks/use-toast";
-import { setCredentials } from "@/slices/authSlice";
-import { useLoginMutation } from "@/slices/usersApiSlice";
+import { setConnections, setCredentials } from "@/slices/authSlice";
+import {
+  useGetUserByIdMutation,
+  useLoginMutation,
+} from "@/slices/usersApiSlice";
 import { RootState } from "@/store";
+import { UserInfo } from "@/utils/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { GitHubLogoIcon } from "@radix-ui/react-icons";
 import { useEffect } from "react";
@@ -55,12 +59,29 @@ const LoginScreen = () => {
     },
   });
 
+  const [getUser] = useGetUserByIdMutation();
   const [login, { isLoading }] = useLoginMutation();
 
   const onSubmit = async (data: { email: string; password: string }) => {
     try {
       const res = await login(data).unwrap();
       dispatch(setCredentials({ ...res }));
+
+      const fetchedRequests: UserInfo[] = [];
+      for (const connection of res.connections || []) {
+        if (connection.status === "connected") {
+          try {
+            const data = await getUser(connection.userId).unwrap();
+            if (data) {
+              fetchedRequests.push(data);
+            }
+          } catch (error) {
+            console.error(`Error fetching user ${connection.userId}:`, error);
+          }
+          continue;
+        }
+      }
+      dispatch(setConnections(fetchedRequests));
       navigate("/");
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {

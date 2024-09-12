@@ -44,3 +44,26 @@ export interface Notification {
   createdAt: string;
   updatedAt?: string;
 }
+
+export interface Conversation {
+  _id: string;
+  participants: Participant[];
+  lastMessage?: string;
+  updatedAt: string;
+}
+
+export interface Participant {
+  _id: string;
+  name: string;
+  avatar: string;
+  email: string;
+}
+
+export interface Message {
+  _id: string;
+  conversationId: string;
+  sender: Participant | string;
+  content: string;
+  createdAt: string;
+  updatedAt: string;
+}

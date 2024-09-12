@@ -39,7 +39,7 @@ const Header = () => {
   };
 
   return (
-    <header className="max-w-[1200px] mx-auto bg-dark p-4 border-b-[1px] border-x-[1px] border-gray-500">
+    <header className="max-w-[1300px] mx-auto bg-dark p-4 border-b-[1px] border-x-[1px] border-gray-500">
       <div className="container mx-auto flex justify-between items-center">
         {/* Brand */}
         <Link to="/" className="text-white text-xl font-bold">

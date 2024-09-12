@@ -27,6 +27,7 @@ const userSchema = new mongoose.Schema(
             enum: ["pending", "connected", "rejected"],
             default: "pending",
           },
+          connectedDate: { type: Date, default: null }, // Optional connected date
         },
       ],
     },

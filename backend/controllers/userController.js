@@ -166,8 +166,6 @@ const updateUserProfile = asyncHandler(async (req, res) => {
     throw new Error("User not found");
   }
 
-  console.log(parseArrayField(req.body.skills));
-
   if (user) {
     user.name = req.body.name || user.name;
     user.email = req.body.email || user.email;
@@ -343,6 +341,7 @@ const approveConnectionRequest = asyncHandler(async (req, res) => {
 
   // Update the status to "connected"
   currentConnection.status = "connected";
+  currentConnection.connectedDate = new Date(); // Set the current date as connected date
 
   // Update the connection on the target user's side
   const targetConnection = targetUser.connections.find(

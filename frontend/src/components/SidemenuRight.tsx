@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Command, CommandInput, CommandItem, CommandList } from "./ui/command";
 import { MIN_SECTION_HEIGHT } from "@/utils/constants";
 
-interface ICommandProps {
+export interface ICommandProps {
   value: string;
   label: string;
 }
