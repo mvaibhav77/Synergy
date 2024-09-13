@@ -46,7 +46,7 @@ const Posts = () => {
     },
   ];
   return (
-    <ScrollArea className="h-[calc(100vh-214px)] flex flex-col gap-2 py-4 ">
+    <ScrollArea className="lg:h-[calc(100vh-214px)] flex flex-col gap-2 py-4">
       {/* POST */}
       {dummyPosts.map((post, index) => (
         <div className="post mb-4" key={`post-${index}`}>

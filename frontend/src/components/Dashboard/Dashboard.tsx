@@ -16,7 +16,7 @@ const Dashboard = () => {
       <div
         className={`flex flex-col ${MIN_SECTION_HEIGHT} border-x-[1px] border-gray-500`}
       >
-        <div className="grid grid-cols-3 h-100">
+        <div className="lg:grid lg:grid-cols-3 flex flex-col-reverse h-100">
           {/* MAIN POST AREA */}
           <div
             className={`flex flex-col col-span-2 ${MIN_SECTION_HEIGHT} border-r-[1px] border-gray-500`}
@@ -28,7 +28,7 @@ const Dashboard = () => {
             <Posts />
           </div>
 
-          {/* SIDE MENU LEFT */}
+          {/* SIDE MENU RIGHT */}
           <Sidemenu />
         </div>
       </div>

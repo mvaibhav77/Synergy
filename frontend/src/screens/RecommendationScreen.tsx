@@ -44,7 +44,7 @@ const Recommendations = () => {
         {isLoading ? (
           <Loader />
         ) : (
-          <div className="grid grid-cols-3 gap-6 px-6 mt-6">
+          <div className="grid lg:grid-cols-3 gap-6 px-6 mt-6">
             {(recommendations || []).length < 1
               ? "No Recommendations for now..."
               : recommendations?.map((user) => (

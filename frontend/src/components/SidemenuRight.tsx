@@ -34,7 +34,7 @@ const Sidemenu = () => {
 
   return (
     <div
-      className={`${MIN_SECTION_HEIGHT} h-full w-full border-l-[1px] border-gray-500 pt-4 px-2`}
+      className={`${MIN_SECTION_HEIGHT} lg:block hidden h-full w-full border-l-[1px] border-gray-500 pt-4 px-2`}
     >
       <div className="flex flex-col gap-12 h-full items-center">
         {/* Search bar */}

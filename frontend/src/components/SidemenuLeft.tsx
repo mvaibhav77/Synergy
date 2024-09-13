@@ -65,7 +65,7 @@ const Sidemenu = ({
 
   return (
     <div
-      className={`${MIN_SECTION_HEIGHT} h-full w- border-l-[1px]  border-gray-500 pt-4 px-2`}
+      className={`${MIN_SECTION_HEIGHT} h-full w- border-l-[1px] border-gray-500 pt-4 px-2 lg:pr-2 pr-8`}
     >
       <div className="flex flex-col gap-4">
         <Button
@@ -80,6 +80,7 @@ const Sidemenu = ({
             to={navItem.link}
             key={index}
             className="py-3 w-fit px-4 text-xl rounded-3xl hover:bg-gray-800"
+            onClick={() => handleSideMenu(false)}
           >
             <div className="flex flex-row gap-4 items-center">
               {navItem.icon}
