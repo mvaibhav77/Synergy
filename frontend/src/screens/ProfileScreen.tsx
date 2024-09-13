@@ -10,10 +10,11 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import ProfileField from "@/components/Profile/ProfileField";
 import ProfileListField from "@/components/Profile/ProfileListField";
 import ConnectSocials from "@/components/Profile/ConnectSocials";
-import { FaGithub, FaLinkedin, FaTwitter, FaEnvelope } from "react-icons/fa";
+import { FaGithub, FaLinkedin, FaTwitter } from "react-icons/fa";
 import {
   useDisconnectUserMutation,
   useGetCurrentUserMutation,
+  useGetUserByIdMutation,
   useGetUserQuery,
   useSendRequestMutation,
 } from "@/slices/usersApiSlice";
@@ -24,11 +25,15 @@ import {
   useCreateConversationMutation,
   useGetConversationsMutation,
 } from "@/slices/chatApiSlice";
+import ConnectionsDialog from "@/components/Profile/ConnectionsDialog";
 
 const ProfileScreen = () => {
   const { username } = useParams<{ username: string }>();
-  const { userInfo } = useSelector((state: RootState) => state.auth) as {
+  const { userInfo, connections: currentUserConnections } = useSelector(
+    (state: RootState) => state.auth
+  ) as {
     userInfo: UserInfo;
+    connections: UserInfo[] | null;
   };
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
@@ -36,6 +41,7 @@ const ProfileScreen = () => {
   const { data, isLoading } = useGetUserQuery(username);
   const [profileData, setProfileData] = useState<UserInfo | null>(null);
   const isCurrentUser = userInfo?.username === username;
+  const [connections, setConnections] = useState<UserInfo[] | null>(null);
   const [connectionStatus, setConnectionStatus] = useState<string | null>(null);
 
   const [sendRequest, { isLoading: sendingReqLoading }] =
@@ -44,14 +50,33 @@ const ProfileScreen = () => {
   const [getConversations] = useGetConversationsMutation();
   const [createConversation] = useCreateConversationMutation();
   const [disconnectUser] = useDisconnectUserMutation();
+  const [getUser] = useGetUserByIdMutation();
 
   useEffect(() => {
     if (!isCurrentUser) {
       setProfileData(data);
+      const fetchConnections = async () => {
+        const fetchedConnections: UserInfo[] = [];
+        for (const connection of data.connections || []) {
+          if (connection.status === "connected") {
+            try {
+              const data = await getUser(connection.userId).unwrap();
+              if (data) {
+                fetchedConnections.push(data);
+              }
+            } catch (error) {
+              console.error(`Error fetching user ${connection.userId}:`, error);
+            }
+            continue;
+          }
+        }
+        setConnections(fetchedConnections);
+      };
+      fetchConnections();
     } else {
       setProfileData(userInfo);
     }
-  }, [data, isCurrentUser, userInfo]);
+  }, [data, getUser, isCurrentUser, userInfo]);
 
   const handleConnect = async () => {
     console.log("Connect button clicked");
@@ -138,7 +163,8 @@ const ProfileScreen = () => {
                       <div className="flex flex-col items-center gap-4">
                         <img
                           src={
-                            profileData.avatar || "https://placehold.co/300x300"
+                            profileData.avatar ||
+                            "https://github.com/github.png"
                           }
                           alt="Profile Picture"
                           className="rounded-full w-40 h-40"
@@ -149,10 +175,12 @@ const ProfileScreen = () => {
                         <p className="text-gray-500 italic">
                           {profileData.bio}
                         </p>
-                        <div className="text-gray-500">
-                          <span className="font-bold">Connections:</span>{" "}
-                          {profileData?.connections?.length || 0}
-                        </div>
+                        <ConnectionsDialog
+                          profileData={profileData}
+                          connections={
+                            isCurrentUser ? currentUserConnections : connections
+                          }
+                        />
 
                         {/* Social Media Section */}
                         {isCurrentUser && (
@@ -209,8 +237,12 @@ const ProfileScreen = () => {
                               className="mt-2 w-full"
                               onClick={handleMessage}
                             >
-                              <FaEnvelope className="mr-2" />
+                              {/* <FaEnvelope className="mr-2" /> */}
                               Message
+                            </Button>
+
+                            <Button variant="default" className="mt-2 w-full">
+                              Confluence
                             </Button>
                           </>
                         )}

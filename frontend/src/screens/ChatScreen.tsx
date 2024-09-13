@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Card, CardContent } from "@/components/ui/card";
-import { FaSearch } from "react-icons/fa";
+import { FaSearch, FaUser } from "react-icons/fa";
 import NewChatDialog from "@/components/Messages/NewChatDialog";
 import { useGetConversationsMutation } from "@/slices/chatApiSlice";
 import { RootState, useAppDispatch } from "@/store";
@@ -225,14 +225,18 @@ const ChatScreen = () => {
                   conversationList.map((conversation) => (
                     <Card
                       key={conversation._id}
-                      className="mb-2 cursor-pointer hover:bg-gray-200"
+                      className="mb-2 cursor-pointer group hover:bg-white hover:text-gray-900"
                       onClick={() => handleSelectConversation(conversation._id)}
                     >
-                      <CardContent className="p-4">
-                        <div className="text-lg font-semibold">
-                          {conversation.name}
+                      <CardContent className="flex flex-col gap-2 py-4">
+                        <div className="text-lg flex flex-row justify-between font-semibold group-hover:text-black">
+                          <div className="flex flex-row items-center gap-2">
+                            <FaUser />
+                            {conversation.name}
+                          </div>
+                          <div className="text-sm text-gray-400">1h</div>
                         </div>
-                        <div className="text-sm text-gray-600">
+                        <div className="text-sm pr-6 w-[300px] text-ellipsis overflow-hidden whitespace-nowrap ">
                           {conversation.lastMessage}
                         </div>
                       </CardContent>
@@ -253,7 +257,6 @@ const ChatScreen = () => {
                 <div className="text-xl font-semibold">
                   Chat with {currentConversation.name}
                 </div>
-                {/* Placeholder for active chat recipient */}
               </div>
             )}
 
@@ -321,6 +324,12 @@ const ChatScreen = () => {
                       value={newMessage}
                       onChange={(e) => setNewMessage(e.target.value)}
                     />
+                    <Button
+                      variant="outline"
+                      className="rounded-full border-white"
+                    >
+                      AI
+                    </Button>
                     <Button variant="default" onClick={handleSendMessage}>
                       Send
                     </Button>

@@ -40,6 +40,7 @@ const authSlice = createSlice({
     logout: (state) => {
       state.userInfo = null;
       state.connections = null;
+      state.connections = null;
       localStorage.removeItem("userInfo");
       localStorage.removeItem("connections");
       localStorage.removeItem("conversations");

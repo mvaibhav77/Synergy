@@ -13,9 +13,11 @@ import { Input } from "./ui/input";
 import MultipleSelector, { Option } from "./ui/MultiSelect";
 import { skillOptions } from "@/utils/constants";
 import { useSelector } from "react-redux";
-import { RootState } from "@/store";
+import { RootState, useAppDispatch } from "@/store";
 import { Label } from "./ui/label";
 import { Button } from "./ui/button";
+import { useUpdateUserMutation } from "@/slices/usersApiSlice";
+import { setCredentials } from "@/slices/authSlice";
 
 type Props = {
   editDialogActive: boolean;
@@ -33,8 +35,11 @@ const EditDialog = ({
   const { userInfo } = useSelector((state: RootState) => state.auth) as {
     userInfo: UserInfo;
   };
+  const dispatch = useAppDispatch();
 
   const [editValue, setEditValue] = React.useState<string | Option[]>("");
+
+  const [updateUser] = useUpdateUserMutation();
 
   useEffect(() => {
     const value: string | Option[] =
@@ -44,14 +49,34 @@ const EditDialog = ({
             return { label: item, value: item };
           });
     setEditValue(value);
-  }, [editDialogActive]);
+  }, [editDialogActive, editField, editFieldType, userInfo]);
 
-  const handleSaveClick = () => {
+  const handleSaveClick = async () => {
     // Update the state with the edited value
     // setEditValue((prevValue) => {
     //   return prevValue; // Placeholder for now, replace with actual update logic
     // });
-    console.log(editValue);
+    if (editFieldType === "string") {
+      const { data }: { data: UserInfo } = (await updateUser({
+        [editField]: editValue,
+      })) as unknown as { data: UserInfo };
+      dispatch(setCredentials(data));
+    } else {
+      if (editField === "connection interests") {
+        const { data }: { data: UserInfo } = (await updateUser({
+          connectionPreferences: {
+            interests: (editValue as Option[]).map((item) => item.value),
+          },
+        })) as unknown as { data: UserInfo };
+        dispatch(setCredentials(data));
+      } else {
+        const { data }: { data: UserInfo } = (await updateUser({
+          [editField]: (editValue as Option[]).map((item) => item.value),
+        })) as unknown as { data: UserInfo };
+        dispatch(setCredentials(data));
+      }
+    }
+
     setEditDialogActive(false);
   };
 
@@ -81,6 +106,9 @@ const EditDialog = ({
             no results found.
           </p>
         }
+        onChange={(selectedOptions) => {
+          setEditValue(selectedOptions); // Update the state with the selected options
+        }}
       />
     );
   };
