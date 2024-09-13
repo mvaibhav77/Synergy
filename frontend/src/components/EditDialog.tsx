@@ -45,7 +45,7 @@ const EditDialog = ({
     const value: string | Option[] =
       editFieldType == "string"
         ? userInfo[editField]
-        : (userInfo[editField] as Array)?.map((item, index) => {
+        : (userInfo[editField] as Array<string>)?.map((item) => {
             return { label: item, value: item };
           });
     setEditValue(value);

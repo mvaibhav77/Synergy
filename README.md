@@ -1,4 +1,4 @@
-# **Synergy : Ultimate Connector App**
+# **Synergy: Ultimate Connector App**
 
 **Overview:**
 
@@ -18,18 +18,35 @@ Synergy is a platform that helps professionals connect, collaborate, and grow th
 
 "Connect, Collaborate, Grow."
 
+**Tech Stack:**
+
+- **Backend:**
+  - Node.js
+  - Express.js
+  - JWT (JSON Web Token)
+  - Bcrypt (password hashing)
+  - MongoDB (database)
+  - Mongoose (MongoDB ORM)
+  - Passport.js (authentication)
+- **Frontend:**
+  - Vite (bundler)
+  - React.js
+  - TypeScript
+  - Redux Toolkit (state management)
+  - Shadcn-UI (component library)
+  - Tailwind CSS (utility-first CSS framework)
+
 **Installation and Setup:**
 
 1. **Clone the repository:**
 
    ```bash
-   git clone https://github.com/your-username/synergy.git
+   git clone https://github.com/mvaibhav77/synergy.git
    ```
 
 2. **Install dependencies:**
 
    ```bash
-   cd backend
    pnpm install
    cd frontend
    pnpm install
@@ -51,14 +68,13 @@ Synergy is a platform that helps professionals connect, collaborate, and grow th
 
 **Running the project:**
 
-1. **Start the backend server:**
+1. **Start the application in development mode:**
 
    ```bash
-   cd backend
    pnpm dev
    ```
 
-2. **Start the frontend development server:**
+2. **Start only the frontend development server:**
 
    ```bash
    cd frontend
@@ -73,9 +89,8 @@ synergy/
 │   ├── .env
 │   ├── package.json
 │   ├── src
-│   │__  ├── ... (backend code)
+│   │   ├── ... (backend code)
 ├── frontend
-│   ├── .env
 │   ├── package.json
 │   ├── src
 │   │   ├── ... (frontend code)
@@ -89,3 +104,4 @@ synergy/
 - You can find instructions for obtaining GitHub OAuth credentials in GitHub's developer documentation.
 - To run the backend and frontend separately, refer to the `scripts` section in the `package.json` files of the respective directories.
 - For production deployment, you'll need to configure your environment variables accordingly and potentially use a production build for the frontend.
+- This project uses TypeScript, so make sure you have the necessary dependencies installed and configured correctly.
