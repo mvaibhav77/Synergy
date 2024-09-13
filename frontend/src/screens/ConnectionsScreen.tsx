@@ -16,6 +16,7 @@ import {
 } from "@/slices/usersApiSlice";
 import { setCredentials } from "@/slices/authSlice";
 import InvitationsCard from "@/components/Connections/InvitationCard";
+import Loader from "@/components/Loader";
 
 // const dummyInvitations = [
 //   {
@@ -177,7 +178,7 @@ const ConnectionsScreen = () => {
           {/* Connections Tab */}
           <TabsContent value="Connections" className="py-4 px-6">
             {loadingConnections ? (
-              <div>Loading connections...</div>
+              <Loader />
             ) : connections.length === 0 ? (
               <div>No connections found.</div>
             ) : (

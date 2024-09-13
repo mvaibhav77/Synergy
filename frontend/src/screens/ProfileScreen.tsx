@@ -26,6 +26,7 @@ import {
   useGetConversationsMutation,
 } from "@/slices/chatApiSlice";
 import ConnectionsDialog from "@/components/Profile/ConnectionsDialog";
+import Loader from "@/components/Loader";
 
 const ProfileScreen = () => {
   const { username } = useParams<{ username: string }>();
@@ -147,7 +148,7 @@ const ProfileScreen = () => {
         className={`border-x-[1px] ${MIN_SECTION_HEIGHT} border-gray-500 px-2`}
       >
         {!profileData || isLoading ? (
-          <>Loading.....</>
+          <Loader />
         ) : (
           <>
             <PageHeader

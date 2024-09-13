@@ -1,3 +1,4 @@
+import Loader from "@/components/Loader";
 import Page from "@/components/Page";
 import PageHeader from "@/components/PageHeader";
 import ProfileCards from "@/components/Recommendations/ProfileCards";
@@ -41,7 +42,7 @@ const Recommendations = () => {
       >
         <PageHeader title="Recommendations" />
         {isLoading ? (
-          <>Please wait while we fetch some things</>
+          <Loader />
         ) : (
           <div className="grid grid-cols-3 gap-6 px-6 mt-6">
             {(recommendations || []).length < 1

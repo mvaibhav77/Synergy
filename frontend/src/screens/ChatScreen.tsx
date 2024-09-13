@@ -17,6 +17,7 @@ import { useSelector } from "react-redux";
 import { Conversation, Message, Participant, UserInfo } from "@/utils/types";
 import { useGetUserByIdMutation } from "@/slices/usersApiSlice";
 import { Separator } from "@/components/ui/separator";
+import Loader from "@/components/Loader";
 
 const socket = io("http://localhost:5000", {
   transports: ["websocket"], // Ensures WebSocket is used directly
@@ -219,7 +220,7 @@ const ChatScreen = () => {
               {/* Chat List */}
               <ScrollArea className="h-[calc(100vh-300px)]">
                 {conversationsLoading ? (
-                  <>LOADING....</>
+                  <Loader />
                 ) : Array.isArray(conversationList) &&
                   conversationList.length > 0 ? (
                   conversationList.map((conversation) => (
