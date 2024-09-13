@@ -4,10 +4,11 @@ import { CgProfile } from "react-icons/cg";
 import { MdRecommend } from "react-icons/md";
 import { IoSettingsOutline } from "react-icons/io5";
 import { MIN_SECTION_HEIGHT } from "@/utils/constants";
-import { FaBell, FaFacebookMessenger } from "react-icons/fa";
+import { FaArrowLeft, FaBell, FaFacebookMessenger } from "react-icons/fa";
 import { UserInfo } from "@/utils/types";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store";
+import { Button } from "./ui/button";
 
 type NavLink = {
   title: string;
@@ -15,7 +16,11 @@ type NavLink = {
   icon: JSX.Element;
 };
 
-const Sidemenu = () => {
+const Sidemenu = ({
+  handleSideMenu,
+}: {
+  handleSideMenu: (val: boolean) => void;
+}) => {
   const { userInfo } = useSelector((state: RootState) => state.auth) as {
     userInfo: UserInfo;
   };
@@ -57,11 +62,19 @@ const Sidemenu = () => {
       icon: <IoSettingsOutline className="h-[25px] w-[25px]" />,
     },
   ];
+
   return (
     <div
       className={`${MIN_SECTION_HEIGHT} h-full w- border-l-[1px]  border-gray-500 pt-4 px-2`}
     >
       <div className="flex flex-col gap-4">
+        <Button
+          variant={"ghost"}
+          className="w-fit text-2xl"
+          onClick={() => handleSideMenu(false)}
+        >
+          <FaArrowLeft />
+        </Button>
         {navList.map((navItem, index) => (
           <NavLink
             to={navItem.link}

@@ -1,13 +1,16 @@
 import { Button } from "@/components/ui/button";
+import { MIN_SECTION_HEIGHT } from "@/utils/constants";
 import { useNavigate } from "react-router-dom";
 
 export default function LandingPage() {
   const navigate = useNavigate();
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-background text-foreground">
+    <div
+      className={`flex flex-col ${MIN_SECTION_HEIGHT} items-center mx-4 justify-center min-h-screen bg-background text-foreground`}
+    >
       <div className="text-center space-y-6">
-        <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl">
+        <h1 className="lg:text-4xl text-2xl font-bold tracking-tighter sm:text-5xl md:text-6xl">
           Welcome to Synergy
         </h1>
         <p className="max-w-[600px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">

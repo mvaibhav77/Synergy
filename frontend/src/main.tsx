@@ -22,6 +22,7 @@ import ConnectionsScreen from "./screens/ConnectionsScreen.js";
 import Notifications from "./screens/Notifications.js";
 import Page from "./components/Page.js";
 import { MIN_SECTION_HEIGHT } from "./utils/constants.js";
+import { Toaster } from "./components/ui/toaster.js";
 // import ProfileScreen from '@/screens/ProfileScreen.tsx';
 // import PrivateRoute from '@/components/PrivateRoute.tsx';
 
@@ -62,6 +63,7 @@ const router = createBrowserRouter(
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <Provider store={store}>
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+      <Toaster />
       <RouterProvider router={router} />
     </ThemeProvider>
   </Provider>

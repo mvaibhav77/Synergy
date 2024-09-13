@@ -64,31 +64,52 @@ const LoginScreen = () => {
 
   const onSubmit = async (data: { email: string; password: string }) => {
     try {
-      const res = await login(data).unwrap();
-      dispatch(setCredentials({ ...res }));
+      // Log the user in
+      const response: UserInfo = await login(data).unwrap();
 
+      // Dispatch user credentials to Redux
+      dispatch(setCredentials({ ...response }));
+
+      // Initialize an array to hold connected requests
       const fetchedRequests: UserInfo[] = [];
-      for (const connection of res.connections || []) {
-        if (connection.status === "connected") {
-          try {
-            const data = await getUser(connection.userId).unwrap();
-            if (data) {
-              fetchedRequests.push(data);
+
+      // Fetch connection data if the user has any connections
+      if (response.connections) {
+        for (const connection of response.connections) {
+          if (connection.status === "connected") {
+            try {
+              const userData = await getUser(connection.userId).unwrap();
+              if (userData) {
+                fetchedRequests.push(userData);
+              }
+            } catch (error) {
+              console.error(`Error fetching user ${connection.userId}:`, error);
+              toast({
+                variant: "destructive",
+                title: "Error",
+                description: "Failed to fetch user data.",
+                action: (
+                  <ToastAction altText="Try again">Try again</ToastAction>
+                ),
+              });
             }
-          } catch (error) {
-            console.error(`Error fetching user ${connection.userId}:`, error);
           }
-          continue;
         }
       }
+
+      // Dispatch the fetched connected users
       dispatch(setConnections(fetchedRequests));
+
+      // Navigate to the homepage after successful login
       navigate("/");
+
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
+      // Error handling for login failure
       toast({
         variant: "destructive",
         title: "Login Failed",
-        description: err?.data?.message || err.error,
+        description: err?.data?.message || err.error || "An error occurred",
         action: <ToastAction altText="Try again">Try again</ToastAction>,
       });
     }
@@ -96,7 +117,7 @@ const LoginScreen = () => {
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-background">
-      <Card className="w-[400px] h-[450px] px-2">
+      <Card className="w-full lg:w-[400px] h-[450px] px-2 mx-4">
         <CardHeader>
           <CardTitle>Login</CardTitle>
         </CardHeader>

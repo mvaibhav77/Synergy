@@ -1,21 +1,33 @@
 import { Outlet } from "react-router-dom";
 import Header from "@/components/Header";
-import Sidemenu from "./components/SidemenuLeft";
+import Sidemenu from "@/components/SidemenuLeft";
 import { useSelector } from "react-redux";
 import { RootState } from "./store";
+import { useState } from "react";
 
 const App = () => {
   const { userInfo } = useSelector((state: RootState) => state.auth);
 
+  const [sideMenuOpen, setSideMenuOpen] = useState<boolean>(false);
+
+  const handleSideMenu = (value: boolean) => {
+    setSideMenuOpen(value);
+  };
+
   return (
     <>
-      <Header />
+      <Header handleSideMenu={handleSideMenu} />
       <main className="max-w-[1300px] mx-auto">
         {userInfo ? (
-          <div className="grid grid-cols-4 min-h-[calc(100vh-100px)]">
+          <div className="grid lg:grid-cols-4 min-h-[calc(100vh-100px)]">
             {/* side menu */}
-            <div id="sidemenu">
-              <Sidemenu />
+            <div
+              id="sidemenu"
+              className={`lg:block ${
+                sideMenuOpen ? "block" : "hidden"
+              } fixed lg:static z-50 top-0 left-0 w-64 lg:w-auto h-full lg:h-auto bg-black  shadow-lg lg:shadow-none`}
+            >
+              <Sidemenu handleSideMenu={handleSideMenu} />
             </div>
 
             {/* main section */}

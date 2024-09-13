@@ -28,8 +28,6 @@ import { useRegisterMutation } from "@/slices/usersApiSlice";
 import { setCredentials } from "@/slices/authSlice";
 import { useToast } from "@/hooks/use-toast";
 import { ToastAction } from "@/components/ui/toast";
-import MultipleSelector from "@/components/ui/MultiSelect";
-import { skillOptions } from "@/utils/constants";
 
 const formSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -37,7 +35,6 @@ const formSchema = z.object({
   password: z.string().min(6, "Password must be at least 6 characters"),
   username: z.string().min(3, "Username must be at least 3 characters"),
   bio: z.string().max(200, "Bio must not exceed 200 characters"),
-  skills: z.array(z.string()).min(1, "Select at least one skill"),
   profession: z.string().min(2, "Profession must be at least 2 characters"),
 });
 
@@ -52,7 +49,6 @@ export default function RegisterPage() {
   const [register, { isLoading }] = useRegisterMutation();
 
   useEffect(() => {
-    console.log(userInfo);
     if (userInfo) {
       navigate("/");
     }
@@ -67,12 +63,12 @@ export default function RegisterPage() {
       password: "",
       username: "",
       bio: "",
-      skills: [],
       profession: "",
     },
   });
 
   const onSubmit = async (data: FormValues) => {
+    console.log("click");
     try {
       const res = await register(data).unwrap();
       dispatch(setCredentials({ ...res }));
@@ -88,9 +84,7 @@ export default function RegisterPage() {
     }
   };
 
-  const nextStep = async () => {
-    console.log("next");
-    // const isValid = await form.trigger();
+  const nextStep = () => {
     setStep(step + 1);
   };
 
@@ -98,7 +92,7 @@ export default function RegisterPage() {
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-background">
-      <Card className="w-[400px] h-[450px]">
+      <Card className="lg:w-[400px] w-full mx-4 h-[450px]">
         <CardHeader>
           <CardTitle>Register</CardTitle>
           <CardDescription>
@@ -106,7 +100,10 @@ export default function RegisterPage() {
           </CardDescription>
         </CardHeader>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)}>
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="flex flex-col justify-between min-h-[330px]"
+          >
             <CardContent className="space-y-4">
               {step === 1 && (
                 <>
@@ -194,28 +191,6 @@ export default function RegisterPage() {
               )}
               {step === 3 && (
                 <>
-                  <FormField
-                    control={form.control}
-                    name="skills"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Skills</FormLabel>
-                        <FormControl>
-                          <MultipleSelector
-                            defaultOptions={skillOptions}
-                            placeholder="Type something..."
-                            creatable
-                            emptyIndicator={
-                              <p className="text-center text-lg leading-10 text-gray-600 dark:text-gray-400">
-                                no results found.
-                              </p>
-                            }
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
                   <FormField
                     control={form.control}
                     name="profession"

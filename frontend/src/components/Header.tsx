@@ -19,8 +19,13 @@ import { useLogoutMutation } from "../slices/usersApiSlice"; // Your API slice f
 import { logout } from "../slices/authSlice"; // Your auth slice
 import { rlogout } from "../slices/recommendSlice";
 import { RootState } from "@/store";
+import { MdOutlineMenu } from "react-icons/md";
 
-const Header = () => {
+type Props = {
+  handleSideMenu: (value: boolean) => void;
+};
+
+const Header = (props: Props) => {
   const { userInfo } = useSelector((state: RootState) => state.auth); // Adjust based on your state type
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -39,8 +44,23 @@ const Header = () => {
   };
 
   return (
-    <header className="max-w-[1300px] mx-auto bg-dark p-4 border-b-[1px] border-x-[1px] border-gray-500">
+    <header
+      className={`max-w-[1300px] mx-auto bg-dark p-4 border-b-[1px] border-x-[1px] ${
+        userInfo ? "border-gray-500" : "border-transparent"
+      }`}
+    >
       <div className="container mx-auto flex justify-between items-center">
+        {/* hamburger for side menu */}
+        {userInfo && (
+          <Button
+            variant="outline"
+            onClick={() => props.handleSideMenu(true)}
+            className="lg:hidden text-3xl"
+          >
+            <MdOutlineMenu />
+          </Button>
+        )}
+
         {/* Brand */}
         <Link to="/" className="text-white text-xl font-bold">
           Synergy
