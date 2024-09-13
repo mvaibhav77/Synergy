@@ -21,33 +21,35 @@ router.get(
 
     generateToken(res, req.user._id);
 
-    // Redirect to frontend with all user data in query parameters
-    res.redirect(
+    const redirectLink =
       `http://localhost:3000/login-success?` +
-        `id=${req.user._id}&name=${encodeURIComponent(
-          req.user.name
-        )}&email=${encodeURIComponent(
-          req.user.email
-        )}&username=${encodeURIComponent(req.user.username)}&` +
-        `bio=${encodeURIComponent(req.user.bio)}&skills=${encodeURIComponent(
-          JSON.stringify(req.user.skills)
-        )}&location=${encodeURIComponent(req.user.location)}&` +
-        `interests=${encodeURIComponent(
-          JSON.stringify(req.user.interests)
-        )}&profession=${encodeURIComponent(req.user.profession)}&` +
-        `avatar=${encodeURIComponent(
-          req.user.avatar
-        )}&socialMedia=${encodeURIComponent(
-          JSON.stringify(req.user.socialMedia)
-        )}&` +
-        `connections=${encodeURIComponent(
-          JSON.stringify(req.user.connections)
-        )}&` +
-        `connectionPreferences=${encodeURIComponent(
-          JSON.stringify(req.user.connectionPreferences)
-        )}&` +
-        `lastActive=${encodeURIComponent(req.user.lastActive)}`
-    );
+      `id=${req.user._id}&name=${encodeURIComponent(req.user.name)}&` +
+      `email=${encodeURIComponent(
+        req.user.email
+      )}&username=${encodeURIComponent(req.user.username)}&` +
+      `bio=${encodeURIComponent(req.user.bio)}&skills=${encodeURIComponent(
+        JSON.stringify(req.user.skills)
+      )}&` +
+      `location=${encodeURIComponent(req.user.location)}&` +
+      `interests=${encodeURIComponent(JSON.stringify(req.user.interests))}&` +
+      `profession=${encodeURIComponent(req.user.profession)}&` +
+      `avatar=${encodeURIComponent(
+        req.user.avatar
+      )}&socialMedia=${encodeURIComponent(
+        JSON.stringify(req.user.socialMedia)
+      )}&` +
+      `connections=${encodeURIComponent(
+        JSON.stringify(req.user.connections)
+      )}&` +
+      `connectionPreferences=${encodeURIComponent(
+        JSON.stringify(req.user.connectionPreferences)
+      )}&` +
+      `lastActive=${encodeURIComponent(
+        new Date(req.user.lastActive).toISOString()
+      )}`; // Ensure lastActive is in ISO format
+
+    console.log(redirectLink);
+    res.redirect(redirectLink);
   }
 );
 

@@ -31,6 +31,7 @@ const router = createBrowserRouter(
       <Route index={true} path="/" element={<HomeScreen />} />
       <Route path="/login" element={<LoginScreen />} />
       <Route path="/register" element={<RegisterScreen />} />
+      {/* github redirect url */}
       <Route path="/login-success" element={<GitHubCallback />} />
       <Route path="" element={<PrivateRoute />}>
         <Route path="/:username" element={<ProfileScreen />} />

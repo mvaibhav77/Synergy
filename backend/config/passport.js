@@ -16,8 +16,6 @@ passport.use(
     },
     async (accessToken, refreshToken, profile, done) => {
       try {
-        console.log("GitHub Profile:", profile); // Log profile for debugging
-
         // Check if user exists by GitHub ID or email
         let user = await User.findOne({
           $or: [

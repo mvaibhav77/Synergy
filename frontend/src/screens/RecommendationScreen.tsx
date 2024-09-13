@@ -3,19 +3,20 @@ import PageHeader from "@/components/PageHeader";
 import ProfileCards from "@/components/Recommendations/ProfileCards";
 import { useToast } from "@/hooks/use-toast";
 import { useGetRecommendationsMutation } from "@/slices/recommendApiSlice";
-import { setRecommendations } from "@/slices/recommendSlice";
-import { RootState } from "@/store";
+// import { setRecommendations } from "@/slices/recommendSlice";
+// import { RootState } from "@/store";
 import { MIN_SECTION_HEIGHT } from "@/utils/constants";
 import { UserInfo } from "@/utils/types";
-import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useEffect, useState } from "react";
+// import { useDispatch } from "react-redux";
 
 const Recommendations = () => {
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
   const { toast } = useToast();
-  const { recommendations } = useSelector(
-    (state: RootState) => state.recommend
-  ) as { recommendations: UserInfo[] };
+  // const { recommendations } = useSelector(
+  //   (state: RootState) => state.recommend
+  // ) as { recommendations: UserInfo[] };
+  const [recommendations, setRecommendations] = useState<UserInfo[]>();
 
   const [getRecommendations, { isLoading }] = useGetRecommendationsMutation();
 
@@ -23,9 +24,9 @@ const Recommendations = () => {
     if (!recommendations || recommendations.length == 0) {
       getRecommendations({})
         .unwrap()
-        .then((res) => {
-          dispatch(setRecommendations(res));
-          console.log(res);
+        .then((res: UserInfo[]) => {
+          // dispatch(setRecommendations(res));
+          setRecommendations(res);
         })
         .catch((err) => {
           toast({ title: "Error", description: err.message });
@@ -45,7 +46,7 @@ const Recommendations = () => {
           <div className="grid grid-cols-3 gap-6 px-6 mt-6">
             {(recommendations || []).length < 1
               ? "No Recommendations for now..."
-              : recommendations.map((user) => (
+              : recommendations?.map((user) => (
                   <ProfileCards
                     type={"recommend"}
                     name={user.name}

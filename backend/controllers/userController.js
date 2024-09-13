@@ -324,8 +324,6 @@ const approveConnectionRequest = asyncHandler(async (req, res) => {
   const targetUserId = req.params.id;
   const currentUser = req.user;
 
-  console.log("______________________________________");
-
   // Fetch the target user
   const targetUser = await User.findById(targetUserId);
 
