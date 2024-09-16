@@ -2,6 +2,7 @@ import asyncHandler from "express-async-handler";
 import computeCosineSimilarity from "../utils/computeSimilarity.js";
 import User from "../models/userModel.js";
 import { RECOMMEND_USERS_LIMIT } from "../utils/constants.js";
+import { generateAIReplies } from "../utils/generation.js";
 
 // @desc   Auth user/set token
 // route   POST /api/users/auth
@@ -39,20 +40,34 @@ const recommendUsers = asyncHandler(async (req, res) => {
 
   // Return top 10 recommendations (or fewer if less than 10 users are available)
   res.json(
-    recommendations.slice(0, RECOMMEND_USERS_LIMIT).map(({ user, similarity }) => ({
-      _id: user._id,
-      name: user.name,
-      email: user.email,
-      username: user.username,
-      bio: user.bio,
-      skills: user.skills,
-      location: user.location,
-      interests: user.interests,
-      profession: user.profession,
-      avatar: user.avatar,
-      similarityScore: similarity, // Include similarity score
-    }))
+    recommendations
+      .slice(0, RECOMMEND_USERS_LIMIT)
+      .map(({ user, similarity }) => ({
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        username: user.username,
+        bio: user.bio,
+        skills: user.skills,
+        location: user.location,
+        interests: user.interests,
+        profession: user.profession,
+        avatar: user.avatar,
+        similarityScore: similarity, // Include similarity score
+      }))
   );
 });
 
-export { recommendUsers };
+const generateReply = asyncHandler(async (req, res) => {
+  const { previousMessages } = req.body;
+  const reply = await generateAIReplies(previousMessages);
+
+  if (reply === "") {
+    res.status(400);
+    throw new Error("Failed to generate reply");
+  }
+
+  return res.status(200).json({ message: reply });
+});
+
+export { recommendUsers, generateReply };
