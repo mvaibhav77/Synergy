@@ -70,7 +70,7 @@ const Sidemenu = ({
       <div className="flex flex-col gap-4">
         <Button
           variant={"ghost"}
-          className="w-fit text-2xl"
+          className="w-fit text-2xl lg:hidden"
           onClick={() => handleSideMenu(false)}
         >
           <FaArrowLeft />

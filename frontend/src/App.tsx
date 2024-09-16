@@ -25,7 +25,7 @@ const App = () => {
               id="sidemenu"
               className={`lg:block ${
                 sideMenuOpen ? "block" : "hidden"
-              } fixed lg:static z-50 top-0 left-0 lg:w-64 w-auto h-full lg:h-auto bg-black  shadow-lg lg:shadow-none`}
+              } fixed lg:static z-50 top-0 left-0 lg:w-64 w-auto h-full lg:h-auto bg-black lg:bg-transparent shadow-lg lg:shadow-none`}
             >
               <Sidemenu handleSideMenu={handleSideMenu} />
             </div>
