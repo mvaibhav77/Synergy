@@ -99,6 +99,20 @@ synergy/
 └── README.md
 ```
 
+**Testing Credentials:**
+
+Credentials 1:-
+```
+Email: johndoe@email.com
+Password: john123
+```
+
+Credentials 2:-
+```
+Email: janedoe@email.com
+Password: jane123
+```
+
 **Additional notes:**
 
 - Replace the placeholder values with your actual credentials.
