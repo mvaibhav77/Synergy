@@ -74,7 +74,7 @@ const ChatView = (props: Props) => {
   };
 
   return (
-    <div className="col-span-3 flex flex-col">
+    <div className="col-span-3 flex flex-col w-full">
       {props.conversationId && props.currentConversation && (
         <div className="p-4 border-b-[1px] border-gray-800">
           {/* Header for chat interface */}
@@ -186,7 +186,7 @@ const ChatView = (props: Props) => {
           </div>
         </>
       ) : (
-        <div className="flex flex-grow items-center justify-center text-xl font-semibold">
+        <div className="flex flex-grow items-center justify-center text-xl font-semibold ">
           Select a chat to start collaborating.
         </div>
       )}
