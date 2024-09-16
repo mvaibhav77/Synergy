@@ -16,8 +16,18 @@ export const recommenApiSlice = apiSlice.injectEndpoints({
         body: data,
       }),
     }),
+    getAIReply: builder.mutation({
+      query: (data) => ({
+        url: `${RECOMMEND_URL}/generateReply`,
+        method: "POST",
+        body: data,
+      }),
+    }),
   }),
 });
 
-export const { useGetConversationsMutation, useCreateConversationMutation } =
-  recommenApiSlice;
+export const {
+  useGetConversationsMutation,
+  useCreateConversationMutation,
+  useGetAIReplyMutation,
+} = recommenApiSlice;

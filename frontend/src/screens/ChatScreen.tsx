@@ -203,10 +203,13 @@ const ChatScreen = () => {
       <div
         className={`flex flex-col ${MIN_SECTION_HEIGHT} border-x-[1px] border-gray-500`}
       >
-        <div className="grid grid-cols-5">
+        {/* Responsive Layout */}
+        <div className="grid lg:grid-cols-5 grid-cols-1">
           {/* Left Side: Chat List Sidebar */}
           <div
-            className={`flex flex-col col-span-2 ${MIN_SECTION_HEIGHT} border-r-[1px] border-gray-500`}
+            className={`flex-col lg:col-span-2 ${MIN_SECTION_HEIGHT} border-r-[1px] border-gray-500 lg:flex ${
+              conversationId ? "hidden" : "flex"
+            }`}
           >
             <PageHeader title={"Messages"} />
             <div className="p-4">
@@ -223,7 +226,6 @@ const ChatScreen = () => {
               <NewChatDialog />
 
               {/* Chat List */}
-
               <ConversationList
                 conversationsLoading={conversationsLoading}
                 conversationList={conversationList}
@@ -233,19 +235,53 @@ const ChatScreen = () => {
           </div>
 
           {/* Right Side: Chat Interface */}
-          <ChatView
-            conversationId={conversationId}
-            currentConversation={currentConversation}
-            chatUser={chatUser}
-            connectedSince={connectedSince}
-            messages={messages}
-            scrollRef={scrollRef}
-            currentUser={currentUser}
-            newMessage={newMessage}
-            setNewMessage={setNewMessage}
-            handleSendMessage={handleSendMessage}
-          />
+          <div
+            className={`lg:col-span-3 flex-grow ${
+              conversationId ? "flex" : "hidden"
+            } lg:flex`}
+          >
+            <ChatView
+              conversationId={conversationId}
+              currentConversation={currentConversation}
+              chatUser={chatUser}
+              connectedSince={connectedSince}
+              messages={messages}
+              scrollRef={scrollRef}
+              currentUser={currentUser}
+              newMessage={newMessage}
+              setNewMessage={setNewMessage}
+              handleSendMessage={handleSendMessage}
+            />
+          </div>
         </div>
+
+        {/* Mobile View
+        <div className="lg:hidden">
+          {conversationId ? (
+            <ChatView
+              conversationId={conversationId}
+              currentConversation={currentConversation}
+              chatUser={chatUser}
+              connectedSince={connectedSince}
+              messages={messages}
+              scrollRef={scrollRef}
+              currentUser={currentUser}
+              newMessage={newMessage}
+              setNewMessage={setNewMessage}
+              handleSendMessage={handleSendMessage}
+            />
+          ) : (
+            <div className="p-4">
+              <PageHeader title={"Messages"} />
+              <NewChatDialog />
+              <ConversationList
+                conversationsLoading={conversationsLoading}
+                conversationList={conversationList}
+                handleSelectConversation={handleSelectConversation}
+              />
+            </div>
+          )}
+        </div> */}
       </div>
     </Page>
   );
