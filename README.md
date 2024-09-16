@@ -9,6 +9,7 @@ Synergy is a social networking platform designed to streamline professional conn
 Synergy is a platform that helps professionals connect, collaborate, and grow their networks. It offers features such as:
 
 - **AI-powered recommendations:** Discover relevant connections based on your skills, interests, and network.
+- **Automated Connections:** Synergy's AI automatically sends connection requests to your top recommendations on your behalf.
 - **Confluence:** Expand your network by connecting with people in your contacts' networks.
 - **Conversation starters:** Get AI-generated conversation topics to kickstart conversations.
 - **Social features:** Share posts, engage in discussions, and build relationships.
