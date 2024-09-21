@@ -8,22 +8,22 @@ import {
 } from "@/components/ui/dialog";
 import { FaGithub, FaLinkedin, FaPlusCircle, FaTwitter } from "react-icons/fa";
 
-interface SocialType {
-  platform: string;
-  username: string;
-  userId: string;
-  accessToken: string; // Store OAuth tokens for API access
-}
+// interface SocialType {
+//   platform: string;
+//   username: string;
+//   userId: string;
+//   accessToken: string; // Store OAuth tokens for API access
+// }
 
-interface Props {
-  socials?: SocialType[];
-}
+// interface Props {
+//   socials?: SocialType[];
+// }
 
-const ConnectSocials = (props: Props) => {
+const ConnectSocials = () => {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <button className="text-5xl text-white" onClick={() => {}}>
+        <button className="text-5xl text-pbtn rounded-full" onClick={() => {}}>
           <FaPlusCircle />
         </button>
       </DialogTrigger>
@@ -41,9 +41,7 @@ const ConnectSocials = (props: Props) => {
               window.location.href = "api/auth/github";
             }}
           >
-            <FaGithub
-              className={`text-5xl text-gray-300 hover:text-gray-500`}
-            />
+            <FaGithub className={`text-5xl hover:text-secondary`} />
           </button>
           <button
             className="linkedin"
@@ -51,9 +49,7 @@ const ConnectSocials = (props: Props) => {
               window.location.href = "api/auth/linkedin";
             }}
           >
-            <FaLinkedin
-              className={`text-5xl text-gray-300 hover:text-gray-500`}
-            />
+            <FaLinkedin className={`text-5xl hover:text-secondary`} />
           </button>
           <button
             className="x"
@@ -61,9 +57,7 @@ const ConnectSocials = (props: Props) => {
               window.location.href = "api/auth/x";
             }}
           >
-            <FaTwitter
-              className={`text-5xl text-gray-300 hover:text-gray-500`}
-            />
+            <FaTwitter className={`text-5xl hover:text-secondary`} />
           </button>
         </div>
       </DialogContent>

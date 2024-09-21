@@ -11,6 +11,7 @@ import {
   NavigationMenuLink,
   NavigationMenuList,
 } from "@/components/ui/navigation-menu";
+import { ModeToggle } from "@/components/ToggleTheme";
 import { Link } from "react-router-dom"; // For navigation
 import { FaSignInAlt, FaSignOutAlt } from "react-icons/fa"; // Icons
 import { useSelector, useDispatch } from "react-redux";
@@ -45,7 +46,7 @@ const Header = (props: Props) => {
 
   return (
     <header
-      className={`max-w-[1300px] mx-auto bg-dark p-4 border-b-[1px] border-x-[1px] ${
+      className={`max-w-[1300px] mx-auto bg-background p-4 border-b-[1px] border-x-[1px]  ${
         userInfo ? "border-gray-500" : "border-transparent"
       }`}
     >
@@ -62,13 +63,14 @@ const Header = (props: Props) => {
         )}
 
         {/* Brand */}
-        <Link to="/" className="text-white text-xl font-bold">
+        <Link to="/" className=" text-xl font-bold">
           Synergy
         </Link>
 
         {/* Navigation Menu */}
         <NavigationMenu>
           <NavigationMenuList className="flex items-center space-x-4">
+            <ModeToggle />
             {userInfo ? (
               <>
                 {/* User Dropdown */}

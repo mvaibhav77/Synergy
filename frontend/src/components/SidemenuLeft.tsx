@@ -79,7 +79,7 @@ const Sidemenu = ({
           <NavLink
             to={navItem.link}
             key={index}
-            className="py-3 w-fit px-4 text-xl rounded-3xl hover:bg-gray-800"
+            className="py-3 w-fit px-4 text-xl rounded-3xl hover:bg-secondary"
             onClick={() => handleSideMenu(false)}
           >
             <div className="flex flex-row gap-4 items-center">

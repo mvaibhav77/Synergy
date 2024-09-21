@@ -152,7 +152,7 @@ const ChatView = (props: Props) => {
                 placeholder={
                   isTyping ? "AI is thinking..." : "Type a message..."
                 }
-                className="flex-grow p-2 resize-none bg-black border rounded-md focus:outline-none min-h-[20px] max-h-[120px] text-base"
+                className="flex-grow p-2 resize-none border rounded-md focus:outline-none min-h-[20px] max-h-[120px] text-base"
                 value={props.newMessage}
                 onChange={(e) => props.setNewMessage(e.target.value)}
                 disabled={isTyping}
@@ -160,7 +160,7 @@ const ChatView = (props: Props) => {
 
               <Button
                 variant="outline"
-                className="rounded-full border-white p-2 text-lg"
+                className="rounded-full  bg-pbtn border-white p-2 text-lg"
                 onClick={() => setShowEmojiPicker((prev) => !prev)}
               >
                 {/* Emoji Button */}
@@ -173,7 +173,7 @@ const ChatView = (props: Props) => {
               )}
               <Button
                 variant="outline"
-                className="rounded-full border-white"
+                className="rounded-full bg-sbtn border-white"
                 onClick={handleGenerateMessage}
                 disabled={isTyping} // Disable AI button while message is being generated
               >

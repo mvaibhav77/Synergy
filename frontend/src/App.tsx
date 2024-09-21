@@ -17,7 +17,7 @@ const App = () => {
   return (
     <>
       <Header handleSideMenu={handleSideMenu} />
-      <main className="max-w-[1300px] mx-auto">
+      <main className="max-w-[1300px] mx-auto bg-background">
         {userInfo ? (
           <div className="grid lg:grid-cols-4 min-h-[calc(100vh-100px)]">
             {/* side menu */}

@@ -42,3 +42,4 @@ export const skillOptions: Option[] = [
 ];
 
 export const MIN_SECTION_HEIGHT = "min-h-[calc(100vh-70px)]";
+export const CONTENT_HEIGHT = "h-[calc(100vh-150px)]";

@@ -21,7 +21,7 @@ const ProfileListField = (props: Props) => {
 
   return (
     <div
-      className={`field group flex flex-col gap-4 justify-between p-3 w-full rounded-lg hover:bg-gray-700`}
+      className={`field group flex flex-col gap-4 justify-between p-3 w-full rounded-lg hover:bg-secondary`}
     >
       <div className={`flex flex-row items-center justify-between gap-4`}>
         <h2 className={`field-title font-semibold ${props.titleClass}`}>
@@ -41,7 +41,11 @@ const ProfileListField = (props: Props) => {
 
       <div className="field-value flex flex-row flex-wrap gap-2">
         {props.value?.map((item, index) => (
-          <Badge key={index} className="text-gray-500 inline-block mr-2">
+          <Badge
+            variant={"default"}
+            key={index}
+            className="inline-block mr-2 bg-sbtn text-sbtn-foreground"
+          >
             {item}
           </Badge>
         ))}

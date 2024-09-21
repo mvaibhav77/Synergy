@@ -73,6 +73,7 @@ const Posts = () => {
                   <div className="text-gray-500 text-sm">-</div>
                   <div className="text-gray-500 text-sm">10 Sept</div>
                 </div>
+                {/* options */}
                 <Popover>
                   <PopoverTrigger>
                     <button>
@@ -101,7 +102,7 @@ const Posts = () => {
               {/* post content */}
               <div className="post-content flex flex-col gap-4">
                 {/* text */}
-                <div className="text-gray-300">{post.message}</div>
+                <div className="">{post.message}</div>
                 {/* an image */}
                 {/* an image */}
                 <img
