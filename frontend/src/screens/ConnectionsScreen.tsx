@@ -17,6 +17,7 @@ import {
 import { setCredentials } from "@/slices/authSlice";
 import InvitationsCard from "@/components/Connections/InvitationCard";
 import Loader from "@/components/Loader";
+import EmptyState from "@/components/EmptyState";
 
 // const dummyInvitations = [
 //   {
@@ -122,7 +123,7 @@ const ConnectionsScreen = () => {
           {/* Invitations Tab */}
           <TabsContent value="Invitations" className="py-4 px-6">
             {requests.length === 0 ? (
-              <div>No invitations at the moment.</div>
+              <EmptyState title="No Invitations" />
             ) : (
               <div className="space-y-4">
                 {requests.map((invitation) => (
@@ -180,7 +181,7 @@ const ConnectionsScreen = () => {
             {loadingConnections ? (
               <Loader />
             ) : connections.length === 0 ? (
-              <div>No connections found.</div>
+              <EmptyState title="No Connections" />
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {connections.map((user) => (

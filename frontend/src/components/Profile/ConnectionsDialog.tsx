@@ -36,7 +36,7 @@ const ConnectionsDialog = (props: Props) => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger>
-        <button className="text-gray-500 hover:text-white hover:underline">
+        <button className="text-gray-500 hover:text-inherit hover:underline">
           <span className="font-bold">Connections: </span>
           {props.connections?.length || 0}
         </button>

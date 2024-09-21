@@ -144,9 +144,7 @@ const ProfileScreen = () => {
 
   return (
     <Page>
-      <div
-        className={`border-x-[1px] ${MIN_SECTION_HEIGHT} border-gray-500 px-2`}
-      >
+      <div className={`border-x-[1px] ${MIN_SECTION_HEIGHT} border-gray-500 `}>
         {!profileData || isLoading ? (
           <Loader />
         ) : (
@@ -159,7 +157,7 @@ const ProfileScreen = () => {
             <ScrollArea className="h-[calc(100vh-160px)] mt-4">
               <div className="grid grid-cols-1 !items-stretch md:grid-cols-5 gap-4 px-4">
                 <aside className="md:col-span-2 h-full">
-                  <Card className="p-4 h-full">
+                  <Card className="p-4 h-full ">
                     <CardContent>
                       <div className="flex flex-col items-center gap-4">
                         <img
@@ -191,20 +189,20 @@ const ProfileScreen = () => {
                               {profileData.socialMedia?.map((platform) => (
                                 <button key={platform.platform}>
                                   {platform.platform === "github" && (
-                                    <FaGithub className="text-5xl text-white" />
+                                    <FaGithub className="text-5xl " />
                                   )}
                                   {platform.platform === "linkedin" && (
-                                    <FaLinkedin className="text-5xl text-white" />
+                                    <FaLinkedin className="text-5xl" />
                                   )}
                                   {platform.platform === "twitter" && (
-                                    <FaTwitter className="text-5xl text-white" />
+                                    <FaTwitter className="text-5xl" />
                                   )}
                                 </button>
                               ))}
                               {profileData.socialMedia &&
                                 profileData.socialMedia?.length < 3 && (
                                   <ConnectSocials
-                                    socials={profileData.socialMedia}
+                                  // socials={profileData.socialMedia}
                                   />
                                 )}
                             </div>
@@ -234,15 +232,20 @@ const ProfileScreen = () => {
                             </Button>
 
                             <Button
-                              variant="default"
-                              className="mt-2 w-full"
+                              className={`mt-2 w-full bg-pbtn text-pbtn-foreground hover:text-black ${
+                                connectionStatus !== "connected" ? "hidden" : ""
+                              }`}
                               onClick={handleMessage}
                             >
                               {/* <FaEnvelope className="mr-2" /> */}
                               Message
                             </Button>
 
-                            <Button variant="default" className="mt-2 w-full">
+                            <Button
+                              className={`mt-2 w-full bg-sbtn text-sbtn-foreground hover:text-black ${
+                                connectionStatus !== "connected" ? "hidden" : ""
+                              }`}
+                            >
                               Confluence
                             </Button>
                           </>

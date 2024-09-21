@@ -1,12 +1,14 @@
+import EmptyState from "@/components/EmptyState";
 import Loader from "@/components/Loader";
 import Page from "@/components/Page";
 import PageHeader from "@/components/PageHeader";
 import ProfileCards from "@/components/Recommendations/ProfileCards";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { useToast } from "@/hooks/use-toast";
 import { useGetRecommendationsMutation } from "@/slices/recommendApiSlice";
 // import { setRecommendations } from "@/slices/recommendSlice";
 // import { RootState } from "@/store";
-import { MIN_SECTION_HEIGHT } from "@/utils/constants";
+import { CONTENT_HEIGHT, MIN_SECTION_HEIGHT } from "@/utils/constants";
 import { UserInfo } from "@/utils/types";
 import { useEffect, useState } from "react";
 // import { useDispatch } from "react-redux";
@@ -44,10 +46,12 @@ const Recommendations = () => {
         {isLoading ? (
           <Loader />
         ) : (
-          <div className="grid lg:grid-cols-3 gap-6 px-6 mt-6">
-            {(recommendations || []).length < 1
-              ? "No Recommendations for now..."
-              : recommendations?.map((user) => (
+          <ScrollArea className={`${CONTENT_HEIGHT}`}>
+            {(recommendations || []).length < 1 ? (
+              <EmptyState title="No Recommendations" />
+            ) : (
+              <div className="grid lg:grid-cols-3 gap-6 px-6 mt-6">
+                {recommendations?.map((user) => (
                   <ProfileCards
                     type={"recommend"}
                     name={user.name}
@@ -58,7 +62,9 @@ const Recommendations = () => {
                     key={user._id}
                   />
                 ))}
-          </div>
+              </div>
+            )}
+          </ScrollArea>
         )}
       </div>
     </Page>
