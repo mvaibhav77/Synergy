@@ -1,59 +1,17 @@
-import { useState } from "react";
-import { Command, CommandInput, CommandItem, CommandList } from "./ui/command";
 import { MIN_SECTION_HEIGHT } from "@/utils/constants";
 import { Link } from "react-router-dom";
 import { Skeleton } from "./ui/skeleton";
-
-export interface ICommandProps {
-  value: string;
-  label: string;
-}
+import Search from "./Search";
 
 const Sidemenu = () => {
-  const [open, setOpen] = useState(false);
-  const [inputValue, setInputValue] = useState("");
-
-  const commands: ICommandProps[] = [
-    { value: "home", label: "Home" },
-    { value: "messages", label: "Messages" },
-    { value: "settings", label: "Settings" },
-    // Add more commands as needed
-  ];
-
-  const handleValueChange = (value: string) => {
-    setInputValue(value);
-    setOpen(!!value);
-  };
-
-  const filteredCommands = Array.isArray(commands)
-    ? commands.filter((command) =>
-        command.label.toLowerCase().includes(inputValue.toLowerCase())
-      )
-    : [];
-  console.log("filteredCommands", filteredCommands);
-
   return (
     <div
-      className={`${MIN_SECTION_HEIGHT} lg:block hidden h-full w-full border-l-[1px] border-gray-500 pt-4 px-2`}
+      className={`${MIN_SECTION_HEIGHT} lg:block hidden h-full w-full border-l-[1px] border-white-700 pt-4 px-2`}
     >
       <div className="flex flex-col gap-12 h-full items-center">
         {/* Search bar */}
         <div className="search px-4">
-          <Command className="rounded-lg border shadow-md">
-            <CommandInput
-              placeholder="Search..."
-              onValueChange={handleValueChange}
-            />
-            {open && filteredCommands.length > 0 && (
-              <CommandList>
-                {filteredCommands.map((command) => (
-                  <CommandItem key={command.value} value={command.value}>
-                    {command.label}
-                  </CommandItem>
-                ))}
-              </CommandList>
-            )}
-          </Command>
+          <Search />
         </div>
 
         {/* skeleton */}

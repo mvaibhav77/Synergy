@@ -47,7 +47,7 @@ const router = createBrowserRouter(
             <>
               <Page>
                 <div
-                  className={`w-full ${MIN_SECTION_HEIGHT} border-x-[1px] border-gray-500 flex items-center justify-center`}
+                  className={`w-full ${MIN_SECTION_HEIGHT} border-x-[1px] border-white-700 flex items-center justify-center`}
                 >
                   COMING SOON...
                 </div>

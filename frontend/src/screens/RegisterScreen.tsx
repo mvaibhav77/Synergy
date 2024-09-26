@@ -23,7 +23,7 @@ import {
 } from "@/components/ui/card";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store";
-import { useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { useRegisterMutation } from "@/slices/usersApiSlice";
 import { setCredentials } from "@/slices/authSlice";
 import { useToast } from "@/hooks/use-toast";
@@ -40,7 +40,7 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
-export default function RegisterPage() {
+const RegisterPage: React.FC = () => {
   const { userInfo } = useSelector((state: RootState) => state.auth);
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -68,164 +68,194 @@ export default function RegisterPage() {
   });
 
   const onSubmit = async (data: FormValues) => {
-    console.log("click");
     try {
       const res = await register(data).unwrap();
       dispatch(setCredentials({ ...res }));
       navigate("/");
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       toast({
         variant: "destructive",
         title: "Registration Failed",
-        description: err?.data?.message || err.error,
+        description: err?.data?.message || err.error || "An error occurred",
         action: <ToastAction altText="Try again">Try again</ToastAction>,
       });
     }
   };
 
-  const nextStep = () => {
-    setStep(step + 1);
-  };
-
+  const nextStep = () => setStep(step + 1);
   const prevStep = () => setStep(step - 1);
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-background">
-      <Card className="lg:w-[400px] w-full mx-4 h-[450px]">
+    <div className="flex flex-row justify-center items-center min-h-screen min-w-screen bg-background">
+      <div className="side-bg w-full h-screen bg-primary opacity-15 lg:block hidden"></div>
+      <div className="authCard w-full flex flex-col gap-6 items-center justify-center lg:px-0 px-4">
         <CardHeader>
-          <CardTitle>Register</CardTitle>
-          <CardDescription>
-            Create your account. Step {step} of 3
-          </CardDescription>
+          <CardTitle className="lg:text-6xl text-4xl">Register</CardTitle>
         </CardHeader>
-        <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(onSubmit)}
-            className="flex flex-col justify-between min-h-[330px]"
-          >
-            <CardContent className="space-y-4">
-              {step === 1 && (
-                <>
-                  <FormField
-                    control={form.control}
-                    name="name"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Name</FormLabel>
-                        <FormControl>
-                          <Input placeholder="John Doe" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="email"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Email</FormLabel>
-                        <FormControl>
-                          <Input
-                            type="email"
-                            placeholder="johndoe@email.com"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="password"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Password</FormLabel>
-                        <FormControl>
-                          <Input
-                            type="password"
-                            placeholder="******"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </>
-              )}
-              {step === 2 && (
-                <>
-                  <FormField
-                    control={form.control}
-                    name="username"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Username</FormLabel>
-                        <FormControl>
-                          <Input placeholder="johndoe" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="bio"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Bio</FormLabel>
-                        <FormControl>
-                          <Textarea
-                            placeholder="Tell us about yourself"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </>
-              )}
-              {step === 3 && (
-                <>
-                  <FormField
-                    control={form.control}
-                    name="profession"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Profession</FormLabel>
-                        <FormControl>
-                          <Input placeholder="Developer" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </>
-              )}
-            </CardContent>
-            <CardFooter className="flex justify-between">
-              {step > 1 && (
-                <Button type="button" variant="outline" onClick={prevStep}>
-                  Previous
-                </Button>
-              )}
-              {step < 3 ? (
-                <Button type="button" onClick={nextStep}>
-                  Next
-                </Button>
-              ) : (
-                <Button type="submit">
-                  {isLoading ? "Registering" : "Register"}
-                </Button>
-              )}
-            </CardFooter>
-          </form>
-        </Form>
-      </Card>
+        <Card className="lg:max-w-[600px] w-full mx-4 h-full">
+          <CardHeader>
+            <CardDescription className="lg:text-lg">
+              Create your account. Step {step} of 3 <br />
+              Or{" "}
+              <NavLink to={"/login"} className={"text-primary"}>
+                Login
+              </NavLink>
+            </CardDescription>
+          </CardHeader>
+          <Form {...form}>
+            <form
+              onSubmit={form.handleSubmit(onSubmit)}
+              className="flex flex-col justify-between h-full min-h-[330px] lg:space-y-10"
+            >
+              <CardContent className="lg:space-y-6 flex flex-col lg:gap-0 gap-6  ">
+                {step === 1 && (
+                  <>
+                    <FormField
+                      control={form.control}
+                      name="name"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-lg">Name</FormLabel>
+                          <FormControl>
+                            <Input
+                              className="lg:h-12 lg:text-lg lg:px-4 lg:py-2"
+                              placeholder="John Doe"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="email"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-lg">Email</FormLabel>
+                          <FormControl>
+                            <Input
+                              type="email"
+                              className="lg:h-12 lg:text-lg lg:px-4 lg:py-2"
+                              placeholder="johndoe@email.com"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="password"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-lg">Password</FormLabel>
+                          <FormControl>
+                            <Input
+                              type="password"
+                              className="lg:h-12 lg:text-lg lg:px-4 lg:py-2"
+                              placeholder="******"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </>
+                )}
+                {step === 2 && (
+                  <>
+                    <FormField
+                      control={form.control}
+                      name="username"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-lg">Username</FormLabel>
+                          <FormControl>
+                            <Input
+                              className="lg:h-12 lg:text-lg lg:px-4 lg:py-2"
+                              placeholder="johndoe"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="bio"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-lg">Bio</FormLabel>
+                          <FormControl>
+                            <Textarea
+                              className="lg:text-lg lg:px-4 lg:py-2"
+                              placeholder="Tell us about yourself"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </>
+                )}
+                {step === 3 && (
+                  <>
+                    <FormField
+                      control={form.control}
+                      name="profession"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-lg">Profession</FormLabel>
+                          <FormControl>
+                            <Input
+                              className="lg:h-12 lg:text-lg lg:px-4 lg:py-2"
+                              placeholder="Developer"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </>
+                )}
+              </CardContent>
+              <CardFooter className="flex justify-between">
+                {step > 1 && (
+                  <Button
+                    className="lg:h-12 lg:text-lg"
+                    type="button"
+                    variant="outline"
+                    onClick={prevStep}
+                  >
+                    Previous
+                  </Button>
+                )}
+                {step < 3 ? (
+                  <Button
+                    className="lg:h-12 lg:text-lg"
+                    type="button"
+                    onClick={nextStep}
+                  >
+                    Next
+                  </Button>
+                ) : (
+                  <Button className="lg:h-12 lg:text-lg" type="submit">
+                    {isLoading ? "Registering" : "Register"}
+                  </Button>
+                )}
+              </CardFooter>
+            </form>
+          </Form>
+        </Card>
+      </div>
     </div>
   );
-}
+};
+
+export default RegisterPage;

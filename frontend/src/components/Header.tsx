@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/navigation-menu";
 import { ModeToggle } from "@/components/ToggleTheme";
 import { Link } from "react-router-dom"; // For navigation
-import { FaSignInAlt, FaSignOutAlt } from "react-icons/fa"; // Icons
+import { FaBell, FaSignInAlt, FaSignOutAlt } from "react-icons/fa"; // Icons
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useLogoutMutation } from "../slices/usersApiSlice"; // Your API slice for logout
@@ -21,6 +21,8 @@ import { logout } from "../slices/authSlice"; // Your auth slice
 import { rlogout } from "../slices/recommendSlice";
 import { RootState } from "@/store";
 import { MdOutlineMenu } from "react-icons/md";
+import { useEffect, useState } from "react";
+import { DropdownMenuLabel } from "@radix-ui/react-dropdown-menu";
 
 type Props = {
   handleSideMenu: (value: boolean) => void;
@@ -30,6 +32,38 @@ const Header = (props: Props) => {
   const { userInfo } = useSelector((state: RootState) => state.auth); // Adjust based on your state type
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [hideHeader, setHideHeader] = useState<boolean>(false);
+  const [notifications, setNotifications] = useState([
+    {
+      title: "New Notification",
+      from: "System",
+      description: "This is a new notification",
+      date: "2022-01-01",
+    },
+    {
+      title: "New Notification",
+      from: "System",
+      description: "This is a new notification",
+      date: "2022-01-01",
+    },
+    {
+      title: "New Notification",
+      from: "System",
+      description: "This is a new notification",
+      date: "2022-01-01",
+    },
+  ]);
+
+  useEffect(() => {
+    if (
+      window.location.pathname === "/login" ||
+      window.location.pathname === "/register"
+    ) {
+      setHideHeader(true);
+    } else {
+      setHideHeader(false);
+    }
+  }, [window.location.pathname]);
 
   const [logoutApiCall] = useLogoutMutation();
 
@@ -46,11 +80,11 @@ const Header = (props: Props) => {
 
   return (
     <header
-      className={`max-w-[1300px] mx-auto bg-background p-4 border-b-[1px] border-x-[1px]  ${
-        userInfo ? "border-gray-500" : "border-transparent"
-      }`}
+      className={`w-full mx-auto bg-background p-4 py-2 border-b-[1px] border-x-[1px] z-20 lg:px-12  ${
+        userInfo ? "border-white-700" : "border-transparent"
+      } ${hideHeader ? "hidden" : ""}`}
     >
-      <div className="container mx-auto flex justify-between items-center">
+      <div className=" mx-auto flex justify-between items-center">
         {/* hamburger for side menu */}
         {userInfo && (
           <Button
@@ -63,23 +97,75 @@ const Header = (props: Props) => {
         )}
 
         {/* Brand */}
-        <Link to="/" className=" text-xl font-bold">
+        <Link to="/" className="lg:text-3xl text-xl font-bold">
           Synergy
         </Link>
 
         {/* Navigation Menu */}
         <NavigationMenu>
           <NavigationMenuList className="flex items-center space-x-4">
+            {/* Notifications */}
+            <NavigationMenuItem>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant={"ghost"}
+                    className="flex rounded-xl items-center space-x-2 text-lg"
+                  >
+                    <FaBell />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-[400px]">
+                  <DropdownMenuLabel className="p-4">
+                    <h3 className="text-lg font-bold">Notifications</h3>
+                  </DropdownMenuLabel>
+                  {notifications.map((item, index) => (
+                    <DropdownMenuItem asChild>
+                      <Button
+                        variant={"outline"}
+                        className="w-full h-full flex flex-col items-start p-4 border-b-[1px] border-white-700"
+                      >
+                        <h4 className="text-lg font-bold">{item.title}</h4>
+                        <p className="text-sm">{item.description}</p>
+                        <p className="text-xs text-gray-500">{item.date}</p>
+                      </Button>
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </NavigationMenuItem>
+
+            {/* theme toggler */}
             <ModeToggle />
+
             {userInfo ? (
               <>
                 {/* User Dropdown */}
                 <NavigationMenuItem>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <Button variant="outline">{userInfo.name}</Button>
+                      <Button
+                        variant="outline"
+                        className="flex rounded-xl py-4 items-center space-x-2 h-12"
+                      >
+                        {/* Avatar */}
+                        <img
+                          src={
+                            userInfo.avatar || "https://github.com/guthub.png"
+                          }
+                          alt="avatar"
+                          className="w-8 h-8 rounded-full"
+                        />
+                        {/* Name and Email */}
+                        <div className="flex flex-col items-start py-4">
+                          <span>{userInfo.name}</span>
+                          <span className="text-xs text-gray-500">
+                            {userInfo.email}
+                          </span>
+                        </div>
+                      </Button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent>
+                    <DropdownMenuContent align="start" className="w-full">
                       <DropdownMenuItem asChild>
                         <Link to={`/${userInfo.username}`}>Profile</Link>
                       </DropdownMenuItem>

@@ -21,7 +21,7 @@ const CreatePost = () => {
 
       <div className="post-contents w-full">
         <div className="flex items-center gap-4">
-          <Textarea placeholder="Say something..." />
+          <Textarea className="text-xl" placeholder="Say something..." />
         </div>
         <div className="flex flex-row justify-between items-center">
           <div className="flex justify-end mt-2">
@@ -38,7 +38,9 @@ const CreatePost = () => {
               <FaPaperclip className="text-xl" />
             </Button>
           </div>
-          <Button className="mt-4 w-lg">Post</Button>
+          <Button size={"lg"} className="mt-4 text-lg">
+            Post
+          </Button>
         </div>
       </div>
     </div>
