@@ -1,3 +1,4 @@
+import { ICommandProps } from "@/components/Search";
 import { Option } from "@/components/ui/MultiSelect";
 
 export const RECOMMEND_EXAMPLE = [
@@ -39,6 +40,32 @@ export const skillOptions: Option[] = [
   { label: "Tailwind", value: "Tailwind" },
   { label: "Shadcn", value: "Shadcn" },
   { label: "Full Stack Development", value: "Full Stack Development" },
+];
+export const navigationSearchOptions: ICommandProps[] = [
+  {
+    value: "home",
+    label: "Home",
+  },
+  {
+    value: "messages",
+    label: "Messages",
+  },
+  {
+    value: "recommendations",
+    label: "Recommendations",
+  },
+  {
+    value: "notifications",
+    label: "Notifications",
+  },
+  {
+    value: "profile",
+    label: "Profile",
+  },
+  {
+    value: "settings",
+    label: "Settings",
+  },
 ];
 
 export const MIN_SECTION_HEIGHT = "min-h-[calc(100vh-70px)]";

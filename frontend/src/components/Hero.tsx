@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { MIN_SECTION_HEIGHT } from "@/utils/constants";
+import { CONTENT_HEIGHT } from "@/utils/constants";
 import { useNavigate } from "react-router-dom";
 
 export default function LandingPage() {
@@ -7,7 +7,7 @@ export default function LandingPage() {
 
   return (
     <div
-      className={`flex flex-col ${MIN_SECTION_HEIGHT} items-center mx-4 justify-center min-h-screen bg-background text-foreground`}
+      className={`flex flex-col ${CONTENT_HEIGHT} items-center mx-4 justify-center bg-background text-foreground`}
     >
       <div className="text-center space-y-6">
         <h1 className="lg:text-6xl text-2xl font-bold tracking-tighter sm:text-5xl md:text-6xl">
@@ -19,7 +19,7 @@ export default function LandingPage() {
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <Button
             size="lg"
-            className="text-xl p-8"
+            className="text-xl lg:p-8"
             onClick={() => navigate("/login")}
           >
             Log In
@@ -27,7 +27,7 @@ export default function LandingPage() {
           <Button
             variant="outline"
             size="lg"
-            className="text-xl py-8"
+            className="text-xl lg:py-8"
             onClick={() => navigate("/register")}
           >
             Sign Up

@@ -28,6 +28,8 @@ import { useRegisterMutation } from "@/slices/usersApiSlice";
 import { setCredentials } from "@/slices/authSlice";
 import { useToast } from "@/hooks/use-toast";
 import { ToastAction } from "@/components/ui/toast";
+import { FaGithub, FaLinkedin } from "react-icons/fa";
+import { Separator } from "@/components/ui/separator";
 
 const formSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -72,6 +74,7 @@ const RegisterPage: React.FC = () => {
       const res = await register(data).unwrap();
       dispatch(setCredentials({ ...res }));
       navigate("/");
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       toast({
         variant: "destructive",
@@ -92,14 +95,10 @@ const RegisterPage: React.FC = () => {
         <CardHeader>
           <CardTitle className="lg:text-6xl text-4xl">Register</CardTitle>
         </CardHeader>
-        <Card className="lg:max-w-[600px] w-full mx-4 h-full">
+        <Card className="lg:max-w-[600px] w-full mx-4 h-full px-4 pb-6">
           <CardHeader>
             <CardDescription className="lg:text-lg">
-              Create your account. Step {step} of 3 <br />
-              Or{" "}
-              <NavLink to={"/login"} className={"text-primary"}>
-                Login
-              </NavLink>
+              Create your account. Step {step} of 3
             </CardDescription>
           </CardHeader>
           <Form {...form}>
@@ -252,6 +251,43 @@ const RegisterPage: React.FC = () => {
               </CardFooter>
             </form>
           </Form>
+
+          <div className="flex items-center gap-4">
+            <Separator className="flex-1" />
+            <span className="text-muted-foreground">or register with</span>
+            <Separator className="flex-1" />
+          </div>
+
+          <CardContent className="flex flex-row gap-6 h-[100px] w-full p-0 mt-6">
+            {/* GITHUB LOGIN BUTTON */}
+            <Button
+              variant={"outline"}
+              className="text-4xl p-4 h-fit w-full"
+              onClick={() => {
+                window.location.href = "api/auth/github";
+              }}
+            >
+              <FaGithub />
+            </Button>
+            <Button
+              variant={"outline"}
+              className="text-4xl p-4 h-fit w-full"
+              onClick={() => {
+                window.location.href = "api/auth/linkedin";
+              }}
+            >
+              <FaLinkedin />
+            </Button>
+          </CardContent>
+
+          <div className="signup-option flex w-full items-center justify-center ml-2 ">
+            <div className="msg">
+              Already have an account?{" "}
+              <NavLink to={"/login"} className={"text-primary"}>
+                Login.
+              </NavLink>
+            </div>
+          </div>
         </Card>
       </div>
     </div>

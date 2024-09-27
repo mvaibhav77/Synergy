@@ -253,6 +253,7 @@ const getUserById = asyncHandler(async (req, res) => {
       profession: user.profession,
       interests: user.interests,
       socialMedia: user.socialMedia,
+      connections: user.connections,
       avatar: user.avatar,
     });
   } else {

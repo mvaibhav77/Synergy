@@ -23,6 +23,7 @@ import { RootState } from "@/store";
 import { MdOutlineMenu } from "react-icons/md";
 import { useEffect, useState } from "react";
 import { DropdownMenuLabel } from "@radix-ui/react-dropdown-menu";
+import Search from "./Search";
 
 type Props = {
   handleSideMenu: (value: boolean) => void;
@@ -33,7 +34,7 @@ const Header = (props: Props) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [hideHeader, setHideHeader] = useState<boolean>(false);
-  const [notifications, setNotifications] = useState([
+  const [notifications] = useState([
     {
       title: "New Notification",
       from: "System",
@@ -97,43 +98,48 @@ const Header = (props: Props) => {
         )}
 
         {/* Brand */}
-        <Link to="/" className="lg:text-3xl text-xl font-bold">
+        <Link to="/" className="lg:text-2xl text-xl font-bold">
           Synergy
         </Link>
 
         {/* Navigation Menu */}
         <NavigationMenu>
           <NavigationMenuList className="flex items-center space-x-4">
+            {/* Search */}
+            {userInfo && <Search />}
+
             {/* Notifications */}
-            <NavigationMenuItem>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button
-                    variant={"ghost"}
-                    className="flex rounded-xl items-center space-x-2 text-lg"
-                  >
-                    <FaBell />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-[400px]">
-                  <DropdownMenuLabel className="p-4">
-                    <h3 className="text-lg font-bold">Notifications</h3>
-                  </DropdownMenuLabel>
-                  {notifications.map((item, index) => (
-                    <DropdownMenuItem asChild>
-                      <Button
-                        variant={"outline"}
-                        className="w-full h-full flex flex-col items-start p-4 border-b-[1px] border-white-700"
-                      >
-                        <h4 className="text-lg font-bold">{item.title}</h4>
-                        <p className="text-sm">{item.description}</p>
-                        <p className="text-xs text-gray-500">{item.date}</p>
-                      </Button>
-                    </DropdownMenuItem>
-                  ))}
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </NavigationMenuItem>
+            {userInfo && (
+              <NavigationMenuItem>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant={"ghost"}
+                      className="flex rounded-xl items-center space-x-2 text-lg"
+                    >
+                      <FaBell />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-[400px]">
+                    <DropdownMenuLabel className="p-4">
+                      <h3 className="text-lg font-bold">Notifications</h3>
+                    </DropdownMenuLabel>
+                    {notifications.map((item, index) => (
+                      <DropdownMenuItem key={index} asChild>
+                        <Button
+                          variant={"outline"}
+                          className="w-full h-full flex flex-col items-start p-4 border-b-[1px] border-white-700"
+                        >
+                          <h4 className="text-lg font-bold">{item.title}</h4>
+                          <p className="text-sm">{item.description}</p>
+                          <p className="text-xs text-gray-500">{item.date}</p>
+                        </Button>
+                      </DropdownMenuItem>
+                    ))}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </NavigationMenuItem>
+            )}
 
             {/* theme toggler */}
             <ModeToggle />
@@ -158,7 +164,7 @@ const Header = (props: Props) => {
                         />
                         {/* Name and Email */}
                         <div className="flex flex-col items-start py-4">
-                          <span>{userInfo.name}</span>
+                          <span className="text-lg">{userInfo.name}</span>
                           <span className="text-xs text-gray-500">
                             {userInfo.email}
                           </span>
@@ -178,7 +184,7 @@ const Header = (props: Props) => {
               </>
             ) : (
               <>
-                <NavigationMenuItem>
+                <NavigationMenuItem className="lg:block hidden">
                   <NavigationMenuLink asChild>
                     <Link to="/login" className="flex items-center">
                       <FaSignInAlt className="mr-1" /> Sign In
@@ -186,7 +192,7 @@ const Header = (props: Props) => {
                   </NavigationMenuLink>
                 </NavigationMenuItem>
 
-                <NavigationMenuItem>
+                <NavigationMenuItem className="lg:block hidden">
                   <NavigationMenuLink asChild>
                     <Link to="/register" className="flex items-center">
                       <FaSignOutAlt className="mr-1" /> Sign Up

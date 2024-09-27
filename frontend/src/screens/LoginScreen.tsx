@@ -21,9 +21,9 @@ import {
 import { RootState } from "@/store";
 import { UserInfo } from "@/utils/types";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { GitHubLogoIcon, LinkedInLogoIcon } from "@radix-ui/react-icons";
 import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
+import { FaGithub, FaLinkedin } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import { NavLink, useNavigate } from "react-router-dom";
 import { z } from "zod";
@@ -125,7 +125,7 @@ const LoginScreen: React.FC = () => {
             Welcome back! 👋 <br /> Glad to see you again!
           </CardTitle>
         </CardHeader>
-        <Card className="w-full lg:max-w-[600px] h-[550px] px-4 py-6 mx-4 ">
+        <Card className="w-full lg:max-w-[600px] h-fit px-4 py-6 mx-4 ">
           <Form {...form}>
             <form
               onSubmit={form.handleSubmit(onSubmit)}
@@ -174,36 +174,46 @@ const LoginScreen: React.FC = () => {
                 <Button className="lg:h-12 lg:text-lg" type="submit">
                   {isLoading ? "Signing in..." : "Sign In"}
                 </Button>
-                <span className="signup-option ml-2 ">
-                  {" "}
-                  or{" "}
-                  <NavLink to={"/register"} className={"text-primary"}>
-                    register.
-                  </NavLink>{" "}
-                </span>
               </CardContent>
             </form>
           </Form>
-          <Separator className="mt-2" />
-          <CardContent className=" h-[100px] w-full p-0">
+
+          <div className="flex items-center gap-4">
+            <Separator className="flex-1" />
+            <span className="text-muted-foreground">or Login with</span>
+            <Separator className="flex-1" />
+          </div>
+
+          <CardContent className="flex flex-row gap-6 h-[100px] w-full p-0 mt-6">
             {/* GITHUB LOGIN BUTTON */}
             <Button
-              className=" flex gap-2 h-12 text-lg px-4"
+              variant={"outline"}
+              className="text-4xl p-4 h-fit w-full"
               onClick={() => {
                 window.location.href = "api/auth/github";
               }}
             >
-              <GitHubLogoIcon /> Login with GitHub
+              <FaGithub />
             </Button>
             <Button
-              className="flex gap-2 h-12 text-lg px-4"
+              variant={"outline"}
+              className="text-4xl p-4 h-fit w-full"
               onClick={() => {
                 window.location.href = "api/auth/linkedin";
               }}
             >
-              <LinkedInLogoIcon /> Login with Linkedin
+              <FaLinkedin />
             </Button>
           </CardContent>
+
+          <div className="signup-option flex w-full items-center justify-center ml-2 ">
+            <div className="msg">
+              Don't have an account?{" "}
+              <NavLink to={"/register"} className={"text-primary"}>
+                Register.
+              </NavLink>
+            </div>
+          </div>
         </Card>
       </div>
     </div>

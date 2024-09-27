@@ -17,7 +17,7 @@ const ProfileCards = (props: Props) => {
         <CardContent>
           <div className="flex flex-col items-center justify-center gap-4">
             <img
-              src="https://github.com/react.png"
+              src={props.avatar || "https://github.com/react.png"}
               alt="Profile Picture"
               className="rounded-full w-24 h-24"
             />

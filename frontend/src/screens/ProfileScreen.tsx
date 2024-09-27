@@ -39,11 +39,12 @@ const ProfileScreen = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
-  const { data, isLoading } = useGetUserQuery(username);
+  const { data, isLoading, error } = useGetUserQuery(username);
   const [profileData, setProfileData] = useState<UserInfo | null>(null);
   const isCurrentUser = userInfo?.username === username;
   const [connections, setConnections] = useState<UserInfo[] | null>(null);
   const [connectionStatus, setConnectionStatus] = useState<string | null>(null);
+  const [noSuchProfile, setNoSuchProfile] = useState(false);
 
   const [sendRequest, { isLoading: sendingReqLoading }] =
     useSendRequestMutation();
@@ -54,21 +55,26 @@ const ProfileScreen = () => {
   const [getUser] = useGetUserByIdMutation();
 
   useEffect(() => {
-    if (!isCurrentUser) {
+    if (error) {
+      // Handle cases where the profile doesn't exist
+      setNoSuchProfile(true);
+    } else if (data && !isCurrentUser) {
       setProfileData(data);
       const fetchConnections = async () => {
         const fetchedConnections: UserInfo[] = [];
         for (const connection of data.connections || []) {
           if (connection.status === "connected") {
             try {
-              const data = await getUser(connection.userId).unwrap();
-              if (data) {
-                fetchedConnections.push(data);
+              const connectionData = await getUser(connection.userId).unwrap();
+              if (connectionData) {
+                fetchedConnections.push(connectionData);
               }
-            } catch (error) {
-              console.error(`Error fetching user ${connection.userId}:`, error);
+            } catch (fetchError) {
+              console.error(
+                `Error fetching user ${connection.userId}:`,
+                fetchError
+              );
             }
-            continue;
           }
         }
         setConnections(fetchedConnections);
@@ -77,7 +83,7 @@ const ProfileScreen = () => {
     } else {
       setProfileData(userInfo);
     }
-  }, [data, getUser, isCurrentUser, userInfo]);
+  }, [data, error, getUser, isCurrentUser, userInfo]);
 
   const handleConnect = async () => {
     console.log("Connect button clicked");
@@ -141,6 +147,20 @@ const ProfileScreen = () => {
       }
     }
   }, [isCurrentUser, profileData, userInfo, sendingReqLoading]);
+
+  if (noSuchProfile)
+    return (
+      <Page>
+        <div
+          className={`border-x-[1px] ${MIN_SECTION_HEIGHT} border-gray-500 `}
+        >
+          <PageHeader title={`${username} Profile`} />
+          <div className="flex items-center justify-center h-[500px] ">
+            <h2 className="text-2xl">No such profile found</h2>
+          </div>
+        </div>
+      </Page>
+    );
 
   return (
     <Page>
