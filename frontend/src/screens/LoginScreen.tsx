@@ -21,7 +21,7 @@ import {
 import { RootState } from "@/store";
 import { UserInfo } from "@/utils/types";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { GitHubLogoIcon } from "@radix-ui/react-icons";
+import { GitHubLogoIcon, LinkedInLogoIcon } from "@radix-ui/react-icons";
 import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
@@ -185,15 +185,23 @@ const LoginScreen: React.FC = () => {
             </form>
           </Form>
           <Separator className="mt-2" />
-          <CardContent className="relative h-[100px] w-full p-0">
+          <CardContent className=" h-[100px] w-full p-0">
             {/* GITHUB LOGIN BUTTON */}
             <Button
-              className="absolute top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2 flex gap-2 h-12 text-lg px-4"
+              className=" flex gap-2 h-12 text-lg px-4"
               onClick={() => {
                 window.location.href = "api/auth/github";
               }}
             >
               <GitHubLogoIcon /> Login with GitHub
+            </Button>
+            <Button
+              className="flex gap-2 h-12 text-lg px-4"
+              onClick={() => {
+                window.location.href = "api/auth/linkedin";
+              }}
+            >
+              <LinkedInLogoIcon /> Login with Linkedin
             </Button>
           </CardContent>
         </Card>
