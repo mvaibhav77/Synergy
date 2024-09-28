@@ -20,7 +20,7 @@ const NotificationCard = (props: Props) => {
         {/* Avatar and Sender Info */}
         <div className="flex items-center">
           <img
-            src={notification.sender?.avatar || "https://github.com/shadcn.png"}
+            src="https://github.com/shadcn.png"}
             alt={`${notification.sender?.name || "User"}'s avatar`}
             className="w-12 h-12 rounded-full object-cover mr-4"
           />

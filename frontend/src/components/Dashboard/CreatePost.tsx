@@ -12,7 +12,7 @@ const CreatePost = () => {
   };
   return (
     <div className="flex flex-row gap-2 p-4 px-4  border-b-[1px] border-gray-500">
-      <div className="avatar">
+      <div className="avatar mt-4">
         <Avatar>
           <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
           <AvatarFallback>{userInfo.name.slice(0, 1)}</AvatarFallback>
