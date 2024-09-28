@@ -44,7 +44,7 @@ const ProfileListField = (props: Props) => {
           <Badge
             variant={"default"}
             key={index}
-            className="inline-block mr-2 bg-sbtn text-sbtn-foreground"
+            className="inline-block mr-2 bg-primary p-2"
           >
             {item}
           </Badge>
