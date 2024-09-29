@@ -68,7 +68,7 @@ export interface Participant {
 
 export interface Message {
   _id: string;
-  conversationId: string;
+  conversation: string;
   sender: Participant | string;
   content: string;
   createdAt: string;

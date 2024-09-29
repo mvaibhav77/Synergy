@@ -8,6 +8,7 @@ import axios from "axios";
 import { Textarea } from "../ui/textarea";
 import { MdEmojiEmotions, MdOutlineKeyboardBackspace } from "react-icons/md";
 import EmojiPicker, { EmojiClickData } from "emoji-picker-react"; // Import the emoji picker
+import { updateSenderId } from "@/utils/constants";
 
 type Props = {
   conversationId: string | undefined;
@@ -26,6 +27,9 @@ const ChatView = (props: Props) => {
   const [isTyping, setIsTyping] = useState(false); // State for typewriter effect
   const [showEmojiPicker, setShowEmojiPicker] = useState(false); // State to toggle emoji picker
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const AIDummyMessages: Message[] = updateSenderId(props.currentUser._id);
+
+  console.log(props.messages);
 
   const handleGenerateMessage = async () => {
     setIsTyping(true); // Start typewriter effect
@@ -114,7 +118,7 @@ const ChatView = (props: Props) => {
 
             {/* Messages */}
             <div className="flex flex-col gap-4">
-              {props.messages.map((message, index) => (
+              {[...AIDummyMessages, ...props.messages].map((message, index) => (
                 <div
                   key={message._id}
                   ref={
