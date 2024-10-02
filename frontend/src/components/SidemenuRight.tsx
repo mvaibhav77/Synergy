@@ -1,5 +1,5 @@
 import { MIN_SECTION_HEIGHT } from "@/utils/constants";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 // import { Skeleton } from "./ui/skeleton";
 import { Button } from "./ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
@@ -13,6 +13,7 @@ const Sidemenu = () => {
   const [recommendations, setRecommendations] = useState<UserInfo[]>([]);
   const [getRecommendations, { isLoading }] = useGetRecommendationsMutation();
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (!recommendations || recommendations.length == 0) {
@@ -82,7 +83,11 @@ const Sidemenu = () => {
                     </div>
                   ))}
                 </div>
-                <Button variant={"link"} className="text-lg text-inherit mt-2">
+                <Button
+                  variant={"link"}
+                  onClick={() => navigate("/recommendations")}
+                  className="text-lg text-inherit mt-2"
+                >
                   See more
                 </Button>
               </>

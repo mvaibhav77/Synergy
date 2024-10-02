@@ -28,6 +28,12 @@ export const userApiSlice = apiSlice.injectEndpoints({
         url: `${USERS_URL}/${username}`,
       }),
     }),
+    getAllUsers: builder.mutation({
+      query: (keyword) => ({
+        url: `${USERS_URL}?search=${keyword}`,
+        method: "GET",
+      }),
+    }),
     getUserById: builder.mutation({
       query: (id) => ({
         url: `${USERS_URL}/${id}`,
@@ -75,6 +81,12 @@ export const userApiSlice = apiSlice.injectEndpoints({
         body: JSON.stringify({}),
       }),
     }),
+    confluenceConnections: builder.mutation({
+      query: (username) => ({
+        url: `${USERS_URL}/confluence/${username}`,
+        method: "POST",
+      }),
+    }),
   }),
 });
 
@@ -83,6 +95,7 @@ export const {
   useLogoutMutation,
   useRegisterMutation,
   useGetUserQuery,
+  useGetAllUsersMutation,
   useGetUserByIdMutation,
   useGetCurrentUserMutation,
   useUpdateUserMutation,
@@ -90,4 +103,5 @@ export const {
   useApproveRequestMutation,
   useRejectRequestMutation,
   useDisconnectUserMutation,
+  useConfluenceConnectionsMutation,
 } = userApiSlice;

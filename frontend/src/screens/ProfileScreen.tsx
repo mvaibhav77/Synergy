@@ -8,6 +8,7 @@ import PageHeader from "@/components/PageHeader";
 import { Card, CardContent } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
+  useConfluenceConnectionsMutation,
   useDisconnectUserMutation,
   useGetCurrentUserMutation,
   useGetUserByIdMutation,
@@ -32,6 +33,7 @@ import {
 import EditBasicProfile from "@/components/Profile/EditBasicProfile";
 import Socials from "@/components/Profile/Socials";
 import ProfileTabs from "@/components/Profile/ProfileTabs";
+import { Loader2 } from "lucide-react";
 
 const ProfileScreen = () => {
   const { username } = useParams<{ username: string }>();
@@ -59,6 +61,8 @@ const ProfileScreen = () => {
   const [createConversation] = useCreateConversationMutation();
   const [disconnectUser] = useDisconnectUserMutation();
   const [getUser] = useGetUserByIdMutation();
+  const [confluenceConnections, { isLoading: confluenceLoading }] =
+    useConfluenceConnectionsMutation();
 
   useEffect(() => {
     if (error) {
@@ -164,6 +168,12 @@ const ProfileScreen = () => {
     console.log("Change Avatar clicked");
     // Logic for changing the avatar goes here (e.g., file input, API call)
     setPpOpen(false);
+  };
+
+  const handleConfluence = () => {
+    console.log("Confluence button clicked");
+    confluenceConnections(profileData?.username);
+    // Logic for Confluence button goes
   };
 
   if (noSuchProfile)
@@ -325,8 +335,9 @@ const ProfileScreen = () => {
                                     ? "hidden"
                                     : ""
                                 }`}
+                                onClick={handleConfluence}
                               >
-                                Confluence
+                                {confluenceLoading ? <Loader2 /> : "Confluence"}
                               </Button>
                             </div>
                           )}
