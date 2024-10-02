@@ -12,6 +12,8 @@ import {
   approveConnectionRequest,
   getUserById,
   disconnectUser,
+  getUsers,
+  confluenceConnections,
 } from "../controllers/userController.js";
 
 const router = express.Router();
@@ -26,7 +28,8 @@ router
   .route("/profile")
   .get(protect, getUserProfile)
   .put(protect, updateUserProfile);
-
+router.route("/confluence/:username").post(protect, confluenceConnections);
+router.get("/", protect, getUsers);
 router.route("/:id").get(protect, getUserById);
 router.route("/:id/connect").post(protect, sendConnectionRequest);
 router.route("/:id/approve").post(protect, approveConnectionRequest);

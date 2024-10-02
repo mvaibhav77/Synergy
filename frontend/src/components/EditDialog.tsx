@@ -114,7 +114,10 @@ const EditDialog = ({
   };
 
   return (
-    <Dialog open={editDialogActive}>
+    <Dialog
+      open={editDialogActive}
+      onOpenChange={(val) => setEditDialogActive(val)}
+    >
       <DialogContent className="p-4">
         <DialogHeader>
           <DialogTitle>

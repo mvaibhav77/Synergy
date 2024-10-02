@@ -17,7 +17,11 @@ import { useGetUserByIdMutation } from "@/slices/usersApiSlice";
 import ChatView from "@/components/Messages/ChatView";
 import ConversationList from "@/components/Messages/ConversationList";
 
-const socket = io("https://synergy-76cw.onrender.com/", {
+// const socket = io("https://synergy-76cw.onrender.com/", {
+//   transports: ["websocket"], // Ensures WebSocket is used directly
+// });
+
+const socket = io("http://localhost:5000", {
   transports: ["websocket"], // Ensures WebSocket is used directly
 });
 
@@ -201,13 +205,13 @@ const ChatScreen = () => {
   return (
     <Page>
       <div
-        className={`flex flex-col ${MIN_SECTION_HEIGHT} border-x-[1px] border-gray-500`}
+        className={`flex flex-col ${MIN_SECTION_HEIGHT} border-x-[1px] border-white-700`}
       >
         {/* Responsive Layout */}
         <div className="grid lg:grid-cols-5 grid-cols-1">
           {/* Left Side: Chat List Sidebar */}
           <div
-            className={`flex-col lg:col-span-2 ${MIN_SECTION_HEIGHT} border-r-[1px] border-gray-500 lg:flex ${
+            className={`flex-col lg:col-span-2 ${MIN_SECTION_HEIGHT} border-r-[1px] border-white-700 lg:flex ${
               conversationId ? "hidden" : "flex"
             }`}
           >

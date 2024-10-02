@@ -14,12 +14,12 @@ const Dashboard = () => {
   return (
     <Page>
       <div
-        className={`flex flex-col ${MIN_SECTION_HEIGHT} border-x-[1px] border-gray-500`}
+        className={`flex flex-col ${MIN_SECTION_HEIGHT} border-x-[1px] border-white-700`}
       >
-        <div className="lg:grid lg:grid-cols-3 flex flex-col-reverse h-100">
+        <div className="flex flex-col-reverse h-100">
           {/* MAIN POST AREA */}
           <div
-            className={`flex flex-col col-span-2 ${MIN_SECTION_HEIGHT} border-r-[1px] border-gray-500`}
+            className={`flex flex-col ${MIN_SECTION_HEIGHT} border-r-[1px] border-white-700`}
           >
             {/* POST CREATION */}
             <CreatePost />
@@ -27,9 +27,6 @@ const Dashboard = () => {
             {/* POSTS */}
             <Posts />
           </div>
-
-          {/* SIDE MENU RIGHT */}
-          <Sidemenu />
         </div>
       </div>
     </Page>

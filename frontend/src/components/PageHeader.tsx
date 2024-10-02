@@ -11,11 +11,11 @@ const PageHeader = (props: Props) => {
       <div className="flex flex-row gap-4 items-center px-4">
         <nav>
           <button onClick={() => window.history.back()}>
-            <MdOutlineKeyboardBackspace size={25} />
+            <MdOutlineKeyboardBackspace size={30} />
           </button>
         </nav>
         <div className="w-full py-4">
-          <h2 className="text-xl">{props.title}</h2>
+          <h2 className="text-xl lg:text-2xl">{props.title}</h2>
         </div>
       </div>
       <Separator />

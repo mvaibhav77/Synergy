@@ -46,7 +46,7 @@ const Posts = () => {
     },
   ];
   return (
-    <ScrollArea className="lg:h-[calc(100vh-214px)] flex flex-col gap-2 py-4">
+    <ScrollArea className="lg:h-[calc(100vh-240px)] flex flex-col gap-2 py-4">
       {/* POST */}
       {dummyPosts.map((post, index) => (
         <div className="post mb-4" key={`post-${index}`}>
@@ -106,9 +106,11 @@ const Posts = () => {
                 {/* an image */}
                 {/* an image */}
                 <img
-                  src={post.image || "https://picsum.photos/400/600"}
+                  src={
+                    post.image || `https://picsum.photos/600/${1200 + index}`
+                  }
                   alt="post image"
-                  className="w-full h-64 object-cover rounded-md"
+                  className="w-full h-[600px] object-cover rounded-md"
                 />
               </div>
 
