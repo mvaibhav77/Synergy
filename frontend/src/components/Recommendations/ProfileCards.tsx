@@ -26,7 +26,7 @@ const ProfileCards = (props: Props) => {
             {/* showing similarity metric in percentage */}
             <p className="text-inherit opacity-60  italic text-center">
               {props.type == "recommend" && (
-                <>Matching:- {((props.similarity || 0) * 100).toFixed(2)}%</>
+                <>Matching:- {((props.similarity || 0.05) * 100).toFixed(2)}%</>
               )}
             </p>
           </div>

@@ -114,8 +114,10 @@ const LoginScreen: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-row justify-center items-center min-h-screen min-w-screen bg-background">
-      <div className="side-bg w-full h-screen bg-primary opacity-15 lg:block hidden"></div>
+    <div className="flex flex-row justify-center items-center max-h-screen min-w-screen bg-background">
+      <div className="side-bg w-full h-screen bg-gray opacity-30 border-r-2 border-white-200">
+      <img src="/logo-synergy.png" alt="Synergy Logo" className="pl-20 pt-10 max-h-[95vh] w-auto object-contain"/>
+      </div>
       <div className="authCard w-full flex flex-col gap-6 items-center justify-center lg:px-0 px-4">
         <CardHeader className="lg:block hidden">
           <CardTitle className="text-6xl">Welcome To Synergy</CardTitle>
