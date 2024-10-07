@@ -3,11 +3,6 @@ import { Strategy as GitHubStrategy } from "passport-github2";
 import { Strategy as LinkedInStrategy } from "passport-linkedin-oauth2";
 import User from "../models/userModel.js"; // Adjust the path as needed
 import dotenv from "dotenv";
-import {
-  GITHUB_REDIRECT_URI,
-  LINKEDIN_REDIRECT_URI,
-} from "../utils/constants.js";
-import axios from "axios";
 
 dotenv.config();
 
@@ -17,7 +12,7 @@ passport.use(
     {
       clientID: process.env.GITHUB_CLIENT_ID,
       clientSecret: process.env.GITHUB_CLIENT_SECRET,
-      callbackURL: GITHUB_REDIRECT_URI,
+      callbackURL: process.env.GITHUB_REDIRECT_URI,
       scope: ["user:email"], // Request email permission
     },
     async (accessToken, refreshToken, profile, done) => {

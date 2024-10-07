@@ -3,7 +3,6 @@ import axios from "axios";
 import passport from "passport";
 import generateToken from "../utils/generateToken.js";
 import User from "../models/userModel.js";
-import { LINKEDIN_REDIRECT_URI } from "../utils/constants.js";
 import jwt from "jsonwebtoken";
 
 const router = express.Router();
@@ -26,7 +25,7 @@ router.get(
     generateToken(res, req.user._id);
 
     const redirectLink =
-      `http://localhost:3000/login-success?` +
+      `https://synergy-76cw.onrender.com/login-success?` +
       `id=${req.user._id}&name=${encodeURIComponent(req.user.name)}&` +
       `email=${encodeURIComponent(
         req.user.email
@@ -58,7 +57,7 @@ router.get(
 
 // LinkedIn OAuth routes
 router.get("/linkedin", (req, res) => {
-  const redirectUri = encodeURIComponent(LINKEDIN_REDIRECT_URI);
+  const redirectUri = encodeURIComponent(process.env.LINKEDIN_REDIRECT_URI);
   const scope = encodeURIComponent("openid profile email");
   const linkedinAuthUrl = `https://www.linkedin.com/oauth/v2/authorization?response_type=code&client_id=${process.env.LINKEDIN_CLIENT_ID}&redirect_uri=${redirectUri}&scope=${scope}`;
 
@@ -81,7 +80,7 @@ router.get("/linkedin/callback", async (req, res) => {
         params: {
           grant_type: "authorization_code",
           code,
-          redirect_uri: LINKEDIN_REDIRECT_URI,
+          redirect_uri: process.env.LINKEDIN_REDIRECT_URI,
           client_id: process.env.LINKEDIN_CLIENT_ID,
           client_secret: process.env.LINKEDIN_CLIENT_SECRET,
         },
@@ -156,7 +155,7 @@ router.get("/linkedin/callback", async (req, res) => {
 
     // Redirect or respond with token
     res.redirect(
-      `http://localhost:3000/api/auth/linkedin/login-success?token=${token}`
+      `https://synergy-76cw.onrender.com/api/auth/linkedin/login-success?token=${token}`
     );
   } catch (error) {
     console.error("LinkedIn auth error:", error);
@@ -184,7 +183,7 @@ router.get("/linkedin/login-success", async (req, res) => {
 
   // Construct the redirect link with user info
   const redirectLink =
-    `http://localhost:3000/login-success?` +
+    `https://synergy-76cw.onrender.com/login-success?` +
     `id=${user._id}&name=${encodeURIComponent(user.name)}&` +
     `email=${encodeURIComponent(user.email)}&username=${encodeURIComponent(
       user.username || ""
