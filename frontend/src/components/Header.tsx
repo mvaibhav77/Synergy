@@ -98,7 +98,8 @@ const Header = (props: Props) => {
         )}
 
         {/* Brand */}
-        <Link to="/" className="lg:text-2xl text-xl font-bold">
+        <Link to="/" className="flex items-center lg:text-2xl text-xl font-bold">
+          <img src="../../logo-synergy.png" alt="Logo" className="h-8 w-8 mr-2" />
           Synergy
         </Link>
 
