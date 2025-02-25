@@ -35,11 +35,9 @@ const ConnectionsDialog = (props: Props) => {
   };
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger>
-        <button className="text-gray-500 hover:text-white hover:underline">
-          <span className="font-bold">Connections: </span>
-          {props.connections?.length || 0}
-        </button>
+      <DialogTrigger className="text-gray-500 font-bold  hover:text-inherit hover:underline w-fit text-inherit">
+        {props.connections?.length || 0}{" "}
+        <span className="text-primary">Connections</span>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>

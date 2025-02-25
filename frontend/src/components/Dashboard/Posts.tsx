@@ -46,7 +46,7 @@ const Posts = () => {
     },
   ];
   return (
-    <ScrollArea className="h-[calc(100vh-214px)] flex flex-col gap-2 py-4 ">
+    <ScrollArea className="lg:h-[calc(100vh-240px)] flex flex-col gap-2 py-4">
       {/* POST */}
       {dummyPosts.map((post, index) => (
         <div className="post mb-4" key={`post-${index}`}>
@@ -73,6 +73,7 @@ const Posts = () => {
                   <div className="text-gray-500 text-sm">-</div>
                   <div className="text-gray-500 text-sm">10 Sept</div>
                 </div>
+                {/* options */}
                 <Popover>
                   <PopoverTrigger>
                     <button>
@@ -101,13 +102,15 @@ const Posts = () => {
               {/* post content */}
               <div className="post-content flex flex-col gap-4">
                 {/* text */}
-                <div className="text-gray-300">{post.message}</div>
+                <div className="">{post.message}</div>
                 {/* an image */}
                 {/* an image */}
                 <img
-                  src={post.image || "https://picsum.photos/400/600"}
+                  src={
+                    post.image || `https://picsum.photos/600/${1200 + index}`
+                  }
                   alt="post image"
-                  className="w-full h-64 object-cover rounded-md"
+                  className="w-full h-[600px] object-cover rounded-md"
                 />
               </div>
 

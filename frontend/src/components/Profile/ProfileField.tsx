@@ -21,7 +21,7 @@ const ProfileField = (props: Props) => {
 
   return (
     <div
-      className={`field group flex flex-row items-center justify-between p-3 w-full rounded-lg hover:bg-gray-700`}
+      className={`field group flex flex-row items-center justify-between p-3 w-full rounded-lg hover:bg-secondary`}
     >
       <div className={`flex flex-row items-center gap-4`}>
         <h2 className={`field-title font-semibold ${props.titleClass}`}>

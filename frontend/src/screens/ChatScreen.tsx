@@ -6,9 +6,7 @@ import PageHeader from "@/components/PageHeader";
 import { MIN_SECTION_HEIGHT } from "@/utils/constants";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Card, CardContent } from "@/components/ui/card";
-import { FaSearch, FaUser } from "react-icons/fa";
+import { FaSearch } from "react-icons/fa";
 import NewChatDialog from "@/components/Messages/NewChatDialog";
 import { useGetConversationsMutation } from "@/slices/chatApiSlice";
 import { RootState, useAppDispatch } from "@/store";
@@ -16,11 +14,16 @@ import { setConversations } from "@/slices/authSlice";
 import { useSelector } from "react-redux";
 import { Conversation, Message, Participant, UserInfo } from "@/utils/types";
 import { useGetUserByIdMutation } from "@/slices/usersApiSlice";
-import { Separator } from "@/components/ui/separator";
+import ChatView from "@/components/Messages/ChatView";
+import ConversationList from "@/components/Messages/ConversationList";
 
-const socket = io("http://localhost:5000", {
+const socket = io("https://synergy-76cw.onrender.com/", {
   transports: ["websocket"], // Ensures WebSocket is used directly
 });
+
+// const socket = io("http://localhost:5000", {
+//   transports: ["websocket"], // Ensures WebSocket is used directly
+// });
 
 export interface Convo {
   name: string;
@@ -129,7 +132,14 @@ const ChatScreen = () => {
     };
 
     fetchConversations();
-  }, [currentUser, getConversations, dispatch, conversationId]);
+  }, [
+    currentUser,
+    getConversations,
+    dispatch,
+    conversationId,
+    getUserDetails,
+    userInfo?.connections,
+  ]);
 
   // Join room and fetch messages when a conversationId is present
   useEffect(() => {
@@ -195,12 +205,15 @@ const ChatScreen = () => {
   return (
     <Page>
       <div
-        className={`flex flex-col ${MIN_SECTION_HEIGHT} border-x-[1px] border-gray-500`}
+        className={`flex flex-col ${MIN_SECTION_HEIGHT} border-x-[1px] border-white-700`}
       >
-        <div className="grid grid-cols-5">
+        {/* Responsive Layout */}
+        <div className="grid lg:grid-cols-5 grid-cols-1">
           {/* Left Side: Chat List Sidebar */}
           <div
-            className={`flex flex-col col-span-2 ${MIN_SECTION_HEIGHT} border-r-[1px] border-gray-500`}
+            className={`flex-col lg:col-span-2 ${MIN_SECTION_HEIGHT} border-r-[1px] border-white-700 lg:flex ${
+              conversationId ? "hidden" : "flex"
+            }`}
           >
             <PageHeader title={"Messages"} />
             <div className="p-4">
@@ -217,132 +230,62 @@ const ChatScreen = () => {
               <NewChatDialog />
 
               {/* Chat List */}
-              <ScrollArea className="h-[calc(100vh-300px)]">
-                {conversationsLoading ? (
-                  <>LOADING....</>
-                ) : Array.isArray(conversationList) &&
-                  conversationList.length > 0 ? (
-                  conversationList.map((conversation) => (
-                    <Card
-                      key={conversation._id}
-                      className="mb-2 cursor-pointer group hover:bg-white hover:text-gray-900"
-                      onClick={() => handleSelectConversation(conversation._id)}
-                    >
-                      <CardContent className="flex flex-col gap-2 py-4">
-                        <div className="text-lg flex flex-row justify-between font-semibold group-hover:text-black">
-                          <div className="flex flex-row items-center gap-2">
-                            <FaUser />
-                            {conversation.name}
-                          </div>
-                          <div className="text-sm text-gray-400">1h</div>
-                        </div>
-                        <div className="text-sm pr-6 w-[300px] text-ellipsis overflow-hidden whitespace-nowrap ">
-                          {conversation.lastMessage}
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ))
-                ) : (
-                  <div>No conversations found</div>
-                )}
-              </ScrollArea>
+              <ConversationList
+                conversationsLoading={conversationsLoading}
+                conversationList={conversationList}
+                handleSelectConversation={handleSelectConversation}
+              />
             </div>
           </div>
 
           {/* Right Side: Chat Interface */}
-          <div className="col-span-3 flex flex-col">
-            {conversationId && currentConversation && (
-              <div className="p-4 border-b-[1px] border-gray-800">
-                {/* Header for chat interface */}
-                <div className="text-xl font-semibold">
-                  Chat with {currentConversation.name}
-                </div>
-              </div>
-            )}
-
-            {conversationId ? (
-              <>
-                {/* Chat Messages */}
-                <ScrollArea className="flex-grow p-4 max-h-[calc(100vh-210px)]">
-                  {/* info about the other person  */}
-                  {chatUser && (
-                    <div className="flex flex-col gap-2 items-center mb-4">
-                      {/* Avatar */}
-                      <img
-                        src={chatUser.avatar || "https://github.com/github.png"} // Fallback image
-                        alt={`${chatUser.name}'s avatar`}
-                        className="w-20 h-20 rounded-full"
-                      />
-                      {/* Name */}
-                      <div className="text-xl font-semibold">
-                        {chatUser.name}
-                      </div>
-                      {/* Connected Since */}
-                      <div className="text-sm text-gray-500">
-                        Connected Since {connectedSince}
-                      </div>
-                      <Separator className="my-4" />
-                    </div>
-                  )}
-
-                  {/* Messages */}
-                  <div className="flex flex-col gap-4">
-                    {messages.map((message, index) => (
-                      <div
-                        key={message._id}
-                        ref={index === messages.length - 1 ? scrollRef : null} // Attach ref to the last message
-                        className={`flex ${
-                          message.sender === currentUser?._id ||
-                          (message.sender as Participant)?._id ===
-                            currentUser?._id
-                            ? "justify-end"
-                            : ""
-                        }`}
-                      >
-                        <div
-                          className={`${
-                            message.sender === currentUser?._id ||
-                            (message.sender as Participant)?._id ===
-                              currentUser?._id
-                              ? "bg-blue-600 text-white"
-                              : "bg-gray-300 text-black"
-                          } rounded-lg p-3 max-w-[75%]`}
-                        >
-                          {message.content}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </ScrollArea>
-
-                {/* Chat Input */}
-                <div className="p-4 border-t-[1px] border-gray-500">
-                  <div className="flex items-center gap-2">
-                    <Input
-                      placeholder="Type a message..."
-                      className="flex-grow"
-                      value={newMessage}
-                      onChange={(e) => setNewMessage(e.target.value)}
-                    />
-                    <Button
-                      variant="outline"
-                      className="rounded-full border-white"
-                    >
-                      AI
-                    </Button>
-                    <Button variant="default" onClick={handleSendMessage}>
-                      Send
-                    </Button>
-                  </div>
-                </div>
-              </>
-            ) : (
-              <div className="flex flex-grow items-center justify-center text-xl font-semibold">
-                Select a chat to start collaborating.
-              </div>
-            )}
+          <div
+            className={`lg:col-span-3 flex-grow ${
+              conversationId ? "flex" : "hidden"
+            } lg:flex`}
+          >
+            <ChatView
+              conversationId={conversationId}
+              currentConversation={currentConversation}
+              chatUser={chatUser}
+              connectedSince={connectedSince}
+              messages={messages}
+              scrollRef={scrollRef}
+              currentUser={currentUser}
+              newMessage={newMessage}
+              setNewMessage={setNewMessage}
+              handleSendMessage={handleSendMessage}
+            />
           </div>
         </div>
+
+        {/* Mobile View
+        <div className="lg:hidden">
+          {conversationId ? (
+            <ChatView
+              conversationId={conversationId}
+              currentConversation={currentConversation}
+              chatUser={chatUser}
+              connectedSince={connectedSince}
+              messages={messages}
+              scrollRef={scrollRef}
+              currentUser={currentUser}
+              newMessage={newMessage}
+              setNewMessage={setNewMessage}
+              handleSendMessage={handleSendMessage}
+            />
+          ) : (
+            <div className="p-4">
+              <PageHeader title={"Messages"} />
+              <NewChatDialog />
+              <ConversationList
+                conversationsLoading={conversationsLoading}
+                conversationList={conversationList}
+                handleSelectConversation={handleSelectConversation}
+              />
+            </div>
+          )}
+        </div> */}
       </div>
     </Page>
   );

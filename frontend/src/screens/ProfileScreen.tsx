@@ -7,11 +7,8 @@ import Page from "@/components/Page";
 import PageHeader from "@/components/PageHeader";
 import { Card, CardContent } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import ProfileField from "@/components/Profile/ProfileField";
-import ProfileListField from "@/components/Profile/ProfileListField";
-import ConnectSocials from "@/components/Profile/ConnectSocials";
-import { FaGithub, FaLinkedin, FaTwitter } from "react-icons/fa";
 import {
+  useConfluenceConnectionsMutation,
   useDisconnectUserMutation,
   useGetCurrentUserMutation,
   useGetUserByIdMutation,
@@ -26,6 +23,17 @@ import {
   useGetConversationsMutation,
 } from "@/slices/chatApiSlice";
 import ConnectionsDialog from "@/components/Profile/ConnectionsDialog";
+import Loader from "@/components/Loader";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import EditBasicProfile from "@/components/Profile/EditBasicProfile";
+import Socials from "@/components/Profile/Socials";
+import ProfileTabs from "@/components/Profile/ProfileTabs";
+import { Loader2 } from "lucide-react";
 
 const ProfileScreen = () => {
   const { username } = useParams<{ username: string }>();
@@ -38,12 +46,14 @@ const ProfileScreen = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
-  const { data, isLoading } = useGetUserQuery(username);
+  const { data, isLoading, error } = useGetUserQuery(username);
   const [profileData, setProfileData] = useState<UserInfo | null>(null);
   const isCurrentUser = userInfo?.username === username;
   const [connections, setConnections] = useState<UserInfo[] | null>(null);
   const [connectionStatus, setConnectionStatus] = useState<string | null>(null);
-
+  const [noSuchProfile, setNoSuchProfile] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [ppOpen, setPpOpen] = useState<boolean>(false);
   const [sendRequest, { isLoading: sendingReqLoading }] =
     useSendRequestMutation();
   const [getMe, { isLoading: loadingMe }] = useGetCurrentUserMutation();
@@ -51,23 +61,30 @@ const ProfileScreen = () => {
   const [createConversation] = useCreateConversationMutation();
   const [disconnectUser] = useDisconnectUserMutation();
   const [getUser] = useGetUserByIdMutation();
+  const [confluenceConnections, { isLoading: confluenceLoading }] =
+    useConfluenceConnectionsMutation();
 
   useEffect(() => {
-    if (!isCurrentUser) {
+    if (error) {
+      // Handle cases where the profile doesn't exist
+      setNoSuchProfile(true);
+    } else if (data && !isCurrentUser) {
       setProfileData(data);
       const fetchConnections = async () => {
         const fetchedConnections: UserInfo[] = [];
         for (const connection of data.connections || []) {
           if (connection.status === "connected") {
             try {
-              const data = await getUser(connection.userId).unwrap();
-              if (data) {
-                fetchedConnections.push(data);
+              const connectionData = await getUser(connection.userId).unwrap();
+              if (connectionData) {
+                fetchedConnections.push(connectionData);
               }
-            } catch (error) {
-              console.error(`Error fetching user ${connection.userId}:`, error);
+            } catch (fetchError) {
+              console.error(
+                `Error fetching user ${connection.userId}:`,
+                fetchError
+              );
             }
-            continue;
           }
         }
         setConnections(fetchedConnections);
@@ -76,7 +93,7 @@ const ProfileScreen = () => {
     } else {
       setProfileData(userInfo);
     }
-  }, [data, getUser, isCurrentUser, userInfo]);
+  }, [data, error, getUser, isCurrentUser, userInfo]);
 
   const handleConnect = async () => {
     console.log("Connect button clicked");
@@ -141,13 +158,43 @@ const ProfileScreen = () => {
     }
   }, [isCurrentUser, profileData, userInfo, sendingReqLoading]);
 
+  const handleRemovePicture = () => {
+    console.log("Remove Avatar clicked");
+    // Logic for removing the avatar goes here
+    setPpOpen(false);
+  };
+
+  const handleChangePicture = () => {
+    console.log("Change Avatar clicked");
+    // Logic for changing the avatar goes here (e.g., file input, API call)
+    setPpOpen(false);
+  };
+
+  const handleConfluence = () => {
+    console.log("Confluence button clicked");
+    confluenceConnections(profileData?.username);
+    // Logic for Confluence button goes
+  };
+
+  if (noSuchProfile)
+    return (
+      <Page>
+        <div
+          className={`border-x-[1px] ${MIN_SECTION_HEIGHT} border-gray-500 `}
+        >
+          <PageHeader title={`${username} Profile`} />
+          <div className="flex items-center justify-center h-[500px] ">
+            <h2 className="text-2xl">No such profile found</h2>
+          </div>
+        </div>
+      </Page>
+    );
+
   return (
     <Page>
-      <div
-        className={`border-x-[1px] ${MIN_SECTION_HEIGHT} border-gray-500 px-2`}
-      >
+      <div className={`border-x-[1px] ${MIN_SECTION_HEIGHT} border-gray-500`}>
         {!profileData || isLoading ? (
-          <>Loading.....</>
+          <Loader />
         ) : (
           <>
             <PageHeader
@@ -156,178 +203,172 @@ const ProfileScreen = () => {
               }
             />
             <ScrollArea className="h-[calc(100vh-160px)] mt-4">
-              <div className="grid grid-cols-1 !items-stretch md:grid-cols-5 gap-4 px-4">
-                <aside className="md:col-span-2 h-full">
-                  <Card className="p-4 h-full">
+              <div className="flex flex-col justify-center !items-stretch gap-4 px-4">
+                {/* profile header */}
+                <header className=" h-full">
+                  {/* banner */}
+                  <img
+                    src={
+                      profileData?.banner ||
+                      "https://placehold.co/1200x300/gray/white?text=Profile+Banner&font=roboto"
+                    }
+                    alt="Banner"
+                    className="w-full h-full object-cover"
+                  />
+                  <Card className="p-4 h-full ">
                     <CardContent>
-                      <div className="flex flex-col items-center gap-4">
-                        <img
-                          src={
-                            profileData.avatar ||
-                            "https://github.com/github.png"
-                          }
-                          alt="Profile Picture"
-                          className="rounded-full w-40 h-40"
-                        />
-                        <h2 className="text-xl font-semibold flex gap-4">
-                          {profileData.name}
-                        </h2>
-                        <p className="text-gray-500 italic">
-                          {profileData.bio}
-                        </p>
-                        <ConnectionsDialog
-                          profileData={profileData}
-                          connections={
-                            isCurrentUser ? currentUserConnections : connections
-                          }
-                        />
+                      <div className="relative flex flex-row justify-between gap-4">
+                        {/* profile avatar */}
+                        <div className="profile-avatar absolute left-2 -top-36 p-2 bg-background rounded-full">
+                          <Dialog>
+                            <DialogTrigger>
+                              <div className="avatar rounded-full w-48 h-48 cursor-pointer">
+                                <img
+                                  src={
+                                    profileData.avatar ||
+                                    "https://github.com/github.png"
+                                  }
+                                  alt="Profile Picture"
+                                  className="rounded-full w-48 h-48"
+                                />
+                              </div>
+                            </DialogTrigger>
+                            <DialogContent>
+                              <DialogHeader>
+                                <h2 className="text-lg font-semibold">
+                                  Profile Picture
+                                </h2>
+                              </DialogHeader>
+                              <div className="avatar-content flex flex-col items-center gap-4">
+                                {/* Display the profile picture */}
+                                <img
+                                  src={
+                                    profileData.avatar ||
+                                    "https://github.com/github.png"
+                                  }
+                                  alt="Profile Picture"
+                                  className="rounded-full w-40 h-40"
+                                />
 
-                        {/* Social Media Section */}
-                        {isCurrentUser && (
-                          <div className="socialApps">
-                            <h3 className="mb-2 p-2">Connected Social Apps</h3>
-                            <div className="flex gap-4">
-                              {profileData.socialMedia?.map((platform) => (
-                                <button key={platform.platform}>
-                                  {platform.platform === "github" && (
-                                    <FaGithub className="text-5xl text-white" />
-                                  )}
-                                  {platform.platform === "linkedin" && (
-                                    <FaLinkedin className="text-5xl text-white" />
-                                  )}
-                                  {platform.platform === "twitter" && (
-                                    <FaTwitter className="text-5xl text-white" />
-                                  )}
-                                </button>
-                              ))}
-                              {profileData.socialMedia &&
-                                profileData.socialMedia?.length < 3 && (
-                                  <ConnectSocials
-                                    socials={profileData.socialMedia}
-                                  />
-                                )}
-                            </div>
-                          </div>
-                        )}
+                                {/* Buttons for changing and removing the profile picture */}
+                                <div className="flex gap-4">
+                                  <Button
+                                    className="bg-blue-500 text-white hover:bg-blue-600"
+                                    onClick={() => handleChangePicture()}
+                                  >
+                                    Change
+                                  </Button>
+                                  <Button
+                                    className="bg-red-500 text-white hover:bg-red-600"
+                                    onClick={() => handleRemovePicture()}
+                                  >
+                                    Remove
+                                  </Button>
+                                </div>
+                              </div>
+                            </DialogContent>
+                          </Dialog>
+                        </div>
 
-                        {/* Connect Button for non-current user's profile */}
-                        {!isCurrentUser && (
-                          <>
-                            <Button
-                              variant={
-                                connectionStatus === "connected"
-                                  ? "destructive"
-                                  : "default"
+                        <div className="basic-profile flex flex-col gap-2 mt-20">
+                          <h2 className="text-3xl font-semibold flex gap-4">
+                            {profileData.name}
+                          </h2>
+                          <p className="text-gray-500 italic">
+                            {profileData.bio}
+                          </p>
+                          <div className="stats flex flex-row gap-6">
+                            {/* connections */}
+                            <ConnectionsDialog
+                              profileData={profileData}
+                              connections={
+                                isCurrentUser
+                                  ? currentUserConnections
+                                  : connections
                               }
-                              disabled={connectionStatus === "pending"}
-                              className="mt-4 w-full"
-                              onClick={handleConnect}
-                            >
-                              {sendingReqLoading || loadingMe
-                                ? "Sending..."
-                                : connectionStatus === "pending"
-                                ? "Pending"
-                                : connectionStatus === "connected"
-                                ? "Disconnect"
-                                : "Connect"}
-                            </Button>
+                            />
 
-                            <Button
-                              variant="default"
-                              className="mt-2 w-full"
-                              onClick={handleMessage}
-                            >
-                              {/* <FaEnvelope className="mr-2" /> */}
-                              Message
-                            </Button>
+                            {/* Posts */}
+                            <button className="text-gray-500 font-bold hover:text-inherit hover:underline w-fit text-inherit">
+                              {profileData.posts?.length || 0}{" "}
+                              <span className="text-primary">Posts</span>
+                            </button>
+                          </div>
 
-                            <Button variant="default" className="mt-2 w-full">
-                              Confluence
-                            </Button>
-                          </>
-                        )}
+                          {/* Connect Button for non-current user's profile */}
+                          {!isCurrentUser && (
+                            <div className="flex flex-row gap-2 items-center">
+                              <Button
+                                variant={
+                                  connectionStatus === "connected"
+                                    ? "destructive"
+                                    : "default"
+                                }
+                                disabled={connectionStatus === "pending"}
+                                className="mt-4 w-full"
+                                onClick={handleConnect}
+                              >
+                                {sendingReqLoading || loadingMe
+                                  ? "Sending..."
+                                  : connectionStatus === "pending"
+                                  ? "Pending"
+                                  : connectionStatus === "connected"
+                                  ? "Disconnect"
+                                  : "Connect"}
+                              </Button>
+
+                              <Button
+                                className={`mt-4 w-full bg-pbtn text-pbtn-foreground hover:text-black ${
+                                  connectionStatus !== "connected"
+                                    ? "hidden"
+                                    : ""
+                                }`}
+                                onClick={handleMessage}
+                              >
+                                {/* <FaEnvelope className="mr-2" /> */}
+                                Message
+                              </Button>
+
+                              <Button
+                                className={`mt-4 w-full bg-sbtn text-sbtn-foreground hover:text-black ${
+                                  connectionStatus !== "connected"
+                                    ? "hidden"
+                                    : ""
+                                }`}
+                                onClick={handleConfluence}
+                              >
+                                {confluenceLoading ? <Loader2 /> : "Confluence"}
+                              </Button>
+                            </div>
+                          )}
+                        </div>
+
+                        {/* right section */}
+                        <aside>
+                          {/* edit button for current user */}
+                          {isCurrentUser && (
+                            <div className="edit-button flex flex-row items-center justify-end w-full">
+                              <EditBasicProfile
+                                name={profileData.name}
+                                bio={profileData.bio}
+                              />
+                            </div>
+                          )}
+
+                          {/* Social Media Section */}
+                          {isCurrentUser && <Socials userInfo={profileData} />}
+                        </aside>
                       </div>
                     </CardContent>
                   </Card>
-                </aside>
+                </header>
 
-                <main className="md:col-span-3 main-profile-section">
-                  <Card className="py-4">
-                    <CardContent>
-                      <ProfileField
-                        title={"Name"}
-                        value={profileData.name}
-                        editable={isCurrentUser}
-                        valueClass="text-4xl font-bold"
-                        titleClass="hidden"
-                      />
-                      <div className="other_fields">
-                        <ProfileField
-                          title="Email"
-                          value={profileData.email}
-                          editable={isCurrentUser}
-                        />
-                        <ProfileField
-                          title="Username"
-                          value={profileData.username}
-                          editable={false}
-                        />
-                        <ProfileField
-                          title="Profession"
-                          value={profileData.profession}
-                          editable={isCurrentUser}
-                        />
-                        <ProfileField
-                          title="Bio"
-                          value={profileData.bio}
-                          editable={isCurrentUser}
-                        />
-                        <ProfileField
-                          title="Location"
-                          value={profileData.location}
-                          editable={isCurrentUser}
-                        />
-                        {profileData?.skills && (
-                          <ProfileListField
-                            title="Skills"
-                            value={profileData.skills}
-                            editable={isCurrentUser}
-                          />
-                        )}
-                        {profileData?.interests && (
-                          <ProfileListField
-                            title="Interests"
-                            value={profileData.interests}
-                            editable={isCurrentUser}
-                          />
-                        )}
-                      </div>
-                    </CardContent>
-                  </Card>
+                <main className="main-profile-section">
+                  <ProfileTabs
+                    profileData={profileData}
+                    isCurrentUser={isCurrentUser}
+                  />
                 </main>
-              </div>
-
-              <div className="flex flex-col p-4">
-                {/* Connection Preferences */}
-                <Card className="py-4 h-fit">
-                  <CardContent>
-                    <h2 className="text-2xl mb-2 font-semibold">
-                      Connection Preferences
-                    </h2>
-                    <div className="flex flex-col gap-4">
-                      <ProfileListField
-                        title="Connection Interests"
-                        value={profileData.connectionPreferences?.interests}
-                        editable={isCurrentUser}
-                      />
-                      {/* <ProfileListField
-                        title="Connection Skills"
-                        value={profileData.connectionPreferences?.skills}
-                        editable={isCurrentUser}
-                      /> */}
-                    </div>
-                  </CardContent>
-                </Card>
               </div>
             </ScrollArea>
           </>

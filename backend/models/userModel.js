@@ -45,6 +45,12 @@ const userSchema = new mongoose.Schema(
         },
       ],
     },
+    linkedInId: { type: String }, // Unique ID from LinkedIn (sub)
+    locale: {
+      country: { type: String }, // Country part of locale
+      language: { type: String }, // Language part of locale
+    },
+
     lastActive: { type: Date, default: Date.now }, // Track last activity
   },
   {

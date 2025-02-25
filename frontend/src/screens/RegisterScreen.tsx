@@ -23,13 +23,13 @@ import {
 } from "@/components/ui/card";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store";
-import { useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { useRegisterMutation } from "@/slices/usersApiSlice";
 import { setCredentials } from "@/slices/authSlice";
 import { useToast } from "@/hooks/use-toast";
 import { ToastAction } from "@/components/ui/toast";
-import MultipleSelector from "@/components/ui/MultiSelect";
-import { skillOptions } from "@/utils/constants";
+import { FaGithub, FaLinkedin } from "react-icons/fa";
+import { Separator } from "@/components/ui/separator";
 
 const formSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -37,13 +37,12 @@ const formSchema = z.object({
   password: z.string().min(6, "Password must be at least 6 characters"),
   username: z.string().min(3, "Username must be at least 3 characters"),
   bio: z.string().max(200, "Bio must not exceed 200 characters"),
-  skills: z.array(z.string()).min(1, "Select at least one skill"),
   profession: z.string().min(2, "Profession must be at least 2 characters"),
 });
 
 type FormValues = z.infer<typeof formSchema>;
 
-export default function RegisterPage() {
+const RegisterPage: React.FC = () => {
   const { userInfo } = useSelector((state: RootState) => state.auth);
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -52,7 +51,6 @@ export default function RegisterPage() {
   const [register, { isLoading }] = useRegisterMutation();
 
   useEffect(() => {
-    console.log(userInfo);
     if (userInfo) {
       navigate("/");
     }
@@ -67,7 +65,6 @@ export default function RegisterPage() {
       password: "",
       username: "",
       bio: "",
-      skills: [],
       profession: "",
     },
   });
@@ -82,175 +79,219 @@ export default function RegisterPage() {
       toast({
         variant: "destructive",
         title: "Registration Failed",
-        description: err?.data?.message || err.error,
+        description: err?.data?.message || err.error || "An error occurred",
         action: <ToastAction altText="Try again">Try again</ToastAction>,
       });
     }
   };
 
-  const nextStep = async () => {
-    console.log("next");
-    // const isValid = await form.trigger();
-    setStep(step + 1);
-  };
-
+  const nextStep = () => setStep(step + 1);
   const prevStep = () => setStep(step - 1);
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-background">
-      <Card className="w-[400px] h-[450px]">
+    <div className="flex flex-row justify-center items-center min-h-screen min-w-screen bg-background">
+      <div className="side-bg w-full h-screen bg-primary opacity-15 lg:block hidden"></div>
+      <div className="authCard w-full flex flex-col gap-6 items-center justify-center lg:px-0 px-4">
         <CardHeader>
-          <CardTitle>Register</CardTitle>
-          <CardDescription>
-            Create your account. Step {step} of 3
-          </CardDescription>
+          <CardTitle className="lg:text-6xl text-4xl">Register</CardTitle>
         </CardHeader>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)}>
-            <CardContent className="space-y-4">
-              {step === 1 && (
-                <>
-                  <FormField
-                    control={form.control}
-                    name="name"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Name</FormLabel>
-                        <FormControl>
-                          <Input placeholder="John Doe" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="email"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Email</FormLabel>
-                        <FormControl>
-                          <Input
-                            type="email"
-                            placeholder="johndoe@email.com"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="password"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Password</FormLabel>
-                        <FormControl>
-                          <Input
-                            type="password"
-                            placeholder="******"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </>
-              )}
-              {step === 2 && (
-                <>
-                  <FormField
-                    control={form.control}
-                    name="username"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Username</FormLabel>
-                        <FormControl>
-                          <Input placeholder="johndoe" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="bio"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Bio</FormLabel>
-                        <FormControl>
-                          <Textarea
-                            placeholder="Tell us about yourself"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </>
-              )}
-              {step === 3 && (
-                <>
-                  <FormField
-                    control={form.control}
-                    name="skills"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Skills</FormLabel>
-                        <FormControl>
-                          <MultipleSelector
-                            defaultOptions={skillOptions}
-                            placeholder="Type something..."
-                            creatable
-                            emptyIndicator={
-                              <p className="text-center text-lg leading-10 text-gray-600 dark:text-gray-400">
-                                no results found.
-                              </p>
-                            }
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="profession"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Profession</FormLabel>
-                        <FormControl>
-                          <Input placeholder="Developer" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </>
-              )}
-            </CardContent>
-            <CardFooter className="flex justify-between">
-              {step > 1 && (
-                <Button type="button" variant="outline" onClick={prevStep}>
-                  Previous
-                </Button>
-              )}
-              {step < 3 ? (
-                <Button type="button" onClick={nextStep}>
-                  Next
-                </Button>
-              ) : (
-                <Button type="submit">
-                  {isLoading ? "Registering" : "Register"}
-                </Button>
-              )}
-            </CardFooter>
-          </form>
-        </Form>
-      </Card>
+        <Card className="lg:max-w-[600px] w-full mx-4 h-full px-4 pb-6">
+          <CardHeader>
+            <CardDescription className="lg:text-lg">
+              Create your account. Step {step} of 3
+            </CardDescription>
+          </CardHeader>
+          <Form {...form}>
+            <form
+              onSubmit={form.handleSubmit(onSubmit)}
+              className="flex flex-col justify-between h-full min-h-[330px] lg:space-y-10"
+            >
+              <CardContent className="lg:space-y-6 flex flex-col lg:gap-0 gap-6  ">
+                {step === 1 && (
+                  <>
+                    <FormField
+                      control={form.control}
+                      name="name"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-lg">Name</FormLabel>
+                          <FormControl>
+                            <Input
+                              className="lg:h-12 lg:text-lg lg:px-4 lg:py-2"
+                              placeholder="John Doe"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="email"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-lg">Email</FormLabel>
+                          <FormControl>
+                            <Input
+                              type="email"
+                              className="lg:h-12 lg:text-lg lg:px-4 lg:py-2"
+                              placeholder="johndoe@email.com"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="password"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-lg">Password</FormLabel>
+                          <FormControl>
+                            <Input
+                              type="password"
+                              className="lg:h-12 lg:text-lg lg:px-4 lg:py-2"
+                              placeholder="******"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </>
+                )}
+                {step === 2 && (
+                  <>
+                    <FormField
+                      control={form.control}
+                      name="username"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-lg">Username</FormLabel>
+                          <FormControl>
+                            <Input
+                              className="lg:h-12 lg:text-lg lg:px-4 lg:py-2"
+                              placeholder="johndoe"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="bio"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-lg">Bio</FormLabel>
+                          <FormControl>
+                            <Textarea
+                              className="lg:text-lg lg:px-4 lg:py-2"
+                              placeholder="Tell us about yourself"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </>
+                )}
+                {step === 3 && (
+                  <>
+                    <FormField
+                      control={form.control}
+                      name="profession"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-lg">Profession</FormLabel>
+                          <FormControl>
+                            <Input
+                              className="lg:h-12 lg:text-lg lg:px-4 lg:py-2"
+                              placeholder="Developer"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </>
+                )}
+              </CardContent>
+              <CardFooter className="flex justify-between">
+                {step > 1 && (
+                  <Button
+                    className="lg:h-12 lg:text-lg"
+                    type="button"
+                    variant="outline"
+                    onClick={prevStep}
+                  >
+                    Previous
+                  </Button>
+                )}
+                {step < 3 ? (
+                  <Button
+                    className="lg:h-12 lg:text-lg"
+                    type="button"
+                    onClick={nextStep}
+                  >
+                    Next
+                  </Button>
+                ) : (
+                  <Button className="lg:h-12 lg:text-lg" type="submit">
+                    {isLoading ? "Registering" : "Register"}
+                  </Button>
+                )}
+              </CardFooter>
+            </form>
+          </Form>
+
+          <div className="flex items-center gap-4">
+            <Separator className="flex-1" />
+            <span className="text-muted-foreground">or register with</span>
+            <Separator className="flex-1" />
+          </div>
+
+          <CardContent className="flex flex-row gap-6 h-[100px] w-full p-0 mt-6">
+            {/* GITHUB LOGIN BUTTON */}
+            <Button
+              variant={"outline"}
+              className="text-4xl p-4 h-fit w-full"
+              onClick={() => {
+                window.location.href = "api/auth/github";
+              }}
+            >
+              <FaGithub />
+            </Button>
+            <Button
+              variant={"outline"}
+              className="text-4xl p-4 h-fit w-full"
+              onClick={() => {
+                window.location.href = "api/auth/linkedin";
+              }}
+            >
+              <FaLinkedin />
+            </Button>
+          </CardContent>
+
+          <div className="signup-option flex w-full items-center justify-center ml-2 ">
+            <div className="msg">
+              Already have an account?{" "}
+              <NavLink to={"/login"} className={"text-primary"}>
+                Login.
+              </NavLink>
+            </div>
+          </div>
+        </Card>
+      </div>
     </div>
   );
-}
+};
+
+export default RegisterPage;

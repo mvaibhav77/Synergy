@@ -16,6 +16,10 @@ export interface ConnectionPreferences {
   proximity: number;
 }
 
+export interface Post {
+  title: string;
+}
+
 export interface UserInfo {
   _id: string;
   name: string;
@@ -27,7 +31,9 @@ export interface UserInfo {
   profession?: string;
   interests?: string[];
   avatar?: string;
+  banner?: string;
   username?: string;
+  posts?: Post[];
   connections?: Connection[];
   connectionPreferences?: ConnectionPreferences;
   socialMedia?: SocialMedia[];
@@ -62,7 +68,7 @@ export interface Participant {
 
 export interface Message {
   _id: string;
-  conversationId: string;
+  conversation: string;
   sender: Participant | string;
   content: string;
   createdAt: string;

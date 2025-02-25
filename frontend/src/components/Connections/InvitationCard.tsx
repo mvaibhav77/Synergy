@@ -12,8 +12,7 @@ type Props = {
   loadingMe: boolean;
 };
 
-const InvitationsCard
- = (props: Props) => {
+const InvitationsCard = (props: Props) => {
   return (
     <Card key={props.user._id}>
       <CardContent className="flex items-center justify-between  p-4 rounded-lg">
@@ -47,5 +46,4 @@ const InvitationsCard
   );
 };
 
-export default InvitationsCard
-;
+export default InvitationsCard;

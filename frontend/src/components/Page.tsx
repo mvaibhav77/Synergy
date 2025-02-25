@@ -5,7 +5,7 @@ type Props = {
 };
 
 const Page = ({ children }: Props) => {
-  return <div className="container">{children}</div>;
+  return <div className="">{children}</div>;
 };
 
 export default Page;

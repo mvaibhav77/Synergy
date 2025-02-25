@@ -16,6 +16,8 @@ import {
 } from "@/slices/usersApiSlice";
 import { setCredentials } from "@/slices/authSlice";
 import InvitationsCard from "@/components/Connections/InvitationCard";
+import Loader from "@/components/Loader";
+import EmptyState from "@/components/EmptyState";
 
 // const dummyInvitations = [
 //   {
@@ -37,6 +39,7 @@ const ConnectionsScreen = () => {
   const [connections, setConnections] = useState<UserInfo[]>([]);
   const [requests, setRequests] = useState<UserInfo[]>([]);
   const [loadingConnections, setLoadingConnections] = useState(true);
+  const [loadingId, setLoadingId] = useState<string>("");
   const dispatch = useAppDispatch();
 
   const [getUser] = useGetUserByIdMutation();
@@ -87,6 +90,7 @@ const ConnectionsScreen = () => {
 
   const handleApprove = async (id: string) => {
     console.log(`Approved user with ID: ${id}`);
+    setLoadingId(id);
     await approve(id);
     const res = await getMe({}).unwrap();
     dispatch(setCredentials({ ...res }));
@@ -95,6 +99,7 @@ const ConnectionsScreen = () => {
 
   const handleReject = async (id: string) => {
     console.log(`Rejected user with ID: ${id}`);
+    setLoadingId(id);
     await reject(id);
     const res = await getMe({}).unwrap();
     dispatch(setCredentials({ ...res }));
@@ -121,45 +126,10 @@ const ConnectionsScreen = () => {
           {/* Invitations Tab */}
           <TabsContent value="Invitations" className="py-4 px-6">
             {requests.length === 0 ? (
-              <div>No invitations at the moment.</div>
+              <EmptyState title="No Invitations" />
             ) : (
               <div className="space-y-4">
                 {requests.map((invitation) => (
-                  // <Card key={invitation._id}>
-                  //   <CardContent className="flex items-center justify-between  p-4 rounded-lg">
-                  //     {/* Avatar */}
-                  //     <div className="flex items-center">
-                  //       <img
-                  //         src={
-                  //           invitation.avatar || "https://github.com/shadcn.png"
-                  //         }
-                  //         alt={`${invitation.name}'s avatar`}
-                  //         className="w-12 h-12 rounded-full object-cover mr-4"
-                  //       />
-                  //       <div>
-                  //         <h4 className="text-lg font-semibold">
-                  //           {invitation.name}
-                  //         </h4>
-                  //         <p className="text-sm text-gray-600">
-                  //           {invitation.bio}
-                  //         </p>
-                  //       </div>
-                  //     </div>
-
-                  //     {/* Approve/Reject buttons */}
-                  //     <div className="flex space-x-2">
-                  //       <Button onClick={() => handleApprove(invitation._id)}>
-                  //         {approveLoading || loadingMe ? <Loader /> : "Approve"}
-                  //       </Button>
-                  //       <Button
-                  //         variant="destructive"
-                  //         onClick={() => handleReject(invitation._id)}
-                  //       >
-                  //         {rejectLoading || loadingMe ? <Loader /> : "Reject"}
-                  //       </Button>
-                  //     </div>
-                  //   </CardContent>
-                  // </Card>
                   <InvitationsCard
                     key={invitation._id}
                     user={invitation}
@@ -167,7 +137,9 @@ const ConnectionsScreen = () => {
                     handleReject={handleReject}
                     rejectLoading={rejectLoading}
                     loadingMe={loadingMe}
-                    approveLoading={approveLoading}
+                    approveLoading={
+                      approveLoading && loadingId === invitation._id
+                    }
                   />
                 ))}
               </div>
@@ -177,9 +149,9 @@ const ConnectionsScreen = () => {
           {/* Connections Tab */}
           <TabsContent value="Connections" className="py-4 px-6">
             {loadingConnections ? (
-              <div>Loading connections...</div>
+              <Loader />
             ) : connections.length === 0 ? (
-              <div>No connections found.</div>
+              <EmptyState title="No Connections" />
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {connections.map((user) => (

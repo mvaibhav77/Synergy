@@ -5,6 +5,7 @@ import Notification from "../models/notificationModel.js";
 import { generateWelcomeMessage } from "../utils/generation.js";
 import Conversation from "../models/conversationModel.js";
 import Message from "../models/messageModel.js";
+import { sendConnectionRequest as sendRequest } from "../actions/cronjobActions.js";
 
 // Helper function to parse array fields
 const parseArrayField = (field) => {
@@ -229,6 +230,33 @@ const updateUserProfile = asyncHandler(async (req, res) => {
   }
 });
 
+// @desc Get all users
+// route GET /api/users
+// @access Private
+const getUsers = asyncHandler(async (req, res) => {
+  // Extract the search query from the request
+  console.log(req.query.search);
+  const search = req.query.search
+    ? {
+        // This will match users where the name, email, or any field you want
+        // contains the search keyword (case-insensitive)
+        $or: [
+          { name: { $regex: req.query.search, $options: "i" } },
+          { email: { $regex: req.query.search, $options: "i" } },
+          { profession: { $regex: req.query.search, $options: "i" } },
+          { skills: { $regex: req.query.search, $options: "i" } },
+          { interests: { $regex: req.query.search, $options: "i" } },
+        ],
+      }
+    : {};
+
+  // Fetch all users matching the search keyword, or all users if no keyword
+  const users = await User.find({ ...search });
+
+  // Return the users
+  res.status(200).json(users);
+});
+
 // @desc   Get user by Id
 // route   GET /api/users/:id
 // @access Private
@@ -253,6 +281,7 @@ const getUserById = asyncHandler(async (req, res) => {
       profession: user.profession,
       interests: user.interests,
       socialMedia: user.socialMedia,
+      connections: user.connections,
       avatar: user.avatar,
     });
   } else {
@@ -509,15 +538,85 @@ const disconnectUser = asyncHandler(async (req, res) => {
   res.status(200).json({ message: "Successfully disconnected from the user." });
 });
 
+// @desc Confluence feature - Send connection requests to all connections of a user
+// @route POST /api/users/confluence/:username
+// @access Private
+const confluenceConnections = asyncHandler(async (req, res) => {
+  const { username } = req.params; // Get the username from route parameters
+  const currentUserId = req.user._id; // Assume req.user is the authenticated user making the request
+
+  try {
+    // 1. Find the target user by their username
+    const targetUser = await User.findOne({ username }).populate(
+      "connections.userId"
+    );
+
+    if (!targetUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // 2. Extract all of the target user's connections
+    const targetConnections = targetUser.connections.filter(
+      (conn) =>
+        conn.status === "connected" &&
+        conn.userId._id.toString() !== currentUserId.toString()
+    );
+
+    if (targetConnections.length === 0) {
+      return res
+        .status(200)
+        .json({ message: "No connections found to send requests." });
+    }
+
+    // 3. Fetch the current user's connections to prevent duplicate requests
+    const currentUser = await User.findById(currentUserId).populate(
+      "connections.userId"
+    );
+    const currentUserConnectionIds = new Set(
+      currentUser.connections
+        .filter(
+          (conn) => conn.status === "connected" || conn.status === "pending"
+        )
+        .map((conn) => conn.userId._id.toString())
+    );
+
+    // 4. Loop through target user's connections and send connection requests
+    const promises = targetConnections.map(async (conn) => {
+      const targetConnectionId = conn.userId._id.toString();
+
+      // Check if current user is already connected or has a pending connection with this user
+      if (!currentUserConnectionIds.has(targetConnectionId)) {
+        console.log(targetConnectionId);
+        await sendRequest(currentUserId, targetConnectionId);
+      }
+    });
+
+    // 5. Wait for all requests to finish
+    await Promise.all(promises);
+
+    // 6. Return success message
+    res.status(200).json({
+      message: `Connection requests sent to all connections of ${username}.`,
+    });
+  } catch (error) {
+    console.error("Error sending confluence connection requests:", error);
+    res.status(500).json({
+      message: "An error occurred while processing the confluence request.",
+    });
+  }
+});
+
 export {
   authUser,
   registerUser,
   logoutUser,
   getUserProfile,
   updateUserProfile,
+  getUsers,
   getUserById,
   sendConnectionRequest,
   rejectConnectionRequest,
   approveConnectionRequest,
   disconnectUser,
+  confluenceConnections,
 };

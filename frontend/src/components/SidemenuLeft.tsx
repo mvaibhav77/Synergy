@@ -4,10 +4,11 @@ import { CgProfile } from "react-icons/cg";
 import { MdRecommend } from "react-icons/md";
 import { IoSettingsOutline } from "react-icons/io5";
 import { MIN_SECTION_HEIGHT } from "@/utils/constants";
-import { FaBell, FaFacebookMessenger } from "react-icons/fa";
+import { FaArrowLeft, FaBell, FaFacebookMessenger } from "react-icons/fa";
 import { UserInfo } from "@/utils/types";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store";
+import { Button } from "./ui/button";
 
 type NavLink = {
   title: string;
@@ -15,7 +16,11 @@ type NavLink = {
   icon: JSX.Element;
 };
 
-const Sidemenu = () => {
+const Sidemenu = ({
+  handleSideMenu,
+}: {
+  handleSideMenu: (val: boolean) => void;
+}) => {
   const { userInfo } = useSelector((state: RootState) => state.auth) as {
     userInfo: UserInfo;
   };
@@ -57,16 +62,25 @@ const Sidemenu = () => {
       icon: <IoSettingsOutline className="h-[25px] w-[25px]" />,
     },
   ];
+
   return (
     <div
-      className={`${MIN_SECTION_HEIGHT} h-full w- border-l-[1px]  border-gray-500 pt-4 px-2`}
+      className={`${MIN_SECTION_HEIGHT} h-full lg:min-w-[350px] border-l-[1px] border-white-700 pt-4 pl-4 lg:px-10 pr-4`}
     >
       <div className="flex flex-col gap-4">
+        <Button
+          variant={"ghost"}
+          className="w-fit text-2xl lg:hidden"
+          onClick={() => handleSideMenu(false)}
+        >
+          <FaArrowLeft />
+        </Button>
         {navList.map((navItem, index) => (
           <NavLink
             to={navItem.link}
             key={index}
-            className="py-3 w-fit px-4 text-xl rounded-3xl hover:bg-gray-800"
+            className="py-3 w-fit px-4 text-2xl rounded-3xl hover:bg-secondary"
+            onClick={() => handleSideMenu(false)}
           >
             <div className="flex flex-row gap-4 items-center">
               {navItem.icon}
