@@ -8,28 +8,22 @@ import { Textarea } from "@/components/ui/textarea";
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store";
-import { NavLink, useNavigate } from "react-router-dom";
+import { Link , useNavigate } from "react-router-dom";
 import { useRegisterMutation } from "@/slices/usersApiSlice";
 import { setCredentials } from "@/slices/authSlice";
 import { useToast } from "@/hooks/use-toast";
 import { ToastAction } from "@/components/ui/toast";
 import { FaGithub, FaLinkedin } from "react-icons/fa";
-import { Separator } from "@/components/ui/separator";
+
 
 const formSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -89,24 +83,36 @@ const RegisterPage: React.FC = () => {
   const prevStep = () => setStep(step - 1);
 
   return (
-    <div className="flex flex-row justify-center items-center min-h-screen min-w-screen bg-background">
-      <div className="side-bg w-full h-screen bg-primary opacity-15 lg:block hidden"></div>
-      <div className="authCard w-full flex flex-col gap-6 items-center justify-center lg:px-0 px-4">
-        <CardHeader>
-          <CardTitle className="lg:text-6xl text-4xl">Register</CardTitle>
-        </CardHeader>
-        <Card className="lg:max-w-[600px] w-full mx-4 h-full px-4 pb-6">
-          <CardHeader>
-            <CardDescription className="lg:text-lg">
-              Create your account. Step {step} of 3
-            </CardDescription>
-          </CardHeader>
+    <section className="flex min-h-screen bg-zinc-50 px-4 py-8 md:py-12 dark:bg-transparent">
+      <div className="bg-muted m-auto h-fit w-full max-w-2xl overflow-hidden rounded-[calc(var(--radius)+.125rem)] border shadow-md shadow-zinc-950/5 dark:[--color-muted:var(--color-zinc-900)]">
+        <div className="bg-card -m-px rounded-[calc(var(--radius)+.125rem)] border p-8">
+          {/* Header */}
+          <div className="text-center mb-8">
+            <Link to="/" className="mx-auto block w-fit">
+              <img src="../../logo-synergy.png" alt="Logo" className="h-10 w-10" />
+            </Link>
+            <h1 className="mb-2 mt-4 text-2xl font-semibold">Create your account</h1>
+            <p className="text-sm text-muted-foreground">Join Synergy to connect with professionals</p>
+          </div>
+
+          {/* Progress indicator */}
+          <div className="mb-8">
+            <div className="flex justify-between mb-2">
+              <span className="text-sm font-medium">Step {step} of 3</span>
+              <span className="text-sm text-muted-foreground">{Math.round((step/3) * 100)}% Complete</span>
+            </div>
+            <div className="h-2 bg-muted rounded-full">
+              <div 
+                className="h-full bg-primary rounded-full transition-all duration-300"
+                style={{width: `${(step/3) * 100}%`}}
+              />
+            </div>
+          </div>
+
+          {/* Form */}
           <Form {...form}>
-            <form
-              onSubmit={form.handleSubmit(onSubmit)}
-              className="flex flex-col justify-between h-full min-h-[330px] lg:space-y-10"
-            >
-              <CardContent className="lg:space-y-6 flex flex-col lg:gap-0 gap-6  ">
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+              <div className="space-y-6">
                 {step === 1 && (
                   <>
                     <FormField
@@ -114,13 +120,9 @@ const RegisterPage: React.FC = () => {
                       name="name"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-lg">Name</FormLabel>
+                          <FormLabel>Full Name</FormLabel>
                           <FormControl>
-                            <Input
-                              className="lg:h-12 lg:text-lg lg:px-4 lg:py-2"
-                              placeholder="John Doe"
-                              {...field}
-                            />
+                            <Input placeholder="John Doe" {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -131,14 +133,9 @@ const RegisterPage: React.FC = () => {
                       name="email"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-lg">Email</FormLabel>
+                          <FormLabel>Email Address</FormLabel>
                           <FormControl>
-                            <Input
-                              type="email"
-                              className="lg:h-12 lg:text-lg lg:px-4 lg:py-2"
-                              placeholder="johndoe@email.com"
-                              {...field}
-                            />
+                            <Input type="email" placeholder="you@example.com" {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -149,21 +146,20 @@ const RegisterPage: React.FC = () => {
                       name="password"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-lg">Password</FormLabel>
+                          <FormLabel>Password</FormLabel>
                           <FormControl>
-                            <Input
-                              type="password"
-                              className="lg:h-12 lg:text-lg lg:px-4 lg:py-2"
-                              placeholder="******"
-                              {...field}
-                            />
+                            <Input type="password" placeholder="Create a secure password" {...field} />
                           </FormControl>
+                          <FormDescription>
+                            Must be at least 8 characters long
+                          </FormDescription>
                           <FormMessage />
                         </FormItem>
                       )}
                     />
                   </>
                 )}
+
                 {step === 2 && (
                   <>
                     <FormField
@@ -171,14 +167,13 @@ const RegisterPage: React.FC = () => {
                       name="username"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-lg">Username</FormLabel>
+                          <FormLabel>Username</FormLabel>
                           <FormControl>
-                            <Input
-                              className="lg:h-12 lg:text-lg lg:px-4 lg:py-2"
-                              placeholder="johndoe"
-                              {...field}
-                            />
+                            <Input placeholder="Choose a unique username" {...field} />
                           </FormControl>
+                          <FormDescription>
+                            This will be your profile URL: synergy.com/@username
+                          </FormDescription>
                           <FormMessage />
                         </FormItem>
                       )}
@@ -188,11 +183,11 @@ const RegisterPage: React.FC = () => {
                       name="bio"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-lg">Bio</FormLabel>
+                          <FormLabel>Bio</FormLabel>
                           <FormControl>
-                            <Textarea
-                              className="lg:text-lg lg:px-4 lg:py-2"
-                              placeholder="Tell us about yourself"
+                            <Textarea 
+                              placeholder="Tell us about yourself, your interests and expertise"
+                              className="min-h-[120px]"
                               {...field}
                             />
                           </FormControl>
@@ -202,95 +197,101 @@ const RegisterPage: React.FC = () => {
                     />
                   </>
                 )}
+
                 {step === 3 && (
-                  <>
-                    <FormField
-                      control={form.control}
-                      name="profession"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="text-lg">Profession</FormLabel>
-                          <FormControl>
-                            <Input
-                              className="lg:h-12 lg:text-lg lg:px-4 lg:py-2"
-                              placeholder="Developer"
-                              {...field}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </>
+                  <FormField
+                    control={form.control}
+                    name="profession"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Professional Title</FormLabel>
+                        <FormControl>
+                          <Input placeholder="e.g. Software Engineer, Product Designer" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                 )}
-              </CardContent>
-              <CardFooter className="flex justify-between">
+              </div>
+
+              <div className="flex justify-between gap-4 pt-4">
                 {step > 1 && (
                   <Button
-                    className="lg:h-12 lg:text-lg"
                     type="button"
                     variant="outline"
                     onClick={prevStep}
+                    className="w-full"
                   >
-                    Previous
+                    Back
                   </Button>
                 )}
                 {step < 3 ? (
                   <Button
-                    className="lg:h-12 lg:text-lg"
                     type="button"
                     onClick={nextStep}
+                    className="w-full"
                   >
-                    Next
+                    Continue
                   </Button>
                 ) : (
-                  <Button className="lg:h-12 lg:text-lg" type="submit">
-                    {isLoading ? "Registering" : "Register"}
+                  <Button 
+                    type="submit"
+                    className="w-full"
+                    disabled={isLoading}
+                  >
+                    {isLoading ? (
+                      <div className="flex items-center gap-2">
+                        <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                        Creating Account...
+                      </div>
+                    ) : (
+                      "Create Account"
+                    )}
                   </Button>
                 )}
-              </CardFooter>
+              </div>
             </form>
           </Form>
 
-          <div className="flex items-center gap-4">
-            <Separator className="flex-1" />
-            <span className="text-muted-foreground">or register with</span>
-            <Separator className="flex-1" />
+          <div className="my-8 grid grid-cols-[1fr_auto_1fr] items-center gap-3">
+            <hr className="border-border" />
+            <span className="text-xs text-muted-foreground">or continue with</span>
+            <hr className="border-border" />
           </div>
 
-          <CardContent className="flex flex-row gap-6 h-[100px] w-full p-0 mt-6">
-            {/* GITHUB LOGIN BUTTON */}
+          <div className="grid grid-cols-2 gap-4">
             <Button
-              variant={"outline"}
-              className="text-4xl p-4 h-fit w-full"
+              variant="outline"
+              className="w-full"
               onClick={() => {
                 window.location.href = "api/auth/github";
               }}
             >
-              <FaGithub />
+              <FaGithub className="mr-2 h-5 w-5" />
+              GitHub
             </Button>
             <Button
-              variant={"outline"}
-              className="text-4xl p-4 h-fit w-full"
+              variant="outline"
+              className="w-full"
               onClick={() => {
                 window.location.href = "api/auth/linkedin";
               }}
             >
-              <FaLinkedin />
+              <FaLinkedin className="mr-2 h-5 w-5" />
+              LinkedIn
             </Button>
-          </CardContent>
-
-          <div className="signup-option flex w-full items-center justify-center ml-2 ">
-            <div className="msg">
-              Already have an account?{" "}
-              <NavLink to={"/login"} className={"text-primary"}>
-                Login.
-              </NavLink>
-            </div>
           </div>
-        </Card>
+
+          <p className="mt-8 text-center text-sm text-muted-foreground">
+            Already have an account?{" "}
+            <Link to="/login" className="font-medium text-primary hover:underline">
+              Sign in
+            </Link>
+          </p>
+        </div>
       </div>
-    </div>
+    </section>
   );
 };
 

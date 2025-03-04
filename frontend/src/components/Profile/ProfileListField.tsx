@@ -2,6 +2,7 @@ import { useState } from "react";
 import { FaEdit } from "react-icons/fa";
 import EditDialog from "../EditDialog";
 import { Badge } from "../ui/badge";
+import { Edit } from "lucide-react";
 
 type Props = {
   title: string;
@@ -21,30 +22,30 @@ const ProfileListField = (props: Props) => {
 
   return (
     <div
-      className={`field group flex flex-col gap-4 justify-between p-3 w-full rounded-lg hover:bg-secondary`}
+      className={`field group flex flex-col gap-3 justify-between p-3 w-full rounded-lg hover:bg-secondary`}
     >
-      <div className={`flex flex-row items-center justify-between gap-4`}>
-        <h2 className={`field-title font-semibold ${props.titleClass}`}>
-          {props.title}:
-        </h2>
+      <div className={`flex flex-row items-center justify-between`}>
+        <span className={`text-base text-muted-foreground ${props.titleClass}`}>
+          {props.title}
+        </span>
         <div className="editButton">
           {props.editable && (
             <button
-              className="group-hover:block hidden text-white"
+              className="opacity-0 group-hover:opacity-100 transition-opacity"
               onClick={handleEditClick}
             >
-              <FaEdit className="h-6 w-6" />
+              <Edit className="h-4 w-4" />
             </button>
           )}
         </div>
       </div>
 
-      <div className="field-value flex flex-row flex-wrap gap-2">
+      <div className="field-value flex flex-row flex-wrap gap-1.5">
         {props.value?.map((item, index) => (
           <Badge
             variant={"default"}
             key={index}
-            className="inline-block mr-2 bg-primary p-2"
+            className="text-xs py-1 px-2"
           >
             {item}
           </Badge>

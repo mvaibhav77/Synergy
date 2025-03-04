@@ -23,7 +23,7 @@ const ConnectSocials = () => {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <button className="text-5xl text-pbtn rounded-full" onClick={() => {}}>
+        <button className="text-4xl text-pbtn rounded-full" onClick={() => {}}>
           <FaPlusCircle />
         </button>
       </DialogTrigger>
@@ -41,7 +41,7 @@ const ConnectSocials = () => {
               window.location.href = "api/auth/github";
             }}
           >
-            <FaGithub className={`text-5xl hover:text-secondary`} />
+            <FaGithub className={`text-4xl `} />
           </button>
           <button
             className="linkedin"
@@ -49,7 +49,7 @@ const ConnectSocials = () => {
               window.location.href = "api/auth/linkedin";
             }}
           >
-            <FaLinkedin className={`text-5xl hover:text-secondary`} />
+            <FaLinkedin className={`text-4xl `} />
           </button>
           <button
             className="x"
@@ -57,7 +57,7 @@ const ConnectSocials = () => {
               window.location.href = "api/auth/x";
             }}
           >
-            <FaTwitter className={`text-5xl hover:text-secondary`} />
+            <FaTwitter className={`text-4xl`} />
           </button>
         </div>
       </DialogContent>
