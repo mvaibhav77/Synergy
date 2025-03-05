@@ -2,12 +2,11 @@ import { MIN_SECTION_HEIGHT } from "@/utils/constants";
 import { Link, useNavigate } from "react-router-dom";
 // import { Skeleton } from "./ui/skeleton";
 import { Button } from "./ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
+import { Card, CardContent, CardHeader } from "./ui/card";
 import { useEffect, useState } from "react";
 import { UserInfo } from "@/utils/types";
 import { useGetRecommendationsMutation } from "@/slices/recommendApiSlice";
 import { useToast } from "@/hooks/use-toast";
-import Loader from "./Loader";
 
 const Sidemenu = () => {
   const [recommendations, setRecommendations] = useState<UserInfo[]>([]);
@@ -31,97 +30,87 @@ const Sidemenu = () => {
 
   return (
     <div
-      className={`${MIN_SECTION_HEIGHT} lg:block hidden h-full w-full border-l-[1px] border-white-700 p-4`}
+      className={`${MIN_SECTION_HEIGHT} lg:block hidden h-[calc(100vh-100px)] w-full border-l border-border p-6 bg-background`}
     >
-      <div className="flex flex-col gap-12 h-full w-full items-center">
-        {/* skeleton */}
-        {/* <div className="flex flex-col space-y-3">
-          <Skeleton className="h-[125px] w-[450px] rounded-xl" />
-          <div className="space-y-2">
-            <Skeleton className="h-4 w-[250px]" />
-            <Skeleton className="h-4 w-[200px]" />
-          </div>
-        </div> */}
-
-        {/* recommendation suggestin card */}
-        <Card className="w-full">
-          <CardTitle>
-            <CardHeader className="text-primary">
-              Latest Recommendations
+      <div className="flex flex-col h-full">
+        {/* Recommendation Suggestion Card */}
+        <div className="flex-1">
+          <Card className="w-full border-border">
+            <CardHeader className="pb-3">
+              <h2 className="text-2xl font-semibold tracking-tight">
+                Latest Recommendations
+              </h2>
             </CardHeader>
-          </CardTitle>
-          <CardContent>
-            {isLoading ? (
-              <Loader />
-            ) : (
-              <>
-                <div className="flex flex-col gap-2">
-                  {/* Avatar */}
-                  {recommendations.slice(0, 4).map((recommendation) => (
-                    <div className="flex items-center justify-between p-2  ">
-                      <div className="flex items-center">
-                        <img
-                          src={
-                            recommendation.avatar ||
-                            "https://github.com/shadcn.png"
-                          }
-                          alt={`${recommendation.name}'s avatar`}
-                          className="w-12 h-12 rounded-full object-cover mr-4"
-                        />
-                        <div>
-                          <h4 className="text-lg font-semibold">
-                            {recommendation.name}
-                          </h4>
-                          <p className="text-sm text-gray-600">
-                            {recommendation.username}
-                          </p>
-                        </div>
+            <CardContent>
+              {isLoading ? (
+                <div className="space-y-4">
+                  {[...Array(4)].map((_, index) => (
+                    <div key={index} className="animate-pulse flex items-center gap-4">
+                      <div className="w-12 h-12 bg-muted rounded-full" />
+                      <div className="flex flex-col gap-2 w-full">
+                        <div className="h-4 bg-muted rounded w-3/5" />
+                        <div className="h-3 bg-muted rounded w-2/5" />
                       </div>
-
-                      {/* Approve/Reject buttons */}
-                      <Button onClick={() => {}}>Connect</Button>
                     </div>
                   ))}
                 </div>
+              ) : (
+                <div className="flex flex-col gap-3">
+                  {recommendations.slice(0, 4).map((recommendation) => (
+                    <div
+                      key={recommendation.username}
+                      className="flex items-center justify-between p-3 rounded-lg hover:bg-gray-200 dark:hover:bg-muted transition bg-muted dark:bg-muted/30"
+                    >
+                      <div className="flex items-center gap-3">
+                        <img
+                          src={recommendation.avatar || "https://github.com/shadcn.png"}
+                          alt={`${recommendation.name}'s avatar`}
+                          className="w-12 h-12 rounded-full object-cover border border-border"
+                        />
+                        <div>
+                          <h4 className="text-base font-semibold leading-none tracking-tight mb-1">
+                            {recommendation.name}
+                          </h4>
+                          <p className="text-sm text-muted-foreground">@{recommendation.username}</p>
+                        </div>
+                      </div>
+                      <Button size="sm" variant="default" className="font-medium">
+                        Connect
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              )}
+              <div className="flex justify-end mt-6">
                 <Button
-                  variant={"link"}
+                  variant="link"
                   onClick={() => navigate("/recommendations")}
-                  className="text-lg text-inherit mt-2"
+                  className="font-medium text-base px-0"
                 >
                   See more
                 </Button>
-              </>
-            )}
-          </CardContent>
-        </Card>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
 
-        {/* Footer with navigation links */}
-        <div className="flex flex-col items-center mt-8 w-full">
-          <nav className="px-4">
-            <ul className="flex flex-row flex-wrap gap-4">
-              <Button variant={"link"}>
-                <Link to="/" className="text-link hoverunderline0">
-                  Home
-                </Link>
-              </Button>
-              <Button variant={"link"}>
-                <Link to="/messages" className="text-link hover:underline">
-                  Messages
-                </Link>
-              </Button>
-              <Button variant={"link"}>
-                <Link to="/settings" className="text-link  hover:underline">
-                  Settings
-                </Link>
-              </Button>
-              {/* Add more navigation links as needed */}
+        {/* Footer with Navigation Links */}
+        <div className="mt-auto pb-8">
+          <nav className="mb-4">
+            <ul className="flex flex-wrap justify-center gap-6 text-sm font-medium">
+              <Link to="/" className="text-muted-foreground hover:text-primary transition-colors">
+                Home
+              </Link>
+              <Link to="/messages" className="text-muted-foreground hover:text-primary transition-colors">
+                Messages
+              </Link>
+              <Link to="/settings" className="text-muted-foreground hover:text-primary transition-colors">
+                Settings
+              </Link>
             </ul>
           </nav>
-
-          {/* Company Info */}
-          <div className="flex flex-row gap-2 mt-4 px-4 text-gray-500 ">
-            <p>Synergy</p>
-            <p>&copy; 2024</p>
+          <div className="text-muted-foreground/60 text-sm text-center font-medium">
+            <p>Synergy &copy; 2024</p>
           </div>
         </div>
       </div>
