@@ -1,521 +1,123 @@
 
-// // import React, { useState, useRef } from 'react';
-// // import { useDispatch, useSelector } from 'react-redux';
-// // import { createPost } from '@/slices/postSlice';
-// // import {
-// //   Card,
-// //   CardContent
-// // } from '@/components/ui/card';
-// // import {
-// //   Avatar,
-// //   AvatarFallback,
-// //   AvatarImage
-// // } from '@/components/ui/avatar';
-// // import {
-// //   Tooltip,
-// //   TooltipContent,
-// //   TooltipProvider,
-// //   TooltipTrigger
-// // } from '@/components/ui/tooltip';
-// // import { Button } from '@/components/ui/button';
-// // import { Textarea } from '@/components/ui/textarea';
-// // import {
-// //   ImageIcon,
-// //   SmileIcon,
-// //   MapPinIcon,
-// //   PaperclipIcon,
-// //   SendIcon
-// // } from 'lucide-react';
-// // import { Loader2 } from 'lucide-react';
-// // import { UserInfo } from '@/utils/types';
-// // import { RootState } from '@/store';
-// // // import { RootState } from '@reduxjs/toolkit/query';
-
-// // const CreatePostComponent = () => {
-// //   const { userInfo } = useSelector((state: RootState) => state.auth) as {
-// //     userInfo: UserInfo;
-// //   };
-// //   const [content, setContent] = useState('');
-// //   const [selectedImages, setSelectedImages] = useState([]);
-// //   const [location, setLocation] = useState('');
-// //   const [isLoading, setIsLoading] = useState(false);
-// //   const fileInputRef = useRef(null);
-// //   const dispatch = useDispatch();
-
-// //   const handleImageSelect = (e) => {
-// //     if (e.target.files && e.target.files.length > 0) {
-// //       // Convert FileList to Array and add to existing images
-// //       const newFiles = Array.from(e.target.files);
-// //       setSelectedImages(prevImages => [...prevImages, ...newFiles]);
-// //     }
-// //   };
-
-// //   const handleSubmit = async () => {
-// //     // Validate content
-// //     if (!content.trim() && selectedImages.length === 0) {
-// //       return;
-// //     }
-
-// //     setIsLoading(true);
-
-// //     try {
-// //       // Create FormData to send both text and images
-// //       const formData = new FormData();
-// //       formData.append('content', content);
-
-// //       if (location) {
-// //         formData.append('location', location);
-// //       }
-
-// //       // Append each image to FormData
-// //       selectedImages.forEach((image) => {
-// //         formData.append('images', image);
-// //       });
-
-// //       // Dispatch create post action
-// //       await dispatch(createPost(formData)).unwrap();
-
-// //       // Reset form after successful post
-// //       setContent('');
-// //       setSelectedImages([]);
-// //       setLocation('');
-// //     } catch (error) {
-// //       console.error('Failed to create post:', error);
-// //     } finally {
-// //       setIsLoading(false);
-// //     }
-// //   };
-
-// //   return (
-// //     <Card className="mb-6">
-// //       <CardContent className="p-6">
-// //         <div className="flex gap-4">
-// //           <Avatar className="h-10 w-10">
-// //             <AvatarImage src={userInfo.avatar || "https://github.com/shadcn.png"} alt={userInfo.name} />
-// //             <AvatarFallback>{userInfo.name.slice(0, 1)}</AvatarFallback>
-// //           </Avatar>
-
-// //           <div className="flex-1 space-y-4">
-// //             <Textarea
-// //               value={content}
-// //               onChange={(e) => setContent(e.target.value)}
-// //               className="min-h-[100px] resize-none text-sm focus-visible:ring-1"
-// //               placeholder={`What's on your mind, ${userInfo.name.split(' ')[0]}?`}
-// //             />
-
-// //             {selectedImages.length > 0 && (
-// //               <div className="flex gap-2 flex-wrap">
-// //                 {selectedImages.map((file, index) => (
-// //                   <div key={index} className="relative">
-// //                     <img
-// //                       src={URL.createObjectURL(file)}
-// //                       alt={`Selected ${index + 1}`}
-// //                       className="h-20 w-20 object-cover rounded"
-// //                     />
-// //                     <button
-// //                       onClick={() => setSelectedImages(images => images.filter((_, i) => i !== index))}
-// //                       className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 text-xs"
-// //                     >
-// //                       ×
-// //                     </button>
-// //                   </div>
-// //                 ))}
-// //               </div>
-// //             )}
-
-// //             <div className="flex items-center justify-between">
-// //               <div className="flex gap-1">
-// //                 <TooltipProvider>
-// //                   <Tooltip>
-// //                     <TooltipTrigger asChild>
-// //                       <Button
-// //                         variant="ghost"
-// //                         size="icon"
-// //                         className="h-9 w-9"
-// //                         onClick={() => fileInputRef.current?.click()}
-// //                       >
-// //                         <ImageIcon className="h-5 w-5" />
-// //                         <span className="sr-only">Add image</span>
-// //                       </Button>
-// //                     </TooltipTrigger>
-// //                     <TooltipContent>Add image</TooltipContent>
-// //                   </Tooltip>
-
-// //                   <input
-// //                     type="file"
-// //                     ref={fileInputRef}
-// //                     className="hidden"
-// //                     multiple
-// //                     accept="image/*"
-// //                     onChange={handleImageSelect}
-// //                   />
-
-// //                   <Tooltip>
-// //                     <TooltipTrigger asChild>
-// //                       <Button variant="ghost" size="icon" className="h-9 w-9">
-// //                         <SmileIcon className="h-5 w-5" />
-// //                         <span className="sr-only">Add emoji</span>
-// //                       </Button>
-// //                     </TooltipTrigger>
-// //                     <TooltipContent>Add emoji</TooltipContent>
-// //                   </Tooltip>
-
-// //                   <Tooltip>
-// //                     <TooltipTrigger asChild>
-// //                       <Button
-// //                         variant="ghost"
-// //                         size="icon"
-// //                         className="h-9 w-9"
-// //                         onClick={() => {
-// //                           const loc = prompt("Enter location:");
-// //                           if (loc) setLocation(loc);
-// //                         }}
-// //                       >
-// //                         <MapPinIcon className="h-5 w-5" />
-// //                         <span className="sr-only">Add location</span>
-// //                       </Button>
-// //                     </TooltipTrigger>
-// //                     <TooltipContent>Add location</TooltipContent>
-// //                   </Tooltip>
-
-// //                   <Tooltip>
-// //                     <TooltipTrigger asChild>
-// //                       <Button variant="ghost" size="icon" className="h-9 w-9">
-// //                         <PaperclipIcon className="h-5 w-5" />
-// //                         <span className="sr-only">Attach file</span>
-// //                       </Button>
-// //                     </TooltipTrigger>
-// //                     <TooltipContent>Attach file</TooltipContent>
-// //                   </Tooltip>
-// //                 </TooltipProvider>
-// //               </div>
-
-// //               <Button
-// //                 className="px-6"
-// //                 onClick={handleSubmit}
-// //                 disabled={isLoading || (!content.trim() && selectedImages.length === 0)}
-// //               >
-// //                 {isLoading ? (
-// //                   <Loader2 className="h-4 w-4 animate-spin" />
-// //                 ) : (
-// //                   <>
-// //                     <SendIcon className="mr-2 h-4 w-4" />
-// //                     Post
-// //                   </>
-// //                 )}
-// //               </Button>
-// //             </div>
-// //           </div>
-// //         </div>
-// //       </CardContent>
-// //     </Card>
-// //   );
-// // };
-
-// // export default CreatePostComponent;
-// import React, { useState, useRef } from 'react';
-// import { useDispatch, useSelector } from 'react-redux';
-// import { createPost } from '@/slices/postSlice';
-// import { 
-//   Card, 
-//   CardContent 
-// } from '@/components/ui/card';
-// import { 
-//   Avatar, 
-//   AvatarFallback, 
-//   AvatarImage 
-// } from '@/components/ui/avatar';
-// import { 
-//   Tooltip, 
-//   TooltipContent, 
-//   TooltipProvider, 
-//   TooltipTrigger 
-// } from '@/components/ui/tooltip';
-// import { Button } from '@/components/ui/button';
-// import { Textarea } from '@/components/ui/textarea';
-// import { 
-//   ImageIcon, 
-//   SmileIcon, 
-//   MapPinIcon, 
-//   PaperclipIcon, 
-//   SendIcon 
-// } from 'lucide-react';
-// import { Loader2 } from 'lucide-react';
-// import { RootState } from '@/store';
-// import { UserInfo } from '@/utils/types';
-
-// const CreatePostComponent = () => {
-//   const { userInfo } = useSelector((state: RootState) => state.auth) as {
-//         userInfo: UserInfo;
-//       };
-
-//   const [content, setContent] = useState('');
-//   const [selectedImages, setSelectedImages] = useState([]);
-//   const [location, setLocation] = useState('');
-//   const [isLoading, setIsLoading] = useState(false);
-//   const fileInputRef = useRef(null);
-//   const dispatch = useDispatch();
-
-//   const handleImageSelect = (e) => {
-//     if (e.target.files && e.target.files.length > 0) {
-//       // Convert FileList to Array and add to existing images
-//       const newFiles = Array.from(e.target.files);
-//       setSelectedImages(prevImages => [...prevImages, ...newFiles]);
-//     }
-//   };
-
-//   const handleSubmit = async () => {
-//     // Validate content
-//     if (!content.trim() && selectedImages.length === 0) {
-//       return;
-//     }
-
-//     setIsLoading(true);
-
-//     try {
-//       // Create FormData to send both text and images
-//       const formData = new FormData();
-//       formData.append('content', content);
-      
-//       if (location) {
-//         formData.append('location', location);
-//       }
-
-//       // Append each image to FormData
-//       selectedImages.forEach((image) => {
-//         formData.append('images', image);
-//       });
-
-//       // Dispatch create post action
-//       await dispatch(createPost(formData)).unwrap();
-
-//       // Reset form after successful post
-//       setContent('');
-//       setSelectedImages([]);
-//       setLocation('');
-//     } catch (error) {
-//       console.error('Failed to create post:', error);
-//     } finally {
-//       setIsLoading(false);
-//     }
-//   };
-
-//   return (
-//     <Card className="mb-6">
-//       <CardContent className="p-6">
-//         <div className="flex gap-4">
-//           <Avatar className="h-10 w-10">
-//             <AvatarImage src={userInfo.avatar || "https://github.com/shadcn.png"} alt={userInfo.name} />
-//             <AvatarFallback>{userInfo.name.slice(0, 1)}</AvatarFallback>
-//           </Avatar>
-
-//           <div className="flex-1 space-y-4">
-//             <Textarea 
-//               value={content}
-//               onChange={(e) => setContent(e.target.value)}
-//               className="min-h-[100px] resize-none text-sm focus-visible:ring-1"
-//               placeholder={`What's on your mind, ${userInfo.name.split(' ')[0]}?`}
-//             />
-
-//             {selectedImages.length > 0 && (
-//               <div className="flex gap-2 flex-wrap">
-//                 {selectedImages.map((file, index) => (
-//                   <div key={index} className="relative">
-//                     <img
-//                       src={URL.createObjectURL(file)}
-//                       alt={`Selected ${index + 1}`}
-//                       className="h-20 w-20 object-cover rounded"
-//                     />
-//                     <button
-//                       onClick={() => setSelectedImages(images => images.filter((_, i) => i !== index))}
-//                       className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 text-xs"
-//                     >
-//                       ×
-//                     </button>
-//                   </div>
-//                 ))}
-//               </div>
-//             )}
-
-//             <div className="flex items-center justify-between">
-//               <div className="flex gap-1">
-//                 <TooltipProvider>
-//                   <Tooltip>
-//                     <TooltipTrigger asChild>
-//                       <Button
-//                         variant="ghost"
-//                         size="icon"
-//                         className="h-9 w-9"
-//                         onClick={() => fileInputRef.current?.click()}
-//                       >
-//                         <ImageIcon className="h-5 w-5" />
-//                         <span className="sr-only">Add image</span>
-//                       </Button>
-//                     </TooltipTrigger>
-//                     <TooltipContent>Add image</TooltipContent>
-//                   </Tooltip>
-
-//                   <input
-//                     type="file"
-//                     ref={fileInputRef}
-//                     className="hidden"
-//                     multiple
-//                     accept="image/*"
-//                     onChange={handleImageSelect}
-//                   />
-
-//                   <Tooltip>
-//                     <TooltipTrigger asChild>
-//                       <Button variant="ghost" size="icon" className="h-9 w-9">
-//                         <SmileIcon className="h-5 w-5" />
-//                         <span className="sr-only">Add emoji</span>
-//                       </Button>
-//                     </TooltipTrigger>
-//                     <TooltipContent>Add emoji</TooltipContent>
-//                   </Tooltip>
-
-//                   <Tooltip>
-//                     <TooltipTrigger asChild>
-//                       <Button
-//                         variant="ghost"
-//                         size="icon"
-//                         className="h-9 w-9"
-//                         onClick={() => {
-//                           const loc = prompt("Enter location:");
-//                           if (loc) setLocation(loc);
-//                         }}
-//                       >
-//                         <MapPinIcon className="h-5 w-5" />
-//                         <span className="sr-only">Add location</span>
-//                       </Button>
-//                     </TooltipTrigger>
-//                     <TooltipContent>Add location</TooltipContent>
-//                   </Tooltip>
-
-//                   <Tooltip>
-//                     <TooltipTrigger asChild>
-//                       <Button variant="ghost" size="icon" className="h-9 w-9">
-//                         <PaperclipIcon className="h-5 w-5" />
-//                         <span className="sr-only">Attach file</span>
-//                       </Button>
-//                     </TooltipTrigger>
-//                     <TooltipContent>Attach file</TooltipContent>
-//                   </Tooltip>
-//                 </TooltipProvider>
-//               </div>
-
-//               <Button 
-//                 className="px-6" 
-//                 onClick={handleSubmit}
-//                 disabled={isLoading || (!content.trim() && selectedImages.length === 0)}
-//               >
-//                 {isLoading ? (
-//                   <Loader2 className="h-4 w-4 animate-spin" />
-//                 ) : (
-//                   <>
-//                     <SendIcon className="mr-2 h-4 w-4" />
-//                     Post
-//                   </>
-//                 )}
-//               </Button>
-//             </div>
-//           </div>
-//         </div>
-//       </CardContent>
-//     </Card>
-//   );
-// };
-
-// export default CreatePostComponent;
+// export default CreatePost;
 import React, { useState, useRef } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { createPost } from '@/slices/postSlice';
-import { 
-  Card, 
-  CardContent 
-} from '@/components/ui/card';
-import { 
-  Avatar, 
-  AvatarFallback, 
-  AvatarImage 
-} from '@/components/ui/avatar';
-import { 
-  Tooltip, 
-  TooltipContent, 
-  TooltipProvider, 
-  TooltipTrigger 
-} from '@/components/ui/tooltip';
-import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
-import { 
-  ImageIcon, 
-  SmileIcon, 
-  MapPinIcon, 
-  PaperclipIcon, 
-  SendIcon 
-} from 'lucide-react';
-import { Loader2 } from 'lucide-react';
-import { RootState } from '@/store';
-import { UserInfo } from '@/utils/types';
-import { toast } from 'sonner'; // For displaying error/success messages
+import { ImagePlus, X, Loader2, Smile, MapPin, Paperclip, Send } from 'lucide-react';
+import { useCreatePostMutation } from '@/slices/postsApiSlice';
+import { Card, CardContent } from "@/components/ui/card"
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
+import { Textarea } from "@/components/ui/textarea"
+import { Button } from "@/components/ui/button"
+import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip"
+const MAX_FILE_SIZE = 1024 * 1024; // 1MB
+const ALLOWED_FILE_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
 
-const CreatePostComponent = () => {
-  const { userInfo } = useSelector((state: RootState) => state.auth) as {
-    userInfo: UserInfo;
-  };
-
-  const [content, setContent] = useState('');
-  const [selectedImages, setSelectedImages] = useState<File[]>([]);
-  const [location, setLocation] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
+const CreatePost = () => {
+  const [text, setText] = useState('');
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
+  const [error, setError] = useState<string>('');
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const dispatch = useDispatch();
+  
+  const [createPost, { isLoading }] = useCreatePostMutation();
 
-  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files.length > 0) {
-      // Convert FileList to Array and add to existing images
-      const newFiles = Array.from(e.target.files);
-      setSelectedImages(prevImages => [...prevImages, ...newFiles]);
-    }
+  const compressImage = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = (event) => {
+        const img = new Image();
+        img.src = event.target?.result as string;
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          const ctx = canvas.getContext('2d');
+          if (!ctx) {
+            reject(new Error('Failed to get canvas context'));
+            return;
+          }
+
+          let width = img.width;
+          let height = img.height;
+          const maxDimension = 1200;
+
+          if (width > height && width > maxDimension) {
+            height = (height * maxDimension) / width;
+            width = maxDimension;
+          } else if (height > maxDimension) {
+            width = (width * maxDimension) / height;
+            height = maxDimension;
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+          ctx.drawImage(img, 0, 0, width, height);
+
+          const compressedImage = canvas.toDataURL('image/webp', 0.8);
+          resolve(compressedImage);
+        };
+        img.onerror = () => {
+          reject(new Error('Failed to load image'));
+        };
+      };
+      reader.onerror = () => {
+        reject(new Error('Failed to read file'));
+      };
+    });
   };
 
-  const handleSubmit = async () => {
-    // Validate content
-    if (!content.trim() && selectedImages.length === 0) {
-      toast.error('Post must contain content or images');
+  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    setError('');
+    
+    if (!file) return;
+
+    // Validate file type
+    if (!ALLOWED_FILE_TYPES.includes(file.type)) {
+      setError('Please upload a valid image file (JPEG, PNG, or WebP)');
       return;
     }
 
-    setIsLoading(true);
+    // Validate file size
+    if (file.size > MAX_FILE_SIZE) {
+      setError('Image size should be less than 1MB');
+      return;
+    }
 
     try {
-      // Create FormData to send both text and images
-      const formData = new FormData();
-      formData.append('content', content);
+      const compressedImage = await compressImage(file);
+      setPreviewImage(compressedImage);
+    } catch (err) {
+      console.error('Error compressing image:', err);
+      setError('Failed to process image');
+    }
+  };
+
+  const removeImage = () => {
+    setPreviewImage(null);
+    setError('');
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ''; // Reset the file input
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!text && !previewImage) return;
+    setError('');
+
+    try {
+      await createPost({
+        text,
+        img: previewImage
+      }).unwrap();
       
-      if (location) {
-        formData.append('location', location);
+      // Reset form
+      setText('');
+      setPreviewImage(null);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
       }
-
-      // Append each image to FormData
-      selectedImages.forEach((image) => {
-        formData.append('images', image);
-      });
-
-      // Dispatch create post action
-      await dispatch(createPost(formData)).unwrap();
-
-      // Reset form after successful post
-      setContent('');
-      setSelectedImages([]);
-      setLocation('');
-
-      toast.success('Post created successfully!');
-    } catch (error) {
-      console.error('Failed to create post:', error);
-      toast.error('Failed to create post. Please try again.');
-    } finally {
-      setIsLoading(false);
+    } catch (err) {
+      console.error('Failed to create post:', err);
+      setError('Failed to create post. Please try again.');
     }
   };
 
@@ -524,35 +126,39 @@ const CreatePostComponent = () => {
       <CardContent className="p-6">
         <div className="flex gap-4">
           <Avatar className="h-10 w-10">
-            <AvatarImage src={userInfo.avatar || "https://github.com/shadcn.png"} alt={userInfo.name} />
-            <AvatarFallback>{userInfo.name.slice(0, 1)}</AvatarFallback>
+            <AvatarImage src="https://github.com/shadcn.png" alt="User" />
+            <AvatarFallback>U</AvatarFallback>
           </Avatar>
 
           <div className="flex-1 space-y-4">
             <Textarea 
-              value={content}
-              onChange={(e) => setContent(e.target.value)}
+              value={text}
+              onChange={(e) => setText(e.target.value)}
               className="min-h-[100px] resize-none text-sm focus-visible:ring-1"
-              placeholder={`What's on your mind, ${userInfo.name.split(' ')[0]}?`}
+              placeholder="What's on your mind?"
             />
 
-            {selectedImages.length > 0 && (
+            {previewImage && (
               <div className="flex gap-2 flex-wrap">
-                {selectedImages.map((file, index) => (
-                  <div key={index} className="relative">
-                    <img
-                      src={URL.createObjectURL(file)}
-                      alt={`Selected ${index + 1}`}
-                      className="h-20 w-20 object-cover rounded"
-                    />
-                    <button
-                      onClick={() => setSelectedImages(images => images.filter((_, i) => i !== index))}
-                      className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 text-xs"
-                    >
-                      ×
-                    </button>
-                  </div>
-                ))}
+                <div className="relative">
+                  <img
+                    src={previewImage}
+                    alt="Preview"
+                    className="h-20 w-20 object-cover rounded"
+                  />
+                  <button
+                    onClick={removeImage}
+                    className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 text-xs"
+                  >
+                    ×
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {error && (
+              <div className="text-red-500 text-sm">
+                {error}
               </div>
             )}
 
@@ -567,7 +173,7 @@ const CreatePostComponent = () => {
                         className="h-9 w-9"
                         onClick={() => fileInputRef.current?.click()}
                       >
-                        <ImageIcon className="h-5 w-5" />
+                        <ImagePlus className="h-5 w-5" />
                         <span className="sr-only">Add image</span>
                       </Button>
                     </TooltipTrigger>
@@ -578,15 +184,14 @@ const CreatePostComponent = () => {
                     type="file"
                     ref={fileInputRef}
                     className="hidden"
-                    multiple
                     accept="image/*"
-                    onChange={handleImageSelect}
+                    onChange={handleImageChange}
                   />
 
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <Button variant="ghost" size="icon" className="h-9 w-9">
-                        <SmileIcon className="h-5 w-5" />
+                        <Smile className="h-5 w-5" />
                         <span className="sr-only">Add emoji</span>
                       </Button>
                     </TooltipTrigger>
@@ -604,7 +209,7 @@ const CreatePostComponent = () => {
                           if (loc) setLocation(loc);
                         }}
                       >
-                        <MapPinIcon className="h-5 w-5" />
+                        <MapPin className="h-5 w-5" />
                         <span className="sr-only">Add location</span>
                       </Button>
                     </TooltipTrigger>
@@ -614,7 +219,7 @@ const CreatePostComponent = () => {
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <Button variant="ghost" size="icon" className="h-9 w-9">
-                        <PaperclipIcon className="h-5 w-5" />
+                        <Paperclip className="h-5 w-5" />
                         <span className="sr-only">Attach file</span>
                       </Button>
                     </TooltipTrigger>
@@ -626,13 +231,13 @@ const CreatePostComponent = () => {
               <Button 
                 className="px-6" 
                 onClick={handleSubmit}
-                disabled={isLoading || (!content.trim() && selectedImages.length === 0)}
+                disabled={isLoading || (!text && !previewImage)}
               >
                 {isLoading ? (
                   <Loader2 className="h-4 w-4 animate-spin" />
                 ) : (
                   <>
-                    <SendIcon className="mr-2 h-4 w-4" />
+                    <Send className="mr-2 h-4 w-4" />
                     Post
                   </>
                 )}
@@ -645,4 +250,4 @@ const CreatePostComponent = () => {
   );
 };
 
-export default CreatePostComponent;
+export default CreatePost;
