@@ -9,7 +9,7 @@ import { UserInfo } from "@/utils/types";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store";
 import { Button } from "./ui/button";
-import { motion } from "motion/react";
+import { motion } from "motion/react"
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { ChevronsUpDown } from "lucide-react";
 import {

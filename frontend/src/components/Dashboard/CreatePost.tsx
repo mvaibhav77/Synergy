@@ -1,13 +1,14 @@
-
 // export default CreatePost;
 import React, { useState, useRef } from 'react';
-import { ImagePlus, X, Loader2, Smile, MapPin, Paperclip, Send } from 'lucide-react';
+import { ImagePlus, Loader2, Smile, MapPin, Paperclip, Send } from 'lucide-react';
 import { useCreatePostMutation } from '@/slices/postsApiSlice';
 import { Card, CardContent } from "@/components/ui/card"
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
 import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip"
+import { toast } from "sonner";
+
 const MAX_FILE_SIZE = 1024 * 1024; // 1MB
 const ALLOWED_FILE_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
 
@@ -15,8 +16,9 @@ const CreatePost = () => {
   const [text, setText] = useState('');
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const [error, setError] = useState<string>('');
+  const [location, setLocation] = useState<string>('');
   const fileInputRef = useRef<HTMLInputElement>(null);
-  
+
   const [createPost, { isLoading }] = useCreatePostMutation();
 
   const compressImage = (file: File): Promise<string> => {
@@ -66,7 +68,7 @@ const CreatePost = () => {
   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     setError('');
-    
+
     if (!file) return;
 
     // Validate file type
@@ -100,24 +102,30 @@ const CreatePost = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!text && !previewImage) return;
+    if (!text && !previewImage) {
+      toast.error('Post must have text or an image');
+      return;
+    }
     setError('');
 
     try {
       await createPost({
         text,
-        img: previewImage
+        img: previewImage,
+        location: location || undefined
       }).unwrap();
-      
+
       // Reset form
       setText('');
       setPreviewImage(null);
+      setLocation('');
       if (fileInputRef.current) {
         fileInputRef.current.value = '';
       }
+      toast.success('Post created successfully!');
     } catch (err) {
       console.error('Failed to create post:', err);
-      setError('Failed to create post. Please try again.');
+      toast.error('Failed to create post. Please try again.');
     }
   };
 
@@ -131,22 +139,22 @@ const CreatePost = () => {
           </Avatar>
 
           <div className="flex-1 space-y-4">
-            <Textarea 
-              value={text}
-              onChange={(e) => setText(e.target.value)}
+            <Textarea
+          value={text}
+          onChange={(e) => setText(e.target.value)}
               className="min-h-[100px] resize-none text-sm focus-visible:ring-1"
               placeholder="What's on your mind?"
-            />
-
+        />
+        
             {previewImage && (
               <div className="flex gap-2 flex-wrap">
-                <div className="relative">
+          <div className="relative">
                   <img
                     src={previewImage}
                     alt="Preview"
                     className="h-20 w-20 object-cover rounded"
                   />
-                  <button
+            <button
                     onClick={removeImage}
                     className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 text-xs"
                   >
@@ -204,7 +212,7 @@ const CreatePost = () => {
                         variant="ghost"
                         size="icon"
                         className="h-9 w-9"
-                        onClick={() => {
+              onClick={() => {
                           const loc = prompt("Enter location:");
                           if (loc) setLocation(loc);
                         }}
@@ -228,8 +236,8 @@ const CreatePost = () => {
                 </TooltipProvider>
               </div>
 
-              <Button 
-                className="px-6" 
+              <Button
+                className="px-6"
                 onClick={handleSubmit}
                 disabled={isLoading || (!text && !previewImage)}
               >
@@ -244,7 +252,7 @@ const CreatePost = () => {
               </Button>
             </div>
           </div>
-        </div>
+    </div>
       </CardContent>
     </Card>
   );
