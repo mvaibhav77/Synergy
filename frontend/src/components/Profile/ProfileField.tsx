@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { FaEdit } from "react-icons/fa";
 import EditDialog from "../EditDialog";
+import { Edit } from "lucide-react";
+import { Button } from "../ui/button";
 
 type Props = {
   title: string;
@@ -21,24 +22,25 @@ const ProfileField = (props: Props) => {
 
   return (
     <div
-      className={`field group flex flex-row items-center justify-between p-3 w-full rounded-lg hover:bg-secondary`}
+      className={`field group flex flex-row items-center justify-between p-1 w-full rounded-lg hover:bg-secondary`}
     >
       <div className={`flex flex-row items-center gap-4`}>
-        <h2 className={`field-title font-semibold ${props.titleClass}`}>
-          {props.title}:
-        </h2>
-        <h3 className={`field-value ${props.valueClass}`}>
-          {props.value ? props.value : `Enter your ${props.title}`}
-        </h3>
+        <span className={`text-sm text-muted-foreground ${props.titleClass}`}>
+          {props.title}
+        </span>
+        <p className={`text-sm font-medium ${props.valueClass}`}>
+          {props.value ? props.value : `Enter your ${props.title.toLowerCase()}`}
+        </p>
       </div>
       <div className="editButton">
         {props.editable && (
-          <button
-            className="group-hover:block hidden text-white"
-            onClick={handleEditClick}
+          <Button 
+            variant={"ghost"} 
+            onClick={handleEditClick} 
+            className="rounded-full h-8 w-8 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
           >
-            <FaEdit className="h-6 w-6" />
-          </button>
+            <Edit className="h-4 w-4" />
+          </Button>
         )}
       </div>
       <EditDialog

@@ -16,19 +16,19 @@ const ProfileTabs = (props: Props) => {
     <Tabs defaultValue="profile">
       {/* Tab List */}
       <TabsList className="grid w-full justify-center items-center grid-cols-3">
-        <TabsTrigger value="profile">Basic Profile</TabsTrigger>
-        <TabsTrigger value="posts">Posts</TabsTrigger>
-        <TabsTrigger value="location">Location</TabsTrigger>
+        <TabsTrigger value="profile" className="text-sm font-medium">Basic Profile</TabsTrigger>
+        <TabsTrigger value="posts" className="text-sm font-medium">Posts</TabsTrigger>
+        <TabsTrigger value="location" className="text-sm font-medium">Location</TabsTrigger>
       </TabsList>
 
       {/* Profile Details */}
       <TabsContent value="profile" className="flex flex-col gap-4">
         <Card className="py-4">
           <CardContent>
-            <h2 className="text-2xl font-semibold p-2 text-primary">
+            <h2 className="text-xl font-semibold mb-6 text-primary">
               Basic Profile Details
             </h2>
-            <div className="other_fields">
+            <div className="other_fields space-y-4">
               <ProfileField
                 title="Email"
                 value={props.profileData.email}
@@ -70,7 +70,7 @@ const ProfileTabs = (props: Props) => {
         {/* Connection Preferences */}
         <Card className="py-4 h-fit">
           <CardContent>
-            <h2 className="text-2xl mb-2 font-semibold">
+            <h2 className="text-xl font-semibold mb-3">
               Connection Preferences
             </h2>
             <div className="flex flex-col gap-4">

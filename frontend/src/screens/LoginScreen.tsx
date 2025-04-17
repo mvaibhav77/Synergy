@@ -23,9 +23,11 @@ import { UserInfo } from "@/utils/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
+
+
 import { FaGithub, FaLinkedin } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
-import { NavLink, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { z } from "zod";
 
 const formSchema = z.object({
@@ -114,111 +116,115 @@ const LoginScreen: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-row justify-center items-center max-h-screen min-w-screen bg-background">
-      <div className="side-bg w-full h-screen bg-gray opacity-30 border-r-2 border-white-200">
-      <img src="/logo-synergy.png" alt="Synergy Logo" className="pl-20 pt-10 max-h-[95vh] w-auto object-contain"/>
-      </div>
-      <div className="authCard w-full flex flex-col gap-6 items-center justify-center lg:px-0 px-4">
-        <CardHeader className="lg:block hidden">
-          <CardTitle className="text-6xl">Welcome To Synergy</CardTitle>
-        </CardHeader>
-        <CardHeader className="lg:hidden block">
-          <CardTitle className="text-2xl">
-            Welcome back! 👋 <br /> Glad to see you again!
-          </CardTitle>
-        </CardHeader>
-        <Card className="w-full lg:max-w-[600px] h-fit px-4 py-6 mx-4 ">
-          <Form {...form}>
-            <form
-              onSubmit={form.handleSubmit(onSubmit)}
-              className="lg:space-y-10"
-            >
-              <CardContent className="lg:space-y-6 flex flex-col lg:gap-0 gap-4">
-                <FormField
-                  control={form.control}
-                  name="email"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-lg">Email</FormLabel>
-                      <FormControl>
-                        <Input
-                          className="lg:h-12 lg:text-lg lg:px-4 lg:py-2"
-                          placeholder="example@example.com"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormDescription>
-                        Use your email to login.
-                      </FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+    <section className="flex min-h-screen bg-zinc-50 px-4 py-16 md:py-16 dark:bg-transparent">
+      <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="bg-muted m-auto h-fit w-full max-w-sm overflow-hidden rounded-[calc(var(--radius)+.125rem)] border shadow-md shadow-zinc-950/5 dark:[--color-muted:var(--color-zinc-900)]">
+          <div className="bg-card -m-px rounded-[calc(var(--radius)+.125rem)] border p-8 pb-6">
+            <div className="text-center">
+              <Link to="/" className="mx-auto block w-fit">
+                <img src="../../logo-synergy.png" alt="Logo" className="h-8 w-8 mr-2" />
+              </Link>
+              <h1 className="mb-1 mt-4 text-xl font-semibold">Sign In to Synergy</h1>
+              <p className="text-sm">Welcome back! Sign in to continue</p>
+            </div>
+
+            <div className="mt-6 space-y-6">
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-sm">Email</FormLabel>
+                    <FormControl>
+                      <Input
+                        className=""
+                        placeholder="Email Address"
+                        type="email"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <div className="space-y-0.5">
+
                 <FormField
                   control={form.control}
                   name="password"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-lg">Password</FormLabel>
+                      <FormLabel className="text-title text-sm justify-between flex">Password
+                        <Button asChild variant="link" size="sm">
+                          <a href="#" className="link intent-info variant-ghost text-sm">
+                            Forgot your Password ?
+                          </a>
+                        </Button>
+                      </FormLabel>
                       <FormControl>
                         <Input
-                          className="lg:h-12 lg:text-lg lg:px-4 lg:py-2"
-                          placeholder="*******"
+                          className="input sz-md variant-mixed"
+                          placeholder="Password"
                           type="password"
+                          required
                           {...field}
                         />
                       </FormControl>
-                      <FormDescription>Enter your password</FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
-                <Button className="lg:h-12 lg:text-lg" type="submit">
-                  {isLoading ? "Signing in..." : "Sign In"}
-                </Button>
-              </CardContent>
-            </form>
-          </Form>
 
-          <div className="flex items-center gap-4">
-            <Separator className="flex-1" />
-            <span className="text-muted-foreground">or Login with</span>
-            <Separator className="flex-1" />
-          </div>
+              </div>
 
-          <CardContent className="flex flex-row gap-6 h-[100px] w-full p-0 mt-6">
-            {/* GITHUB LOGIN BUTTON */}
-            <Button
-              variant={"outline"}
-              className="text-4xl p-4 h-fit w-full"
-              onClick={() => {
-                window.location.href = "api/auth/github";
-              }}
-            >
-              <FaGithub />
-            </Button>
-            <Button
-              variant={"outline"}
-              className="text-4xl p-4 h-fit w-full"
-              onClick={() => {
-                window.location.href = "api/auth/linkedin";
-              }}
-            >
-              <FaLinkedin />
-            </Button>
-          </CardContent>
+              <Button className="w-full"
+                type="submit"
+              >
+                {isLoading ? "Signing in..." : "Sign In"}
+              </Button>
+            </div>
 
-          <div className="signup-option flex w-full items-center justify-center ml-2 ">
-            <div className="msg">
-              Don't have an account?{" "}
-              <NavLink to={"/register"} className={"text-primary"}>
-                Register.
-              </NavLink>
+            <div className="my-6 grid grid-cols-[1fr_auto_1fr] items-center gap-3">
+              <hr className="border-dashed" />
+              <span className="text-muted-foreground text-xs">Or continue With</span>
+              <hr className="border-dashed" />
+            </div>
+
+            <div className="grid grid-cols-2 gap-3">
+              <Button
+                onClick={() => {
+                  window.location.href = "api/auth/github";
+                }}
+                className="space-x-2" type="button" variant="outline">
+                <FaGithub />
+                <span>Github</span>
+              </Button>
+              <Button
+                onClick={() => {
+                  window.location.href = "api/auth/linkedin";
+                }}
+                className="space-x-2" type="button" variant="outline">
+                <FaLinkedin />
+                <span >Linkedin</span>
+              </Button>
             </div>
           </div>
-        </Card>
-      </div>
-    </div>
+
+          <div className="p-3">
+            <p className="text-accent-foreground text-center text-sm">
+              Don't have an account ?
+              <Button asChild variant="link" className="px-2">
+                <a href="/register">Create account</a>
+              </Button>
+            </p>
+          </div>
+        </form>
+      </Form>
+
+    </section>
   );
 };
 

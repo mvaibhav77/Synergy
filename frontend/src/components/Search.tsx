@@ -76,8 +76,8 @@ const CommandSearch = () => {
   };
 
   return (
-    <div className="relative w-[400px]">
-      <Command className="rounded-lg border shadow-md">
+    <div className="relative w-[300px]">
+      <Command className="rounded-lg border ">
         <CommandInput
           placeholder="Type a command or search..."
           onValueChange={handleValueChange}

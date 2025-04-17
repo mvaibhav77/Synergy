@@ -28,12 +28,13 @@ import {
   Dialog,
   DialogContent,
   DialogHeader,
+  DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
 import EditBasicProfile from "@/components/Profile/EditBasicProfile";
 import Socials from "@/components/Profile/Socials";
 import ProfileTabs from "@/components/Profile/ProfileTabs";
-import { Loader2 } from "lucide-react";
+import { Camera, Edit, FileText, Globe, Linkedin, Github, Loader2, MessageCircle, Sparkles, Twitter, Trash2, UserMinus, UserPlus, Users } from "lucide-react";
 
 const ProfileScreen = () => {
   const { username } = useParams<{ username: string }>();
@@ -205,7 +206,7 @@ const ProfileScreen = () => {
             <ScrollArea className="h-[calc(100vh-160px)] mt-4">
               <div className="flex flex-col justify-center !items-stretch gap-4 px-4">
                 {/* profile header */}
-                <header className=" h-full">
+                <header className="h-full">
                   {/* banner */}
                   <img
                     src={
@@ -215,29 +216,27 @@ const ProfileScreen = () => {
                     alt="Banner"
                     className="w-full h-full object-cover"
                   />
-                  <Card className="p-4 h-full ">
+                  <Card className="p-4 h-full">
                     <CardContent>
                       <div className="relative flex flex-row justify-between gap-4">
                         {/* profile avatar */}
-                        <div className="profile-avatar absolute left-2 -top-36 p-2 bg-background rounded-full">
+                        <div className="profile-avatar absolute -left-6 -top-24 p-2 bg-background rounded-full">
                           <Dialog>
                             <DialogTrigger>
-                              <div className="avatar rounded-full w-48 h-48 cursor-pointer">
+                              <div className="avatar rounded-full w-32 h-32 cursor-pointer">
                                 <img
                                   src={
                                     profileData.avatar ||
                                     "https://github.com/github.png"
                                   }
                                   alt="Profile Picture"
-                                  className="rounded-full w-48 h-48"
+                                  className="rounded-full w-32 h-32"
                                 />
                               </div>
                             </DialogTrigger>
                             <DialogContent>
                               <DialogHeader>
-                                <h2 className="text-lg font-semibold">
-                                  Profile Picture
-                                </h2>
+                                <DialogTitle>Profile Picture</DialogTitle>
                               </DialogHeader>
                               <div className="avatar-content flex flex-col items-center gap-4">
                                 {/* Display the profile picture */}
@@ -247,19 +246,19 @@ const ProfileScreen = () => {
                                     "https://github.com/github.png"
                                   }
                                   alt="Profile Picture"
-                                  className="rounded-full w-40 h-40"
+                                  className="rounded-full w-32 h-32"
                                 />
 
                                 {/* Buttons for changing and removing the profile picture */}
                                 <div className="flex gap-4">
                                   <Button
-                                    className="bg-blue-500 text-white hover:bg-blue-600"
+                                    variant="default"
                                     onClick={() => handleChangePicture()}
                                   >
                                     Change
                                   </Button>
                                   <Button
-                                    className="bg-red-500 text-white hover:bg-red-600"
+                                    variant="destructive"
                                     onClick={() => handleRemovePicture()}
                                   >
                                     Remove
@@ -271,12 +270,19 @@ const ProfileScreen = () => {
                         </div>
 
                         <div className="basic-profile flex flex-col gap-2 mt-20">
-                          <h2 className="text-3xl font-semibold flex gap-4">
-                            {profileData.name}
-                          </h2>
-                          <p className="text-gray-500 italic">
-                            {profileData.bio}
-                          </p>
+                          <div className="flex items-center gap-2">
+                            <div>
+                              <h2 className="text-lg md:text-xl font-bold">{profileData.name}</h2>
+                              <p className="text-sm text-muted-foreground">@{profileData.username}</p>
+                            </div>
+                            {isCurrentUser && (
+                              <EditBasicProfile
+                                name={profileData.name}
+                                bio={profileData.bio}
+                              />
+                            )}
+                          </div>
+                          <p className=" text-base">{profileData.bio}</p>
                           <div className="stats flex flex-row gap-6">
                             {/* connections */}
                             <ConnectionsDialog
@@ -288,14 +294,14 @@ const ProfileScreen = () => {
                               }
                             />
 
-                            {/* Posts */}
-                            <button className="text-gray-500 font-bold hover:text-inherit hover:underline w-fit text-inherit">
-                              {profileData.posts?.length || 0}{" "}
-                              <span className="text-primary">Posts</span>
+                      
+                            <button className="dark:text-gray-300 text-gray-600 font-semibold  hover:text-inherit  w-fit text-base">
+                              <span className="font-base">{profileData.posts?.length || 0}</span>{" "}
+                              <span className="text-base">Posts</span>
                             </button>
                           </div>
 
-                          {/* Connect Button for non-current user's profile */}
+                       
                           {!isCurrentUser && (
                             <div className="flex flex-row gap-2 items-center">
                               <Button
@@ -325,7 +331,6 @@ const ProfileScreen = () => {
                                 }`}
                                 onClick={handleMessage}
                               >
-                                {/* <FaEnvelope className="mr-2" /> */}
                                 Message
                               </Button>
 
@@ -341,20 +346,10 @@ const ProfileScreen = () => {
                               </Button>
                             </div>
                           )}
-                        </div>
+                        </div> 
 
                         {/* right section */}
                         <aside>
-                          {/* edit button for current user */}
-                          {isCurrentUser && (
-                            <div className="edit-button flex flex-row items-center justify-end w-full">
-                              <EditBasicProfile
-                                name={profileData.name}
-                                bio={profileData.bio}
-                              />
-                            </div>
-                          )}
-
                           {/* Social Media Section */}
                           {isCurrentUser && <Socials userInfo={profileData} />}
                         </aside>
@@ -375,7 +370,193 @@ const ProfileScreen = () => {
         )}
       </div>
     </Page>
+    // <Page>
+    //    <div className="border-x border-border min-h-screen">
+    //   <div className="relative">
+    //     {/* Banner with overlay gradient */}
+    //     <div className="relative h-64 overflow-hidden">
+    //       <img
+    //         src={profileData?.banner || "/placeholder.svg"}
+    //         alt="Profile Banner"
+    //         className="w-full h-full object-cover"
+    //       />
+    //       <div className="absolute inset-0 bg-gradient-to-b from-transparent to-background/90"></div>
+    //     </div>
+
+    //     {/* Profile header with avatar */}
+    //     <div className="container px-4 relative">
+    //       <div className="flex flex-col md:flex-row gap-6">
+    //         {/* Avatar section */}
+    //         <div className="relative -mt-20 z-10">
+    //           <Dialog>
+    //             <DialogTrigger asChild>
+    //               <div className="relative group cursor-pointer">
+    //                 <div className="w-36 h-36 rounded-full border-4 border-background overflow-hidden bg-muted">
+    //                   <img
+    //                     src={profileData?.avatar || "/placeholder.svg"}
+    //                     alt={`${profileData?.name}'s profile picture`}
+    //                     className="w-full h-full object-cover"
+    //                   />
+    //                 </div>
+    //                 {isCurrentUser && (
+    //                   <div className="absolute inset-0 bg-black/40 rounded-full opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+    //                     <Camera className="text-white w-8 h-8" />
+    //                   </div>
+    //                 )}
+    //               </div>
+    //             </DialogTrigger>
+    //             <DialogContent>
+    //               <DialogHeader>
+    //                 <h2 className="text-xl font-semibold">Profile Picture</h2>
+    //               </DialogHeader>
+    //               <div className="flex flex-col items-center gap-6 py-4">
+    //                 <div className="w-48 h-48 rounded-full overflow-hidden">
+    //                   <img
+    //                     src={profileData?.avatar || "/placeholder.svg"}
+    //                     alt="Profile Picture"
+    //                     className="w-full h-full object-cover"
+    //                   />
+    //                 </div>
+    //                 <div className="flex gap-4">
+    //                   <Button onClick={handleChangePicture} className="gap-2">
+    //                     <Camera className="w-4 h-4" />
+    //                     Change
+    //                   </Button>
+    //                   <Button variant="destructive" onClick={handleRemovePicture} className="gap-2">
+    //                     <Trash2 className="w-4 h-4" />
+    //                     Remove
+    //                   </Button>
+    //                 </div>
+    //               </div>
+    //             </DialogContent>
+    //           </Dialog>
+    //         </div>
+
+    //         {/* Profile info section */}
+    //         <div className="flex-1 pt-2 md:pt-6">
+    //           <div className="flex flex-col md:flex-row justify-between gap-4">
+    //             <div className="space-y-3">
+    //               <div className="flex items-center gap-3">
+    //                 <h1 className="text-2xl md:text-3xl font-bold">{profileData?.name}</h1>
+    //                 {isCurrentUser && (
+    //                   <Button variant="ghost" size="icon" className="rounded-full h-8 w-8">
+    //                     <Edit className="h-4 w-4" />
+    //                   </Button>
+    //                 )}
+    //               </div>
+    //               <p className="text-muted-foreground">{profileData?.bio}</p>
+
+    //               <div className="flex flex-wrap gap-4 pt-1">
+    //                 <div className="flex items-center gap-1.5">
+    //                   <Users className="w-4 h-4 text-muted-foreground" />
+    //                   {/* <span className="font-medium">{profileData?.connection.length}</span> */}
+    //                   <span className="text-muted-foreground">Connections</span>
+    //                 </div>
+    //                 <div className="flex items-center gap-1.5">
+    //                   <FileText className="w-4 h-4 text-muted-foreground" />
+    //                   <span className="font-medium">{profileData?.posts?.length || 0}</span>
+    //                   <span className="text-muted-foreground">Posts</span>
+    //                 </div>
+    //               </div>
+    //             </div>
+
+    //             {/* Action buttons */}
+    //             {!isCurrentUser ? (
+    //               <div className="flex flex-col sm:flex-row gap-2 self-start mt-2">
+    //                 <Button
+    //                   variant={connectionStatus === "connected" ? "destructive" : "default"}
+    //                   disabled={connectionStatus === "pending"}
+    //                   className="gap-2"
+    //                   onClick={handleConnect}
+    //                 >
+    //                   {sendingReqLoading || loadingMe ? (
+    //                     <Loader2 className="h-4 w-4 animate-spin" />
+    //                   ) : connectionStatus === "connected" ? (
+    //                     <UserMinus className="h-4 w-4" />
+    //                   ) : (
+    //                     <UserPlus className="h-4 w-4" />
+    //                   )}
+    //                   {connectionStatus === "pending"
+    //                     ? "Pending"
+    //                     : connectionStatus === "connected"
+    //                       ? "Disconnect"
+    //                       : "Connect"}
+    //                 </Button>
+
+    //                 {connectionStatus === "connected" && (
+    //                   <>
+    //                     <Button variant="outline" className="gap-2" onClick={handleMessage}>
+    //                       <MessageCircle className="h-4 w-4" />
+    //                       Message
+    //                     </Button>
+    //                     <Button
+    //                       variant="secondary"
+    //                       className="gap-2"
+    //                       onClick={handleConfluence}
+    //                       disabled={confluenceLoading}
+    //                     >
+    //                       {confluenceLoading ? (
+    //                         <Loader2 className="h-4 w-4 animate-spin" />
+    //                       ) : ( 
+    //                         <Sparkles className="h-4 w-4" />
+    //                       )}
+    //                       Confluence
+    //                     </Button>
+    //                   </>
+    //                 )}
+    //               </div>
+    //             ) : (
+    //               <div className="flex flex-wrap gap-2 self-start">
+    //                 {/* <SocialLinks socials={profileData?.socials} /> */}
+    //               </div>
+    //             )}
+    //           </div>
+    //         </div>
+    //       </div>
+    //     </div>
+    //   </div>
+
+    //   {/* Main content */}
+    //   <div className="container px-4 py-6">
+    //     {/* <ProfileTabs isCurrentUser={isCurrentUser} /> */}
+    //   </div>
+    // </div>
+    // </Page>
   );
 };
 
 export default ProfileScreen;
+// function SocialLinks({ socials }) {
+//   return (
+//     <div className="flex flex-wrap gap-2">
+//       {socials.github && (
+//         <a href={`https://${socials.github}`} target="_blank" rel="noopener noreferrer">
+//           <Button variant="outline" size="icon" className="rounded-full">
+//             <Github className="h-4 w-4" />
+//           </Button>
+//         </a>
+//       )}
+//       {socials.twitter && (
+//         <a href={`https://${socials.twitter}`} target="_blank" rel="noopener noreferrer">
+//           <Button variant="outline" size="icon" className="rounded-full">
+//             <Twitter className="h-4 w-4" />
+//           </Button>
+//         </a>
+//       )}
+//       {socials.linkedin && (
+//         <a href={`https://${socials.linkedin}`} target="_blank" rel="noopener noreferrer">
+//           <Button variant="outline" size="icon" className="rounded-full">
+//             <Linkedin className="h-4 w-4" />
+//           </Button>
+//         </a>
+//       )}
+//       {socials.website && (
+//         <a href={`https://${socials.website}`} target="_blank" rel="noopener noreferrer">
+//           <Button variant="outline" size="icon" className="rounded-full">
+//             <Globe className="h-4 w-4" />
+//           </Button>
+//         </a>
+//       )}
+//     </div>
+//   )
+// }

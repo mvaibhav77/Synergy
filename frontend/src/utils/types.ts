@@ -16,9 +16,9 @@ export interface ConnectionPreferences {
   proximity: number;
 }
 
-export interface Post {
-  title: string;
-}
+// export interface Post {
+//   title: string;
+// }
 
 export interface UserInfo {
   _id: string;
@@ -73,4 +73,19 @@ export interface Message {
   content: string;
   createdAt: string;
   updatedAt: string;
+}
+export interface Post {
+  _id: string;
+  content: string;
+  images?: string[];
+  location?: string;
+  author: UserInfo;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CreatePostData {
+  content: string;
+  images?: File[];
+  location?: string;
 }

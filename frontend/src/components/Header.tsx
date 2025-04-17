@@ -22,8 +22,10 @@ import { rlogout } from "../slices/recommendSlice";
 import { RootState } from "@/store";
 import { MdOutlineMenu } from "react-icons/md";
 import { useEffect, useState } from "react";
-import { DropdownMenuLabel } from "@radix-ui/react-dropdown-menu";
+import { DropdownMenuGroup, DropdownMenuLabel, DropdownMenuSeparator } from "@radix-ui/react-dropdown-menu";
 import Search from "./Search";
+import { LogOut, Bell, ChevronsUpDown, Sparkles, User } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 
 type Props = {
   handleSideMenu: (value: boolean) => void;
@@ -115,25 +117,28 @@ const Header = (props: Props) => {
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button
-                      variant={"ghost"}
-                      className="flex rounded-xl items-center space-x-2 text-lg"
+                      variant={"outline"}
+                      size={"icon"}
+                      className="rounded-full"
                     >
-                      <FaBell />
+                      <Bell className="h-[1.2rem] w-[1.2rem] "/>
                     </Button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-[400px]">
-                    <DropdownMenuLabel className="p-4">
+                  <DropdownMenuContent align="end" className="w-[400px] p-4">
+                    {/* <DropdownMenuLabel className="p-4">
                       <h3 className="text-lg font-bold">Notifications</h3>
-                    </DropdownMenuLabel>
+                    </DropdownMenuLabel> */}
                     {notifications.map((item, index) => (
-                      <DropdownMenuItem key={index} asChild>
+                      <DropdownMenuItem key={index} asChild >
                         <Button
                           variant={"outline"}
-                          className="w-full h-full flex flex-col items-start p-4 border-b-[1px] border-white-700"
+                          className="w-full h-full my-2 flex flex-col items-start p-2 border-b-[1px] border-white-700"
                         >
-                          <h4 className="text-lg font-bold">{item.title}</h4>
-                          <p className="text-sm">{item.description}</p>
-                          <p className="text-xs text-gray-500">{item.date}</p>
+                          <div className="w-full flex justify-between items-start">
+                            <p className="text-sm font-semibold">{item.title}</p>
+                            <p className="text-xs text-gray-500">{item.date}</p>
+                          </div>
+                          <p className="text-sm text-muted-foreground">{item.description}</p>
                         </Button>
                       </DropdownMenuItem>
                     ))}
@@ -145,25 +150,83 @@ const Header = (props: Props) => {
             {/* theme toggler */}
             <ModeToggle />
 
-            {userInfo ? (
+            {/* {userInfo && (
               <>
-                {/* User Dropdown */}
+               
                 <NavigationMenuItem>
                   <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="outline" size={"lg"} className="flex items-center gap-3 rounded-lg px-2 py-4">
+                        <Avatar className="h-8 w-8 rounded-lg ">
+                          <AvatarImage src={userInfo.avatar} alt={userInfo.name} />
+                          <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+                        </Avatar>
+                        <div className="grid flex-1 text-left text-sm leading-tight">
+                          <span className="truncate font-semibold">{userInfo.name}</span>
+                          <span className="truncate text-xs">{userInfo.email}</span>
+                        </div>
+                        <ChevronsUpDown className="ml-auto size-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent
+                      className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
+                      align="end"
+                      sideOffset={4}
+                    >
+                      <DropdownMenuLabel className="p-0 font-normal">
+                        <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
+                          <Avatar className="h-8 w-8 rounded-lg">
+                            <AvatarImage src={userInfo.avatar} alt={userInfo.name} />
+                            <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+                          </Avatar>
+                          <div className="grid flex-1 text-left text-sm leading-tight">
+                            <span className="truncate font-semibold">{userInfo.name}</span>
+                            <span className="truncate text-xs">{userInfo.email}</span>
+                          </div>
+                        </div>
+                      </DropdownMenuLabel>
+
+                      <DropdownMenuSeparator />
+                  
+                      <DropdownMenuItem asChild>
+                        <Link to={`/${userInfo.username}`} className="flex items-center">
+                          <User className="h-4 w-4 mr-2" />
+                          Profile
+                        </Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={logoutHandler}>
+                      <LogOut className="h-4 w-4 mr-2" />
+                        Logout
+                      </DropdownMenuItem>
+                   
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </NavigationMenuItem>
+              </>
+            )
+              } */}
+          </NavigationMenuList>
+        </NavigationMenu>
+      </div>
+    </header>
+  );
+};
+
+export default Header;
+{/* <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <Button
                         variant="outline"
                         className="flex rounded-xl py-4 items-center space-x-2 h-12"
                       >
-                        {/* Avatar */}
-                        <img
+                       
                           src={
                             userInfo.avatar || "https://github.com/guthub.png"
                           }
                           alt="avatar"
                           className="w-8 h-8 rounded-full"
                         />
-                        {/* Name and Email */}
+                   
                         <div className="flex flex-col items-start py-4">
                           <span className="text-lg">{userInfo.name}</span>
                           <span className="text-xs text-gray-500">
@@ -180,33 +243,4 @@ const Header = (props: Props) => {
                         Logout
                       </DropdownMenuItem>
                     </DropdownMenuContent>
-                  </DropdownMenu>
-                </NavigationMenuItem>
-              </>
-            ) : (
-              <>
-                <NavigationMenuItem className="lg:block hidden">
-                  <NavigationMenuLink asChild>
-                    <Link to="/login" className="flex items-center">
-                      <FaSignInAlt className="mr-1" /> Sign In
-                    </Link>
-                  </NavigationMenuLink>
-                </NavigationMenuItem>
-
-                <NavigationMenuItem className="lg:block hidden">
-                  <NavigationMenuLink asChild>
-                    <Link to="/register" className="flex items-center">
-                      <FaSignOutAlt className="mr-1" /> Sign Up
-                    </Link>
-                  </NavigationMenuLink>
-                </NavigationMenuItem>
-              </>
-            )}
-          </NavigationMenuList>
-        </NavigationMenu>
-      </div>
-    </header>
-  );
-};
-
-export default Header;
+                  </DropdownMenu> */}
