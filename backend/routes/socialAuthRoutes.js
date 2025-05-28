@@ -25,7 +25,7 @@ router.get(
     generateToken(res, req.user._id);
 
     const redirectLink =
-      `https://synergy-76cw.onrender.com/login-success?` +
+      `${process.env.APP_URL}/login-success?` +
       `id=${req.user._id}&name=${encodeURIComponent(req.user.name)}&` +
       `email=${encodeURIComponent(
         req.user.email
@@ -155,7 +155,7 @@ router.get("/linkedin/callback", async (req, res) => {
 
     // Redirect or respond with token
     res.redirect(
-      `https://synergy-76cw.onrender.com/api/auth/linkedin/login-success?token=${token}`
+      `${process.env.APP_URL}/api/auth/linkedin/login-success?token=${token}`
     );
   } catch (error) {
     console.error("LinkedIn auth error:", error);
@@ -183,7 +183,7 @@ router.get("/linkedin/login-success", async (req, res) => {
 
   // Construct the redirect link with user info
   const redirectLink =
-    `https://synergy-76cw.onrender.com/login-success?` +
+    `${process.env.APP_URL}/login-success?` +
     `id=${user._id}&name=${encodeURIComponent(user.name)}&` +
     `email=${encodeURIComponent(user.email)}&username=${encodeURIComponent(
       user.username || ""

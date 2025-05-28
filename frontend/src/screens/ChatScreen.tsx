@@ -17,7 +17,10 @@ import { useGetUserByIdMutation } from "@/slices/usersApiSlice";
 import ChatView from "@/components/Messages/ChatView";
 import ConversationList from "@/components/Messages/ConversationList";
 
-const socket = io("https://synergy-76cw.onrender.com/", {
+
+const socketUrl = import.meta.env.VITE_APP_URL || "http://localhost:5000";
+
+const socket = io(socketUrl, {
   transports: ["websocket"], // Ensures WebSocket is used directly
 });
 
